@@ -1,0 +1,34 @@
+{
+  "name": "happn-cluster",
+  "version": "0.0.1",
+  "description": "extends happn with cluster ability",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --expose-gc silence.js test",
+    "test-cover": "istanbul cover _mocha -- silence.js test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/happner/happn-cluster.git"
+  },
+  "keywords": [
+    "mongo",
+    "primus",
+    "websockets",
+    "pub-sub",
+    "swim",
+    "cluster",
+    "happn"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/happner/happn-cluster/issues"
+  },
+  "homepage": "https://github.com/happner/happn-cluster#readme",
+  "devDependencies": {
+    "istanbul": "^0.4.5",
+    "mocha": "^3.0.2",
+    "should": "^11.1.0"
+  }
+}
