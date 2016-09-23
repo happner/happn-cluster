@@ -47,7 +47,6 @@ var config = {
       udp: {
         maxDgramSize: 512
       }
-      codec: 'msgpack',
       disseminationFactor: 15
     }
   }
@@ -72,7 +71,7 @@ Name is limited to characters acceptable in happn paths, namely '_*-', numbers a
 #### config.cluster.membership
 
 This configures the membership discovery service.
-Using [this implementation](https://github.com/mrhooray/swim-js) of the SWIM protocol.
+Using [this implementation](https://github.com/happner/swim-js) of the SWIM protocol.
 
 #### config.cluster.membership.seed
 
@@ -146,9 +145,9 @@ suspect is declared faulty/offline and this information is disseminated into the
 
 Secondary probe requests are sent to this many other members.
 
-#### config.cluster.membership.[udp, codec, disseminationFactor]
+#### config.cluster.membership.[udp, disseminationFactor]
 
-See [swim.js](https://github.com/mrhooray/swim-js)
+See [swim.js](https://github.com/happner/swim-js)
 
 
 
