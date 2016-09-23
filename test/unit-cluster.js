@@ -60,7 +60,7 @@ describe(filename, function() {
   });
 
   after('stop happn-cluster server', function(done) {
-    this.happnCluster.stop({reconnect: false}, done);
+    this.happnCluster.stop(done);
   });
 
   after('clear collection (after)', function(done) {

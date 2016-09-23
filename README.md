@@ -6,7 +6,7 @@
 
 Extends happn with cluster ability.
 
-Requires that each cluster member mounts a shared data service. See [happn-service-mongo](https://github.com/happner/happn-service-mongo).
+Requires that each cluster member mounts the same shared data service. See [happn-service-mongo](https://github.com/happner/happn-service-mongo).
 
 ## Getting Started
 
