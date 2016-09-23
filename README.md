@@ -103,7 +103,7 @@ If joinType is 'dynamic' the list is obtained from the most recent membership re
 
 Both 'dynamic' and 'static' require **exactly one** seed member in the cluster.
 
-#### config.cluster.membership.[host,port]
+#### config.cluster.membership.[host, port]
 
 The host and port on which this member's SWIM service should listen. Host should be an actual ip address
 or hostname, not '0.0.0.0'. It can also be specified using [interface](https://github.com/happner/dface) (eg 'eth0')
@@ -116,7 +116,7 @@ The list of initial cluster members via which this member joins the cluster. Thi
 seed member and a selection of other members likely to be online.
 
 Items in the list are composed of `host:port` as configured on the remote members' **membership.host**
-and **membership.port**.
+and **membership.port** above.
 
 Example: `['10.0.0.1:11000', '10.0.0.2:11000', '10.0.0.3:11000']`
 
@@ -134,8 +134,8 @@ cyclic probe so worst-case discovery time is not `1000ms * memberCount`.
 #### config.cluster.membership.probeTimeout
 
 The running SWIM member expects a reply to its probe. Receiving none within this time results in the probed member
-to come under suspicion of being faulty/offline and secondary probe requests are sent to a random selection of other
-members to in turn probe the suspect themselves to confirm the suspicion.
+coming under suspicion of being faulty/offline. At this point secondary probe requests are sent to a random selection
+of other members to, in turn, probe the suspect themselves to confirm the suspicion.
 
 #### config.cluster.membership.probeReqTimeout
 
