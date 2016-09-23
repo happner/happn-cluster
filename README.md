@@ -29,14 +29,26 @@ var config = {
     }
   },
   
-  // cluster sub-config
+  // cluster sub-config (defaults displayed)
   cluster: {
     name: 'cluster-name',
     membership: {
       seed: false,
-      joinType: 'dynamic'
+      seedWait: 0,
+      joinType: 'dynamic',
       host: 'eth0',
-      port: 11000
+      port: 11000,
+      // hosts: [],
+      joinTimeout: 2000,
+      probeInterval: 1000,
+      probeTimeout: 200,
+      probeReqTimeout: 600,
+      probeReqGroupSize: 3,
+      udp: {
+        maxDgramSize: 512
+      }
+      codec: 'msgpack',
+      disseminationFactor: 15
     }
   }
 }
@@ -62,7 +74,7 @@ Name is limited to characters acceptable in happn paths, namely '_*-', numbers a
 This configures the membership discovery service.
 Using [this implementation](https://github.com/mrhooray/swim-js) of the SWIM protocol.
 
-##### config.cluster.membership.seed
+#### config.cluster.membership.seed
 
 Boolean flag sets this member as the cluster seed member. If `true` this member will not terminate
 upon failing to join any other cluster members and can therefore enter a cluster as the first member.
@@ -74,7 +86,13 @@ The seed member should include a selection of other members certain to be online
 **config.cluster.membership.hosts** so that it can rejoin an already running cluster in case
 of an unscheduled reboot.
 
-##### config.cluster.membership.joinType
+#### config.cluster.membership.seedWait
+
+Members that are not the seed member pause this long before starting. This allows for a booting host that
+contains multiple cluster member instances all starting concurrently where one is the seed member. By waiting
+the seed member will be up and running before the others attempt to join it in the cluster.
+
+#### config.cluster.membership.joinType
 
 This refers to the method used obtain/configure the sub-list of hosts to join in the cluster. 
 
@@ -83,6 +101,57 @@ If joinType is 'static' the list should be hardcoded into **config.cluster.membe
 If joinType is 'dynamic' the list is obtained from the most recent membership records in the shared database.
 
 Both 'dynamic' and 'static' require **exactly one** seed member in the cluster.
+
+#### config.cluster.membership.[host,port]
+
+The host and port on which this member's SWIM service should listen. Host should be an actual ip address
+or hostname, not '0.0.0.0'. It can also be specified using [interface](https://github.com/happner/dface) (eg 'eth0')
+
+Default: 'eth0', 11000
+
+#### config.cluster.membership.hosts
+
+The list of initial cluster members via which this member joins the cluster. This should include the
+seed member and a selection of other members likely to be online.
+
+Items in the list are composed of `host:port` as configured on the remote members' **membership.host**
+and **membership.port**.
+
+Example: `['10.0.0.1:11000', '10.0.0.2:11000', '10.0.0.3:11000']`
+
+#### config.cluster.membership.joinTimeout
+
+The bootstrapping SWIM member waits this long to accumulate the full membership list from the network.
+
+#### config.cluster.membership.probeInterval
+
+The running SWIM member cycles through it's member list sending a probe to determine if the member is still there.
+A probe is sent once every interval. The default 1000ms results in a notable delay in detecting departed members.
+It's a tradeoff between cluster-size/detection-time/probe-bandwidth. Keep in mind that all members are doing the
+cyclic probe so worst-case discovery time is not 1000ms * memberCount.
+
+#### config.cluster.membership.probeTimeout
+
+The running SWIM member expects a reply to its probe. Receiving none within this time results in the probed member
+to come under suspicion of being faulty/offline and secondary probe requests are sent to a random selection of other
+members to in turn probe the suspect themselves to confirm the suspicion.
+
+#### config.cluster.membership.probeReqTimeout
+
+The running SWIM member expects a reply from the secondary probe requests within this time. If not received the
+suspect is declared faulty/offline and this information is disseminated into the cluster.
+
+#### config.cluster.membership.probeReqGroupSize
+
+Secondary probe requests are sent to this many other members.
+
+#### config.cluster.membership.[udp, codec, disseminationFactor]
+
+See [swim.js](https://github.com/mrhooray/swim-js)
+
+
+
+
 
 ### Static Membership Join Config
 
