@@ -77,9 +77,10 @@ Using [this implementation](https://github.com/mrhooray/swim-js) of the SWIM pro
 #### config.cluster.membership.seed
 
 Boolean flag sets this member as the cluster seed member. If `true` this member will not terminate
-upon failing to join any other cluster members and can therefore enter a cluster as the first member.
+upon failing to join any other cluster members and can therefore enter a cluster successfully as
+the first member.
 
-Each other member should include the seed member among their **config.cluster.membership.hosts**
+Each other member should include the seed member, among others, in their **config.cluster.membership.hosts**
 list of hosts to join when starting.
 
 The seed member should include a selection of other members certain to be online in it's 
@@ -89,12 +90,12 @@ of an unscheduled reboot.
 #### config.cluster.membership.seedWait
 
 Members that are not the seed member pause this long before starting. This allows for a booting host that
-contains multiple cluster member instances all starting concurrently where one is the seed member. By waiting
+contains multiple cluster member instances all starting concurrently where one is the seed member. By waiting,
 the seed member will be up and running before the others attempt to join it in the cluster.
 
 #### config.cluster.membership.joinType
 
-This refers to the method used obtain/configure the sub-list of hosts to join in the cluster. 
+This refers to the method used to obtain/configure the sub-list of hosts to join in the cluster. 
 
 If joinType is 'static' the list should be hardcoded into **config.cluster.membership.hosts**
 
@@ -126,9 +127,9 @@ The bootstrapping SWIM member waits this long to accumulate the full membership 
 #### config.cluster.membership.probeInterval
 
 The running SWIM member cycles through it's member list sending a probe to determine if the member is still there.
-A probe is sent once every interval. The default 1000ms results in a notable delay in detecting departed members.
+A probe is sent once every interval. The default 1000ms results in a noticable delay in detecting departed members.
 It's a tradeoff between cluster-size/detection-time/probe-bandwidth. Keep in mind that all members are doing the
-cyclic probe so worst-case discovery time is not 1000ms * memberCount.
+cyclic probe so worst-case discovery time is not `1000ms * memberCount`.
 
 #### config.cluster.membership.probeTimeout
 
