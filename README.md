@@ -135,11 +135,11 @@ cyclic probe so worst-case discovery time is not `1000ms * memberCount`.
 
 The running SWIM member expects a reply to its probe. Receiving none within this time results in the probed member
 coming under suspicion of being faulty/offline. At this point secondary probe requests are sent to a random selection
-of other members to, in turn, probe the suspect themselves to confirm the suspicion.
+of other members to probe the suspect themselves to confirm the suspicion.
 
 #### config.cluster.membership.probeReqTimeout
 
-The running SWIM member expects a reply from the secondary probe requests within this time. If not received the
+The running SWIM member expects a reply from those secondary probe requests within this time. If not received the
 suspect is declared faulty/offline and this information is disseminated into the cluster.
 
 #### config.cluster.membership.probeReqGroupSize
