@@ -87,7 +87,26 @@ describe(filename, function() {
     Mongo.clearCollection(mongoUrl, mongoCollection, done);
   });
 
-  it('test');
+  it('test', function(done) {
+    this.timeout(3500);
+    var _this = this;
+
+    setTimeout(function() {
+
+      _this.servers.forEach(function(server) {
+        var size = Object.keys(server.membership.members).length;
+        if (size != clusterSize - 1) {
+          console.log('-->', size);
+        } else {
+          console.log(size);
+        }
+      });
+      done();
+
+    }, 3000);
+
+
+  });
 
   after(benchmarket.store());
   benchmarket.stop();
