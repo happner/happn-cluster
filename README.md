@@ -40,10 +40,10 @@ var config = {
       port: 11000,
       // hosts: [],
       joinTimeout: 2000,
-      probeInterval: 1000,
-      probeTimeout: 200,
-      probeReqTimeout: 600,
-      probeReqGroupSize: 3,
+      pingInterval: 1000,
+      pingTimeout: 200,
+      pingReqTimeout: 600,
+      pingReqGroupSize: 3,
       udp: {
         maxDgramSize: 512
       }
@@ -123,35 +123,36 @@ Example: `['10.0.0.1:11000', '10.0.0.2:11000', '10.0.0.3:11000']`
 
 The bootstrapping SWIM member waits this long to accumulate the full membership list from the network.
 
-#### config.cluster.membership.probeInterval
+#### config.cluster.membership.pingInterval
 
-The running SWIM member cycles through it's member list sending a probe to determine if the member is still there.
-A probe is sent once every interval. The default 1000ms results in a noticable delay in detecting departed members.
-It's a tradeoff between cluster-size/detection-time/probe-bandwidth. Keep in mind that all members are doing the
-cyclic probe so worst-case discovery time is not `1000ms * memberCount`.
+The running SWIM member `cycles` through it's member list sending a ping to determine if the member is still there.
+A ping is sent once every interval. The default 1000ms results in a noticable delay in detecting departed members.
+It's a tradeoff between cluster-size/detection-time/ping-bandwidth. Keep in mind that all members are doing the
+cyclic ping so worst-case discovery time is not `1000ms * memberCount`.
 
-#### config.cluster.membership.probeTimeout
+#### config.cluster.membership.pingTimeout
 
-The running SWIM member expects a reply to its probe. Receiving none within this time results in the probed member
-coming under suspicion of being faulty/offline. At this point secondary probe requests are sent to a random selection
-of other members to probe the suspect themselves to confirm the suspicion.
+The running SWIM member expects a reply to its ping. Receiving none within this time results in the pinged member
+coming under suspicion of being faulty/offline. At this point secondary ping requests are sent to a random selection
+of other members to ping the suspect themselves to confirm the suspicion.
 
-#### config.cluster.membership.probeReqTimeout
+#### config.cluster.membership.pingReqTimeout
 
-The running SWIM member expects a reply from those secondary probe requests within this time. If not received the
+The running SWIM member expects a reply from those secondary ping requests within this time. If not received the
 suspect is declared faulty/offline and this information is disseminated into the cluster.
 
-#### config.cluster.membership.probeReqGroupSize
+#### config.cluster.membership.pingReqGroupSize
 
-Secondary probe requests are sent to this many other members.
+Secondary ping requests are sent to this many other members.
 
 #### config.cluster.membership.[udp, disseminationFactor]
 
+Members updates (arrived/departed) are disseminated throughout the cluster on the back of the pings already
+being sent. **udp.maxDgramSize** limits the size of those payloads. **disseminationFactor** combined logarithmically
+with cluster size determines for how many pings in the `cycle` any given membership update remains eligible for
+dissemination. All eligible updates are sent with every ping up to the available **maxDgramSize**.
+
 See [swim.js](https://github.com/happner/swim-js)
-
-
-
-
 
 ### Static Membership Join Config
 
