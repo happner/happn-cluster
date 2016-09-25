@@ -2,3 +2,4 @@
 * force include seed member in dynamic host to join
 * append dynamic to already specified hosts to join
 * document the importance of starting the seed member alone and first
+* handle /_SYSTEM/_NETWORK/_SETTINGS/NAME overwrite from each cluster member
