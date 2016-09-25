@@ -44,11 +44,11 @@ describe(filename, function() {
             collection: mongoCollection,
             url: mongoUrl
           }
-        }
-      },
-      cluster: {
+        },
         membership: {
-          seed: true
+          config: {
+            seed: true
+          }
         }
       }
     })

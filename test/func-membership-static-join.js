@@ -37,23 +37,23 @@ describe(filename, function() {
               collection: mongoCollection,
               url: mongoUrl
             }
-          }
-        },
-        cluster: {
-          name: 'cluster1',
+          },
           membership: {
-            seed: i == 1,
-            seedWait: 500,
-            joinType: 'static',
-            host: device,
-            port: 11000 + i,
-            hosts: [ipAddress + ':11001', ipAddress + ':11002', ipAddress + ':11003'],
+            config: {
+              clusterName: 'cluster1',
+              seed: i == 1,
+              seedWait: 500,
+              joinType: 'static',
+              host: device,
+              port: 11000 + i,
+              hosts: [ipAddress + ':11001', ipAddress + ':11002', ipAddress + ':11003'],
 
-            // -swim-configs-
-            joinTimeout: 500,
-            probeInterval: 200,
-            probeTimeout: 20,
-            probeReqTimeout: 60
+              // -swim-configs-
+              joinTimeout: 400,
+              pingInterval: 200,
+              pingTimeout: 20,
+              pingReqTimeout: 60
+            }
           }
         }
       };
@@ -94,7 +94,7 @@ describe(filename, function() {
     setTimeout(function() {
 
       _this.servers.forEach(function(server) {
-        var size = Object.keys(server.membership.members).length;
+        var size = Object.keys(server.services.membership.members).length;
         if (size != clusterSize - 1) {
           console.log('-->', size);
         } else {

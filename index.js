@@ -1,1 +1,1 @@
-module.exports = require('./lib/happn-cluster');
+module.exports = require('./lib/cluster');
