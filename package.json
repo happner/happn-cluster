@@ -38,7 +38,7 @@
   "dependencies": {
     "bluebird": "^3.4.6",
     "dface": "^1.0.0",
-    "happn": "^2.15.3",
-    "happn-swim": "^1.0.1"
+    "happn": "happner/happn#cluster-support",
+    "happn-swim": "^1.0.2"
   }
 }
