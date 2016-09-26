@@ -39,7 +39,8 @@
     "bluebird": "^3.4.6",
     "dface": "^1.0.0",
     "happn": "happner/happn#cluster-support",
-    "happn-swim": "^1.0.2",
+    "happn-swim": "^1.0.3",
+    "sillyname": "^0.1.0"
     "http-proxy":"^1.15.1"
   }
 }
