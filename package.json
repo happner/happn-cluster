@@ -42,5 +42,6 @@
     "happn": "happner/happn#cluster-support",
     "happn-swim": "^1.0.3",
     "sillyname": "^0.1.0"
+    "http-proxy":"^1.15.1"
   }
 }
