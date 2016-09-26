@@ -29,6 +29,13 @@ var config = {
       }
     },
     
+    // orchestrator sub-config (defaults displayed)
+    orchestrator: {
+      config: {
+        replicate: ['/*']
+      }
+    },
+    
     // membership sub-config (defaults displayed)
     membership: {
       config: {
@@ -49,13 +56,7 @@ var config = {
         }
         disseminationFactor: 15
       }
-    },
-    
-    // orchestrator sub-config (defaults displayed)
-    orchestrator: {
-      config: {
-      }
-    } 
+    }
   }
 }
 
@@ -67,6 +68,12 @@ HappnCluster.create(config)
     process.exit(1);
   });
 ```
+
+## Orchestrator Sub-Config
+
+#### config.replicate
+
+Array of happn paths or path masks that will be replicated throughout the cluster.
 
 ## Membership Sub-Config
 
