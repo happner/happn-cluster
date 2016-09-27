@@ -44,19 +44,18 @@ describe(filename, function () {
 
     var proxy = new Proxy();
 
-    proxy.initialize(self.__config, function (err, result) {
-      if (err)
-        return done(err);
-
-      proxy.stop(function (err) {
-        if (err)
-          return done(err);
-
+    proxy.initialize(self.__config)
+      .then(function (result) {
+        proxy.stop();
+        return result;
+      })
+      .then(function (result) {
         assert.notEqual(result, null);
-
         return done();
-      });
-    });
+      })
+      .catch(function (err) {
+        return done(err);
+      })
   });
 
   it('can start and stop the proxy', function (done) {
@@ -64,24 +63,22 @@ describe(filename, function () {
     var self = this;
     var proxy = new Proxy();
 
-    proxy.initialize(self.__config, function (err, result) {
-      if (err)
+    proxy.initialize(self.__config)
+      .then(function (result) {
+        proxy.start();
+        return result;
+      })
+      .then(function (result) {
+        proxy.stop();
+        return result;
+      })
+      .then(function (result) {
+        assert.notEqual(result, null);
+        return done();
+      })
+      .catch(function (err) {
         return done(err);
-
-      proxy.start(function (err, result) {
-        if (err)
-          return done(err);
-
-        proxy.stop(function (err) {
-          if (err)
-            return done(err);
-
-          assert.notEqual(result, null);
-
-          return done();
-        });
       });
-    });
   });
 
   it('can proxy an http server', function (done) {
@@ -102,15 +99,11 @@ describe(filename, function () {
     // the proxied server is set up as the target in happn (the mock in this case)
     proxiedServer.listen(proxy.happn.server.address().port);
 
-    // set up proxy
-    proxy.initialize(self.__config, function (err, result) {
-      if (err)
-        return done(err);
-
-      proxy.start(function (err, result) {
-        if (err)
-          return done(err);
-
+    proxy.initialize(self.__config)
+      .then(function () {
+        return proxy.start();
+      })
+      .then(function () {
         // send GET request to proxy - this should pass the request to the target
         http.request({port: self.__config.listenPort, host: self.__config.listenHost}, function (res) {
 
@@ -121,19 +114,20 @@ describe(filename, function () {
             });
 
             res.on('end', function () {
-              proxy.stop(function (err) {
-                if (err)
-                  return done(err);
+              assert.equal(result, EXPECTED);
 
-                assert.equal(result, EXPECTED);
+              proxy.stop()
+                .then(function () {
+                  return done();
+                });
+            });
 
-                return done();
-              });
-            })
           })
           .end();
+      })
+      .catch(function (err) {
+        return done(err);
       });
-    });
   });
 });
 
