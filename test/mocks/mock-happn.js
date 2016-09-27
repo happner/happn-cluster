@@ -4,8 +4,9 @@
 
 var path = require('path');
 
-var MockHappn = function (mode) {
-  this.__mode = 'mode';
+var MockHappn = function (mode, targetPort) {
+  this.__mode = mode;
+  this.__targetPort = targetPort;
 };
 
 Object.defineProperty(MockHappn.prototype, "log", {
@@ -22,11 +23,30 @@ Object.defineProperty(MockHappn.prototype, "log", {
   }
 });
 
+Object.defineProperty(MockHappn.prototype, "port", {
+  get: function () {
+    return this.__targetPort
+  }
+});
+
 Object.defineProperty(MockHappn.prototype, "config", {
   get: function () {
     return {
       transport: {
         mode: this.__mode
+      }
+    }
+  }
+});
+
+Object.defineProperty(MockHappn.prototype, "services", {
+  get: function () {
+    return {
+      proxy: {
+        config: {
+          listenHost: '0.0.0.0',
+          listenPort: 8015
+        }
       }
     }
   }
