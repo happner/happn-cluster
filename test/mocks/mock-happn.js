@@ -23,15 +23,16 @@ Object.defineProperty(MockHappn.prototype, "log", {
   }
 });
 
-Object.defineProperty(MockHappn.prototype, "port", {
-  get: function () {
-    return this.__targetPort
-  }
-});
+//Object.defineProperty(MockHappn.prototype, "port", {
+//  get: function () {
+//    return this.__targetPort
+//  }
+//});
 
 Object.defineProperty(MockHappn.prototype, "config", {
   get: function () {
     return {
+      port: this.__targetPort,
       transport: {
         mode: this.__mode
       }

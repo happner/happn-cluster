@@ -7,6 +7,8 @@ var filename = path.basename(__filename);
 var Promise = require('bluebird');
 var os = require('os');
 var dface = require('dface');
+var http = require('http');
+
 var HappnCluster = require('../');
 var Mongo = require('./lib/mongo');
 
@@ -21,20 +23,21 @@ describe(filename, function () {
   var assert = require('assert');
   this.timeout(20000);
 
-  before('clear collection (before)', function(done) {
+  before('clear Mongo collection', function (done) {
     Mongo.clearCollection(mongoUrl, mongoCollection, done);
   });
 
   before('start cluster', function (done) {
 
     var self = this;
+    self.__configs = [];
 
     var i = 0;
 
     function generateConfig() {
       i++;
 
-      return {
+      var config = {
         port: 55000 + i,
         services: {
           data: {
@@ -42,6 +45,14 @@ describe(filename, function () {
             config: {
               collection: mongoCollection,
               url: mongoUrl
+            }
+          },
+          security: {
+            config: {
+              adminUser: {
+                username: '_ADMIN',
+                password: 'secret'
+              }
             }
           },
           membership: {
@@ -55,7 +66,7 @@ describe(filename, function () {
               hosts: [ipAddress + ':11001', ipAddress + ':11002', ipAddress + ':11003'],
 
               // -swim-configs-
-              joinTimeout: 400,
+              joinTimeout: 800,
               pingInterval: 200,
               pingTimeout: 20,
               pingReqTimeout: 60
@@ -68,7 +79,11 @@ describe(filename, function () {
             }
           }
         }
+
       };
+
+      self.__configs.push(config);
+      return config;
     }
 
     Promise.resolve(new Array(clusterSize)).map(function () {
@@ -79,22 +94,71 @@ describe(filename, function () {
       })
       .then(done)
       .catch(done);
-
   });
 
-  it('can proxy a request to each server', function (done) {
+  it('can create a happn client and send a get request via each proxy instance', function (done) {
 
     var self = this;
 
-    setTimeout(function() {
+    setTimeout(function () {
 
-      self.servers.forEach(function(server) {
-        // TODO: fire off a request to each proxy and check that a response is returned from the proxied server
+      var currentConfig = 0;
+
+      self.__configs.forEach(function (config) {
+
+        var port = config.services.proxy.config.listenPort;
+        var host = config.services.proxy.config.listenHost;
+
+        console.log('### Sending request to -> ' + host + ':' + port);
+
+        // create happn client instance and log in
+        createClientInstance(host, port, function (err, instance) {
+
+          if (err)
+            return done(err);
+
+          // send get request for wildcard resources in root
+          instance.get('/*', null, function (e, results) {
+
+            if (e)
+              return done(e);
+
+            instance.disconnect();
+            currentConfig++;
+
+            if (currentConfig == self.__configs.length) // we have iterated through all proxy instances
+              done();
+          });
+        });
       });
-      done();
-
     }, 3000);
-
   });
+
+  after('stop cluster', function (done) {
+
+    if (!this.servers)
+      return done();
+
+    Promise.resolve(this.servers).map(function (server) {
+        return server.stop();
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
+  });
+
+  function createClientInstance(host, port, callback) {
+
+    (require('happn')).client.create({
+      config: {
+        secure: true,
+        host: host,
+        port: port,
+        //username: '_ADMIN',
+        //password: 'secret'
+      }
+    }, callback)
+  }
 
 });

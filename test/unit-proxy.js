@@ -52,11 +52,13 @@ describe(filename, function () {
 
       proxy.start()
         .then(function (result) {
-          proxy.stop()
-            .then(function () {
-              assert.notEqual(result, null);
-              return done();
-            })
+          proxy.stop(null, function (err) {
+            if (err)
+              callback(err);
+
+            assert.notEqual(result, null);
+            return done();
+          })
         })
         .catch(function (err) {
           return done(err);
@@ -72,7 +74,7 @@ describe(filename, function () {
     var proxyHost = proxy.happn.services.proxy.config.listenHost;
     var proxyPort = proxy.happn.services.proxy.config.listenPort;
     var targetHost = proxy.happn.server.address().host;
-    var targetPort = proxy.happn.port;
+    var targetPort = proxy.happn.config.port;
 
     const EXPECTED = 'request successfully proxied!';
 
@@ -108,10 +110,12 @@ describe(filename, function () {
                 console.log(result);
                 assert.equal(result, EXPECTED);
 
-                proxy.stop()
-                  .then(function () {
-                    return done();
-                  });
+                proxy.stop(null, function (err) {
+                  if (err)
+                    return done(err);
+
+                  return done();
+                })
               });
 
             })
