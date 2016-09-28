@@ -109,19 +109,21 @@ describe(filename, function () {
         var port = config.services.proxy.config.listenPort;
         var host = config.services.proxy.config.listenHost;
 
-        console.log('### Sending request to -> ' + host + ':' + port);
-
         // create happn client instance and log in
         createClientInstance(host, port, function (err, instance) {
 
           if (err)
             return done(err);
 
+          console.log('### Sending request to -> ' + host + ':' + port);
+
           // send get request for wildcard resources in root
           instance.get('/*', null, function (e, results) {
 
             if (e)
               return done(e);
+
+            console.log('### Response received from proxied cluster node: ' + JSON.stringify(results));
 
             instance.disconnect();
             currentConfig++;
@@ -158,7 +160,12 @@ describe(filename, function () {
         //username: '_ADMIN',
         //password: 'secret'
       }
-    }, callback)
+    }, function (err, response) {
+      if (err)
+        return callback(err);
+
+      callback(null, response);
+    })
   }
 
 });
