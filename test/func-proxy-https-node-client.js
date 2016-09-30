@@ -11,6 +11,7 @@ var http = require('http');
 
 var HappnCluster = require('../');
 var Mongo = require('./lib/mongo');
+var certUtil = require('./lib/cert-utils');
 
 var clusterSize = 10;
 var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
@@ -18,9 +19,9 @@ var mongoCollection = 'happn-cluster-test';
 var device = os.platform() == 'linux' ? 'eth0' : 'en0';
 var ipAddress = dface(device);
 
-var keyRoot = 'test/keys';
-var certPath = keyRoot + '/test_cert.pem';
-var keyPath = keyRoot + '/test_key.rsa';
+var certDir = 'test/keys/';
+var certName = 'test_cert.pem';
+var keyName = 'test_key.rsa';
 
 describe(filename, function () {
 
@@ -49,8 +50,8 @@ describe(filename, function () {
         port: 55000 + i,
         transport: {
           mode: 'https',
-          certPath: certPath,
-          keyPath: keyPath
+          certPath: certDir + certName,
+          keyPath: certDir + keyName
         },
         services: {
           data: {
@@ -100,7 +101,7 @@ describe(filename, function () {
       return config;
     }
 
-    generateKeyPair(function (err) {
+    certUtil.generateCertificate(certDir, keyName, certName, function (err) {
 
       if (err)
         return done(err);
@@ -190,27 +191,4 @@ describe(filename, function () {
     })
   }
 
-  function generateKeyPair(callback) {
-
-    var pem = require('pem');
-
-    pem.createCertificate({selfSigned: true}, function (err, keys) {
-
-      if (err)
-        callback(err);
-
-      var fs = require('fs');
-
-      fs.exists(keyRoot, function (exists) {
-
-        if (!exists)
-          fs.mkdir(keyRoot);
-
-        fs.writeFileSync(keyPath, keys.serviceKey);
-        fs.writeFileSync(certPath, keys.certificate);
-
-        callback();
-      });
-    });
-  }
 });
