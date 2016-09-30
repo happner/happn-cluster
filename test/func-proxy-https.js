@@ -88,7 +88,8 @@ describe(filename, function () {
           proxy: {
             config: {
               listenHost: '0.0.0.0',
-              listenPort: 8015 + i
+              listenPort: 8015 + i,
+              allowSelfSignedCerts: true
             }
           }
         }
