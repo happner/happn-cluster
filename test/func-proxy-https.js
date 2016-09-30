@@ -18,6 +18,10 @@ var mongoCollection = 'happn-cluster-test';
 var device = os.platform() == 'linux' ? 'eth0' : 'en0';
 var ipAddress = dface(device);
 
+var keyRoot = 'test/keys';
+var certPath = keyRoot + '/test_cert.pem';
+var keyPath = keyRoot + '/test_key.rsa';
+
 describe(filename, function () {
 
   var assert = require('assert');
@@ -28,6 +32,8 @@ describe(filename, function () {
   });
 
   before('start cluster', function (done) {
+
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
     var self = this;
     self.__configs = [];
@@ -43,8 +49,8 @@ describe(filename, function () {
         port: 55000 + i,
         transport: {
           mode: 'https',
-          certPath: 'test_cert.pem',
-          keyPath: 'test_key.rsa'
+          certPath: certPath,
+          keyPath: keyPath
         },
         services: {
           data: {
@@ -93,9 +99,9 @@ describe(filename, function () {
       return config;
     }
 
-    generateKeyPair(function (err, result) {
+    generateKeyPair(function (err) {
 
-      if(err)
+      if (err)
         return done(err);
 
       Promise.resolve(new Array(clusterSize)).map(function () {
@@ -170,7 +176,7 @@ describe(filename, function () {
         secure: true,
         host: host,
         port: port,
-        protocol: 'https',
+        protocol: 'http',
         allowSelfSignedCerts: true,
         username: '_ADMIN',
         password: 'secret'
@@ -187,32 +193,23 @@ describe(filename, function () {
 
     var pem = require('pem');
 
-    pem.createCertificate({days: 1, selfSigned: true}, function (err, keys) {
+    pem.createCertificate({selfSigned: true}, function (err, keys) {
 
       if (err)
         callback(err);
 
-      var cert = keys.certificate;
-      var serviceKey = keys.serviceKey;
-
       var fs = require('fs');
-      var keyPath = __dirname + '/keys';
 
-      //fs.exists(keyPath, function (exists) {
-      //
-      //  if (!exists)
-      //    fs.mkdir(keyPath);
-      //
-      //  fs.writeFile(keyPath + '/test_cert.pem', cert, 'utf8');
-      //  fs.writeFile(keyPath + '/test_key.rsa', serviceKey, 'utf8');
-      //
-      //  callback();
-      //});
+      fs.exists(keyRoot, function (exists) {
 
-      fs.writeFile('test_cert.pem', cert, 'utf8');
-      fs.writeFile('test_key.rsa', serviceKey, 'utf8');
+        if (!exists)
+          fs.mkdir(keyRoot);
 
-      callback();
+        fs.writeFileSync(keyPath, keys.serviceKey);
+        fs.writeFileSync(certPath, keys.certificate);
+
+        callback();
+      });
     });
   }
 });
