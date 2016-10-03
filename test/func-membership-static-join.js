@@ -47,8 +47,8 @@ describe(filename, function() {
               seedWait: 500,
               joinType: 'static',
               host: device,
-              port: 11000 + i,
-              hosts: [ipAddress + ':11001', ipAddress + ':11002', ipAddress + ':11003'],
+              port: 56000 + i,
+              hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
 
               // -swim-configs-
               joinTimeout: 400,
