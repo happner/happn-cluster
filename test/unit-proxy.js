@@ -5,6 +5,7 @@
 var path = require('path');
 var filename = path.basename(__filename);
 var Proxy = require('../lib/proxy');
+var MockHappn = require('./mocks/mock-happn');
 
 describe(filename, function () {
 
@@ -14,78 +15,66 @@ describe(filename, function () {
 
   before('sets up configuration', function (done) {
 
-    /*
-     protocol: 'ws','tcp','http','https'
-     targetHost: '127.0.0.1'
-     targetPort:'9000'
-     listenPort:'8015'
-     secure:'true','false'
-     key:'asdasd' (only interrogated if secure:true)
-     cert:'asdadsasd' (only interrogated if secure:true)
-     */
-
     this.__config = {
-      protocol: 'http',
-      targetHost: '127.0.0.1',
-      targetPort: '9000',
-      listenHost: '127.0.0.1',
-      listenPort: '8015',
-      secure: 'false'
+      listenHost: '0.0.0.0',
+      listenPort: 8015
     };
+
+    Object.defineProperty(Proxy.prototype, "happn", {
+      get: function () {
+        return new MockHappn('http', 9000);
+      }
+    });
 
     done();
   });
 
   it('can initialize the proxy', function (done) {
 
-    var self = this;
     var proxy = new Proxy();
 
-    proxy.initialize(self.__config, function (err, result) {
+    proxy.initialize(this.__config, function (err, result) {
       if (err)
-        return done(err);
+        return callback(err);
 
-      proxy.stop(function (err) {
-        if (err)
-          return done(err);
-
-        assert.notEqual(result, null);
-
-        return done();
-      });
-    });
+      assert.notEqual(result, null);
+      return done();
+    })
   });
 
   it('can start and stop the proxy', function (done) {
 
-    var self = this;
     var proxy = new Proxy();
 
-    proxy.initialize(self.__config, function (err, result) {
+    proxy.initialize(this.__config, function (err, result) {
       if (err)
-        return done(err);
+        return callback(err);
 
-      proxy.start(function (err, result) {
-        if (err)
+      proxy.start()
+        .then(function (result) {
+          proxy.stop(null, function (err) {
+            if (err)
+              callback(err);
+
+            assert.notEqual(result, null);
+            return done();
+          })
+        })
+        .catch(function (err) {
           return done(err);
-
-        proxy.stop(function (err) {
-          if (err)
-            return done(err);
-
-          assert.notEqual(result, null);
-
-          return done();
-        });
-      });
+        })
     });
   });
 
   it('can proxy an http server', function (done) {
 
-    var self = this;
     var proxy = new Proxy();
     var http = require('http');
+
+    var proxyHost = proxy.happn.services.proxy.config.listenHost;
+    var proxyPort = proxy.happn.services.proxy.config.listenPort;
+    var targetHost = proxy.happn.server.address().host;
+    var targetPort = proxy.happn.config.port;
 
     const EXPECTED = 'request successfully proxied!';
 
@@ -96,40 +85,46 @@ describe(filename, function () {
       res.end();
     });
 
-    proxiedServer.listen(self.__config.targetPort);
+    // the proxied server is set up as the target in happn (the mock in this case)
+    console.log('Target port: ' + targetPort);
+    proxiedServer.listen(targetPort);
 
-    // set up proxy
-    proxy.initialize(self.__config, function (err, result) {
+
+    proxy.initialize(this.__config, function (err, result) {
       if (err)
-        return done(err);
+        return callback(err);
 
-      proxy.start(function (err, result) {
-        if (err)
+      proxy.start()
+        .then(function () {
+
+          // send GET request to proxy - this should pass the request to the target
+          http.request({port: proxyPort, host: proxyHost}, function (res) {
+
+              var result = '';
+
+              res.on('data', function (chunk) {
+                result += chunk;
+              });
+
+              res.on('end', function () {
+                console.log(result);
+                assert.equal(result, EXPECTED);
+
+                proxy.stop(null, function (err) {
+                  if (err)
+                    return done(err);
+
+                  return done();
+                })
+              });
+
+            })
+            .end();
+        })
+        .catch(function (err) {
           return done(err);
-
-        // send GET request to proxy - this should pass the request to the target
-        http.request({port: self.__config.listenPort, host: self.__config.listenHost}, function (res) {
-
-          var result = '';
-
-          res.on('data', function (chunk) {
-            result += chunk;
-          });
-
-          res.on('end', function () {
-            proxy.stop(function (err) {
-              if (err)
-                return done(err);
-
-              assert.equal(result, EXPECTED);
-
-              return done();
-            });
-          })
-        }).end();
-      });
+        })
     });
   });
-
 });
 

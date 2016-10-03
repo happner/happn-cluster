@@ -16,6 +16,8 @@ var ipAddress = dface(device);
 
 describe(filename, function() {
 
+  this.timeout(30000);
+
   benchmarket.start();
 
   before('clear collection (before)', function(done) {
@@ -53,6 +55,12 @@ describe(filename, function() {
               pingInterval: 200,
               pingTimeout: 20,
               pingReqTimeout: 60
+            }
+          },
+          proxy: {
+            config: {
+              listenHost: '0.0.0.0',
+              listenPort: 8015 + i
             }
           }
         }
