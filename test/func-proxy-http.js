@@ -7,10 +7,10 @@ var filename = path.basename(__filename);
 var Promise = require('bluebird');
 var os = require('os');
 var dface = require('dface');
-var http = require('http');
 
 var HappnCluster = require('../');
 var Mongo = require('./lib/mongo');
+var testUtil = require('./lib/test-utils');
 
 var clusterSize = 10;
 var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
@@ -110,7 +110,7 @@ describe(filename, function () {
         var host = config.services.proxy.config.listenHost;
 
         // create happn client instance and log in
-        createClientInstance(host, port, function (err, instance) {
+        testUtil.createClientInstance(host, port, function (err, instance) {
 
           if (err)
             return done(err);
@@ -149,21 +149,5 @@ describe(filename, function () {
       })
       .catch(done);
   });
-
-  function createClientInstance(host, port, callback) {
-
-    (require('happn')).client.create({
-      config: {
-        secure: true,
-        host: host,
-        port: port
-      }
-    }, function (err, response) {
-      if (err)
-        return callback(err);
-
-      callback(null, response);
-    })
-  }
 
 });
