@@ -126,14 +126,9 @@ describe(filename, function () {
     setTimeout(function () {
 
       /* EXPECTED PROCESS:
-       1. Initiate a data SET event on Member 1, via a Node Client
-       2. Member 1's back-channel Client propagates event to Member 2
-       3. Member 2 picks up the event
-       4. The event is propagated to Member 2's Browser Client
-       5. Member 2 DOES NOT propagate the event back to Member 1
+         publisher client → publisher member → publisher backchannel client
+         listener client ← listener member ← listener back channel client ↵
        */
-
-      // publisher client -> publisher member -> publisher backchannel client -> listener backchannel client -> listener member -> listener client
 
       var member1Port = self.__configs[0].services.proxy.config.listenPort;
       var member1Host = self.__configs[0].services.proxy.config.listenHost;
@@ -155,17 +150,18 @@ describe(filename, function () {
             return done(err);
 
           listenerClient.on(testPath + '/*', {event_type: 'set', count: 1}, function (result2, meta) {
-            console.log('DATA RECEIVED BY LISTENER CLIENT!!! ' + JSON.stringify(result2));
-            //instance2.disconnect();
+
+            console.log('### data received by listener client: ' + JSON.stringify(result2));
             assert(result2.indexOf(testPath) > -1);
             return done();
+
           }, function (e) {
-            console.log('### SENDING DATA FROM PUBLISHER CLIENT TO: ' + member1Host + ':' + member1Port);
+
+            console.log('### setting data from publisher client: ' + member1Host + ':' + member1Port);
 
             publisherClient.set(testPath + '/test1', testData, null)
               .then(function (result) {
-                console.log('### CONFIRMATION FROM CLUSTER NODE: ' + JSON.stringify(result));
-                console.log('### WAITING FOR EVENT PROPAGATION TO LISTENER...')
+                console.log('### waiting for event propagation to listener...')
               })
               .catch(function (err) {
                 return done(err);
