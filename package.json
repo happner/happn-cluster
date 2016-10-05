@@ -34,7 +34,7 @@
     "mocha": "^3.0.2",
     "mongodb": "^2.2.10",
     "should": "^11.1.0",
-    "pem":"^1.8.3"
+    "pem": "^1.8.3"
   },
   "dependencies": {
     "bluebird": "^3.4.6",
@@ -42,7 +42,7 @@
     "dface": "^1.0.0",
     "happn": "happner/happn#cluster-support",
     "happn-swim": "^1.0.3",
-    "http-proxy":"^1.15.1",
+    "http-proxy": "^1.15.1",
     "sillyname": "^0.1.0"
   }
 }
