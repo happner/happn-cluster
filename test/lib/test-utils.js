@@ -49,25 +49,18 @@ module.exports.createBrowserClientInstance = function (host, port, callback) {
 
       response.on('end', function () {
 
-        fs.exists(tempDir, function (exists) {
+        // now write the client to a local file and export as a module
+        fs.writeFileSync(tempDir + browserClientName, body);
+        module.exports = fs.readFileSync(tempDir + browserClientName);
 
-          if (!exists)
-            fs.mkdir(tempDir);
-
-          // now write the client to a local file and export as a module
-          fs.writeFileSync(tempDir + browserClientName, body);
-          module.exports = fs.readFileSync(tempDir + browserClientName);
-          clientDownloaded = true;
-
-          cb();
-        });
+        cb();
       });
     });
   };
 
   var createClient = function (cb2) {
 
-    var HappnClient = require('./temp/' + browserClientName);
+    var HappnClient = require('../temp/' + browserClientName);
 
     HappnClient.create({
       config: {
@@ -83,11 +76,12 @@ module.exports.createBrowserClientInstance = function (host, port, callback) {
     })
   };
 
-  var clientDownloaded = false;
-
   fs.exists(tempDir + browserClientName, function (exists) {
 
-    if (exists) {
+    if (!exists) {
+
+      fs.mkdir(tempDir);
+
       download(function (err) {
         if (err)
           return callback(err);

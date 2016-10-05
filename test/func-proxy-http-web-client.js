@@ -113,7 +113,7 @@ describe(filename, function () {
         var host = config.services.proxy.config.listenHost;
 
         // create happn client instance and log in
-        testUtil.createClientInstance(host, port, function (err, instance) {
+        testUtil.createBrowserClientInstance(host, port, function (err, instance) {
 
           if (err)
             return done(err);
