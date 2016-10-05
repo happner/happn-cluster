@@ -7,11 +7,10 @@ var filename = path.basename(__filename);
 var Promise = require('bluebird');
 var os = require('os');
 var dface = require('dface');
-var http = require('http');
-var https = require('https');
 
 var HappnCluster = require('../');
 var Mongo = require('./lib/mongo');
+var testUtil = require('./lib/test-utils');
 
 var clusterSize = 10;
 var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
@@ -23,10 +22,6 @@ describe(filename, function () {
 
   var assert = require('assert');
   this.timeout(20000);
-
-  var clientDownloaded = false;
-  var tempDir = 'test/temp/';
-  var browserClientName = 'browser-client.js';
 
   before('clear Mongo collection', function (done) {
     Mongo.clearCollection(mongoUrl, mongoCollection, done);
@@ -118,7 +113,7 @@ describe(filename, function () {
         var host = config.services.proxy.config.listenHost;
 
         // create happn client instance and log in
-        createClientInstance(host, port, function (err, instance) {
+        testUtil.createClientInstance(host, port, function (err, instance) {
 
           if (err)
             return done(err);
@@ -158,69 +153,4 @@ describe(filename, function () {
       .catch(done);
   });
 
-  function createClientInstance(host, port, callback) {
-
-    var fs = require('fs');
-
-    var download = function (cb) {
-
-      // get the browser client via HTTP GET
-      http.get({hostname: host, port: port, path: '/browser_client'}, function (response) {
-
-        var body = '';
-
-        response.on('error', function (e) {
-          cb(e);
-        });
-
-        response.on('data', function (d) {
-          body += d;
-        });
-
-        response.on('end', function () {
-
-          fs.exists(tempDir, function (exists) {
-
-            if (!exists)
-              fs.mkdir(tempDir);
-
-            // now write the client to a local file and export as a module
-            fs.writeFileSync(tempDir + browserClientName, body);
-            module.exports = fs.readFileSync(tempDir + browserClientName);
-            clientDownloaded = true;
-
-            cb();
-          });
-        });
-      });
-    };
-
-    var createClient = function (cb2) {
-
-      var HappnClient = require('./temp/' + browserClientName);
-
-      HappnClient.create({
-        config: {
-          secure: true,
-          host: host,
-          port: port
-        }
-      }, function (err, response) {
-        if (err)
-          return cb2(err);
-
-        cb2(null, response);
-      })
-    };
-
-    if (!clientDownloaded) {
-      download(function (err) {
-        if (err)
-          return callback(err);
-
-        createClient(callback);
-      });
-    } else
-      createClient(callback);
-  }
 });
