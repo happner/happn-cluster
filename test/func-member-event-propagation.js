@@ -152,6 +152,7 @@ describe(filename, function () {
           listenerClient.on(testPath + '/*', {event_type: 'set', count: 1}, function (result2, meta) {
 
             console.log('### data received by listener client: ' + JSON.stringify(result2));
+
             assert(result2.indexOf(testPath) > -1);
             return done();
 
