@@ -5,6 +5,113 @@
 var http = require('http');
 var https = require('https');
 
+module.exports.createMemberConfigs = function (memberCount, isSecure, mongoUrl, mongoCollection, callback) {
+
+  var os = require('os');
+  var dface = require('dface');
+  var device = os.platform() == 'linux' ? 'eth0' : 'en0'; // windows?
+  var ipAddress = dface(device);
+  var fs = require('fs');
+
+  var transport = null;
+
+  var generateConfigs = function () {
+
+    var configs = [];
+    var i = 0;
+
+    while (i < memberCount) {
+
+      i++;
+
+      var config = {
+        port: 55000 + i,
+        transport: transport,
+        services: {
+          data: {
+            path: 'happn-service-mongo',
+            config: {
+              collection: mongoCollection,
+              url: mongoUrl
+            }
+          }
+          ,
+          security: {
+            config: {
+              adminUser: {
+                username: '_ADMIN',
+                password: 'secret'
+              }
+            }
+          }
+          ,
+          membership: {
+            config: {
+              clusterName: 'cluster1',
+              seed: i == 1,
+              seedWait: 500,
+              joinType: 'static',
+              host: device,
+              port: 56000 + i,
+              hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
+
+              // -swim-configs-
+              joinTimeout: 800,
+              pingInterval: 200,
+              pingTimeout: 20,
+              pingReqTimeout: 60
+            }
+          }
+          ,
+          proxy: {
+            config: {
+              listenHost: '0.0.0.0',
+              listenPort: 8015 + i,
+              allowSelfSignedCerts: true
+            }
+          }
+        }
+      };
+
+      configs.push(config);
+    }
+
+    return configs;
+  };
+
+  if (isSecure) {
+    this.__generateCertificate(function (err, result) {
+      if (err)
+        return callback(err);
+
+      transport = {
+        mode: 'https',
+        certPath: result.certDir + result.certName,
+        keyPath: result.certDir + result.keyName
+      };
+
+      callback(null, generateConfigs());
+    });
+  } else {
+    callback(null, generateConfigs());
+  }
+};
+
+module.exports.__generateCertificate = function (callback) {
+
+  var certUtil = require('../lib/cert-utils');
+  var certDir = 'test/keys/';
+  var certName = 'test_cert.pem';
+  var keyName = 'test_key.rsa';
+
+  certUtil.generateCertificate(certDir, keyName, certName, function (err) {
+    if (err)
+      return callback(err);
+
+    callback(null, {certDir: certDir, certName: certName, keyName: keyName});
+  });
+};
+
 module.exports.createClientInstance = function (host, port, callback) {
 
   (require('happn')).client.create({

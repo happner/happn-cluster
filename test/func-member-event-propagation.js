@@ -163,6 +163,7 @@ describe(filename, function () {
             publisherClient.set(testPath + '/test1', testData, null)
               .then(function (result) {
                 console.log('### waiting for event propagation to listener...')
+                done();
               })
               .catch(function (err) {
                 return done(err);
