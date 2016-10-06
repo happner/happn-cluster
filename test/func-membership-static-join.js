@@ -2,106 +2,70 @@ var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var Promise = require('bluebird');
-var os = require('os');
-var dface = require('dface');
+
+var testUtil = require('./lib/test-utils');
 
 var HappnCluster = require('../');
-var Mongo = require('./lib/mongo');
 
 var clusterSize = 10; // increasing this may require increasing -swim-configs-
-var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
-var mongoCollection = 'happn-cluster-test';
-var device = os.platform() == 'linux' ? 'eth0' : 'en0'; // windows?
-var ipAddress = dface(device);
 
-describe(filename, function() {
+describe(filename, function () {
 
   this.timeout(30000);
 
   benchmarket.start();
 
-  before('clear collection (before)', function(done) {
-    Mongo.clearCollection(mongoUrl, mongoCollection, done);
+  before('clear collection (before)', function (done) {
+    testUtil.clearMongoCollection(done);
   });
 
-  before('start cluster', function(done) {
-    var _this = this;
+  before('start cluster', function (done) {
 
-    var i = 0;
-    function generateConfig() {
-      i++;
-      var config = {
-        port: 55000 + i,
-        services: {
-          data: {
-            path: 'happn-service-mongo',
-            config: {
-              collection: mongoCollection,
-              url: mongoUrl
-            }
-          },
-          membership: {
-            config: {
-              clusterName: 'cluster1',
-              seed: i == 1,
-              seedWait: 500,
-              joinType: 'static',
-              host: device,
-              port: 56000 + i,
-              hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
+    var self = this;
 
-              // -swim-configs-
-              joinTimeout: 400,
-              pingInterval: 200,
-              pingTimeout: 20,
-              pingReqTimeout: 60
-            }
-          },
-          proxy: {
-            config: {
-              listenHost: '0.0.0.0',
-              listenPort: 8015 + i
-            }
-          }
-        }
-      };
-      return config;
-    }
+    testUtil.createMemberConfigs(clusterSize, false, function (err, result) {
 
-    Promise.resolve(new Array(clusterSize)).map(function() {
-      return HappnCluster.create(generateConfig())
-    })
-      .then(function(servers) {
-        _this.servers = servers;
-      })
-      .then(done)
-      .catch(done);
+      if (err)
+        return done(err);
+
+      self.__configs = result;
+
+      Promise.resolve(self.__configs).map(function (element) {
+          return HappnCluster.create(element)
+        })
+        .then(function (servers) {
+          self.servers = servers;
+        })
+        .then(done)
+        .catch(done)
+    });
   });
 
 
-  after('stop cluster', function(done) {
+  after('stop cluster', function (done) {
+
     if (!this.servers) return done();
-    Promise.resolve(this.servers).map(function(server){
-      return server.stop();
-    })
-      .then(function() {
-        done();
+    Promise.resolve(this.servers).map(function (server) {
+        return server.stop();
+      })
+      .then(function () {
+        done()
       })
       .catch(done);
   });
 
-
-  after('clear collection (after)', function(done) {
-    Mongo.clearCollection(mongoUrl, mongoCollection, done);
+  after('clear collection (after)', function (done) {
+    testUtil.clearMongoCollection(done);
   });
 
-  it('test', function(done) {
-    this.timeout(3500);
-    var _this = this;
+  it('test', function (done) {
+    var self = this;
 
-    setTimeout(function() {
+    self.timeout(3500);
 
-      _this.servers.forEach(function(server) {
+    setTimeout(function () {
+
+      self.servers.forEach(function (server) {
         var size = Object.keys(server.services.membership.members).length;
         if (size != clusterSize - 1) {
           console.log('-->', size);
@@ -112,8 +76,6 @@ describe(filename, function() {
       done();
 
     }, 3000);
-
-
   });
 
   after(benchmarket.store());

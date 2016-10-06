@@ -7,12 +7,9 @@ var filename = path.basename(__filename);
 var Promise = require('bluebird');
 
 var HappnCluster = require('../');
-var Mongo = require('./lib/mongo');
-var testUtil = require('./lib/test-utils');
 
+var testUtil = require('./lib/test-utils');
 var clusterSize = 10;
-var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
-var mongoCollection = 'happn-cluster-test';
 
 describe(filename, function () {
 
@@ -20,7 +17,7 @@ describe(filename, function () {
   this.timeout(20000);
 
   before('clear Mongo collection', function (done) {
-    Mongo.clearCollection(mongoUrl, mongoCollection, done);
+    testUtil.clearMongoCollection(done);
   });
 
   before('start cluster', function (done) {
@@ -28,7 +25,7 @@ describe(filename, function () {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
     var self = this;
 
-    testUtil.createMemberConfigs(clusterSize, true, mongoUrl, mongoCollection, function (err, result) {
+    testUtil.createMemberConfigs(clusterSize, true, function (err, result) {
 
       if (err)
         return done(err);

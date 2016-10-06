@@ -5,7 +5,16 @@
 var http = require('http');
 var https = require('https');
 
-module.exports.createMemberConfigs = function (memberCount, isSecure, mongoUrl, mongoCollection, callback) {
+var Mongo = require('../lib/mongo');
+
+var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
+var mongoCollection = 'happn-cluster-test';
+
+module.exports.clearMongoCollection = function(callback){
+  Mongo.clearCollection(mongoUrl, mongoCollection, callback);
+};
+
+module.exports.createMemberConfigs = function (memberCount, isSecure, callback) {
 
   var os = require('os');
   var dface = require('dface');
