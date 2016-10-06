@@ -75,6 +75,12 @@ describe(filename, function () {
     }
   );
 
+  xit('joining member succeeds while simultaneously another member departs',
+    function (done) {
+
+    }
+  );
+
   after('clear collection (after)', function (done) {
     testUtil.clearMongoCollection(done);
   });

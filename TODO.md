@@ -8,3 +8,4 @@
 * prevent happn login with clusterName into other clusterName?
 * hole in stabalize, don't know when the remote has subscribed
 * secure it
+* missing pubsub.on('reconnect')
