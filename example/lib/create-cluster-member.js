@@ -18,7 +18,11 @@ module.exports = function(seq) {
       }, 1000);
 
       process.on('SIGINT', function() {
-        server.stop({kill: true, wait: 2000}, function() {
+        server.stop( /*{kill: true, wait: 2000},*/ function() {
+          // if (seq == 9) {
+          //   console.log('kill', process.pid);
+          //   return;
+          // }
           process.exit(0);
         });
       })
