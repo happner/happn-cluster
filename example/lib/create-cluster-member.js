@@ -12,6 +12,11 @@ module.exports = function(seq) {
   HappnCluster.create(config)
 
     .then(function(server) {
+
+      setTimeout(function() {
+        console.log(server.services.orchestrator.members);
+      }, 1000);
+
       process.on('SIGINT', function() {
         server.stop({kill: true, wait: 2000}, function() {
           process.exit(0);
