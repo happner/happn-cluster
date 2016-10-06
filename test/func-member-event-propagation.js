@@ -6,19 +6,12 @@ var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var Promise = require('bluebird');
-var os = require('os');
-var dface = require('dface');
 
 var HappnCluster = require('../');
-var Mongo = require('./lib/mongo');
+
 var testUtil = require('./lib/test-utils');
 
 var clusterSize = 2;
-
-var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
-var mongoCollection = 'happn-cluster-test';
-var device = os.platform() == 'linux' ? 'eth0' : 'en0'; // windows?
-var ipAddress = dface(device);
 
 describe(filename, function () {
 
@@ -27,79 +20,29 @@ describe(filename, function () {
   benchmarket.start();
 
   before('clear collection (before)', function (done) {
-    Mongo.clearCollection(mongoUrl, mongoCollection, done);
+    testUtil.clearMongoCollection(done);
   });
 
   before('start cluster', function (done) {
 
     var self = this;
-    self.__configs = [];
 
-    var i = 0;
+    testUtil.createMemberConfigs(clusterSize, false, function (err, result) {
 
-    function generateConfig() {
-      i++;
+      if (err)
+        return done(err);
 
-      var fs = require('fs');
+      self.__configs = result;
 
-      var config = {
-        port: 55000 + i,
-        services: {
-          data: {
-            path: 'happn-service-mongo',
-            config: {
-              collection: mongoCollection,
-              url: mongoUrl
-            }
-          },
-          security: {
-            config: {
-              adminUser: {
-                username: '_ADMIN',
-                password: 'secret'
-              }
-            }
-          },
-          membership: {
-            config: {
-              clusterName: 'cluster1',
-              seed: i == 1,
-              seedWait: 500,
-              joinType: 'static',
-              host: device,
-              port: 56000 + i,
-              hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
-
-              // -swim-configs-
-              joinTimeout: 800,
-              pingInterval: 200,
-              pingTimeout: 20,
-              pingReqTimeout: 60
-            }
-          },
-          proxy: {
-            config: {
-              listenHost: '0.0.0.0',
-              listenPort: 8015 + i,
-              allowSelfSignedCerts: true
-            }
-          }
-        }
-
-      };
-
-      self.__configs.push(config);
-      return config;
-    }
-
-    Promise.resolve(new Array(clusterSize)).map(function () {
-        return HappnCluster.create(generateConfig())
-      })
-      .then(function (servers) {
-        self.servers = servers;
-      })
-      .then(done)
-      .catch(done);
+      Promise.resolve(self.__configs).map(function (element) {
+          return HappnCluster.create(element)
+        })
+        .then(function (servers) {
+          self.servers = servers;
+        })
+        .then(done)
+        .catch(done)
+    });
   });
 
 
@@ -116,7 +59,7 @@ describe(filename, function () {
 
 
   after('clear collection (after)', function (done) {
-    Mongo.clearCollection(mongoUrl, mongoCollection, done);
+    testUtil.clearMongoCollection(done);
   });
 
   it('data set event is propagated to cluster members', function (done) {
@@ -162,7 +105,7 @@ describe(filename, function () {
 
             publisherClient.set(testPath + '/test1', testData, null)
               .then(function (result) {
-                console.log('### waiting for event propagation to listener...')
+                console.log('### waiting for event propagation to listener...');
                 done();
               })
               .catch(function (err) {
