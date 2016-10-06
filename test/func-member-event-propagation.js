@@ -2,6 +2,7 @@
  * Created by grant on 2016/10/04.
  */
 
+var assert = require('assert');
 var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
@@ -68,8 +69,8 @@ describe(filename, function () {
     setTimeout(function () {
 
       /* EXPECTED PROCESS:
-         publisher client → publisher member → publisher backchannel client
-         listener client ← listener member ← listener back channel client ↵
+       publisher client → publisher member → publisher backchannel client
+       listener client ← listener member ← listener back channel client ↵
        */
 
       var member1Port = self.__configs[0].services.proxy.config.listenPort;
@@ -94,9 +95,7 @@ describe(filename, function () {
           listenerClient.on(testPath + '/*', {event_type: 'set', count: 1}, function (result2, meta) {
 
             console.log('### data received by listener client: ' + JSON.stringify(result2));
-
-            assert(result2.indexOf(testPath) > -1);
-            return done();
+            assert(meta.path.indexOf(testPath) > -1);
 
           }, function (e) {
 
@@ -105,7 +104,6 @@ describe(filename, function () {
             publisherClient.set(testPath + '/test1', testData, null)
               .then(function (result) {
                 console.log('### waiting for event propagation to listener...');
-                done();
               })
               .catch(function (err) {
                 return done(err);
