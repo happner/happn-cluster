@@ -73,6 +73,8 @@ describe(filename, function () {
        listener client ← listener member ← listener back channel client ↵
        */
 
+      var expectedEventOrigin = self.__configs[0].services.membership.config.clusterName;
+
       var member1Port = self.__configs[0].services.proxy.config.listenPort;
       var member1Host = self.__configs[0].services.proxy.config.listenHost;
 
@@ -94,8 +96,11 @@ describe(filename, function () {
 
           listenerClient.on(testPath + '/*', {event_type: 'set', count: 1}, function (result2, meta) {
 
-            console.log('### data received by listener client: ' + JSON.stringify(result2));
             assert(meta.path.indexOf(testPath) > -1);
+            assert(meta.eventOrigin != null);
+            assert(meta.eventOrigin == expectedEventOrigin);
+
+            done();
 
           }, function (e) {
 
