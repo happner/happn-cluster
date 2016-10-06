@@ -6,3 +6,4 @@
 * update member, eg. remote restarted and changed happn port or cluster name (remove)
 * handle returned member not fully departed yet Member.resume()
 * orchestrator subscribes to configurable list of events
+* prevent happn login with clusterName into other clusterName?
