@@ -14,8 +14,9 @@ module.exports = function(seq) {
     .then(function(server) {
 
       setTimeout(function() {
+        console.log();
         console.log(server.services.orchestrator.members);
-      }, 1000);
+      }, 3000);
 
       process.on('SIGINT', function() {
         server.stop( /*{kill: true, wait: 2000},*/ function() {
