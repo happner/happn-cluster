@@ -49,7 +49,7 @@ describe(filename, function () {
         return server.stop();
       })
       .then(function () {
-        done();
+        done()
       })
       .catch(done);
   });

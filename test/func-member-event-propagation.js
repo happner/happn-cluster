@@ -10,7 +10,6 @@ var Promise = require('bluebird');
 var HappnCluster = require('../');
 
 var testUtil = require('./lib/test-utils');
-
 var clusterSize = 2;
 
 describe(filename, function () {

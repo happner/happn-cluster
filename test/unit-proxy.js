@@ -4,7 +4,7 @@
 
 var path = require('path');
 var filename = path.basename(__filename);
-var Proxy = require('../lib/proxy');
+var Proxy = require('../lib/services/proxy');
 var MockHappn = require('./mocks/mock-happn');
 
 describe(filename, function () {
@@ -14,6 +14,18 @@ describe(filename, function () {
   this.timeout(20000);
 
   before('sets up configuration', function (done) {
+
+    this.__mockOpts = {
+      logger: {
+        createLogger: function (name) {
+          return {
+            info: function (info) {
+              console.log(info)
+            }
+          };
+        }
+      }
+    };
 
     this.__config = {
       listenHost: '0.0.0.0',
@@ -31,7 +43,7 @@ describe(filename, function () {
 
   it('can initialize the proxy', function (done) {
 
-    var proxy = new Proxy();
+    var proxy = new Proxy(this.__mockOpts);
 
     proxy.initialize(this.__config, function (err, result) {
       if (err)
@@ -44,7 +56,7 @@ describe(filename, function () {
 
   it('can start and stop the proxy', function (done) {
 
-    var proxy = new Proxy();
+    var proxy = new Proxy(this.__mockOpts);
 
     proxy.initialize(this.__config, function (err, result) {
       if (err)
@@ -68,7 +80,8 @@ describe(filename, function () {
 
   it('can proxy an http server', function (done) {
 
-    var proxy = new Proxy();
+    var proxy = new Proxy(this.__mockOpts);
+
     var http = require('http');
 
     var proxyHost = proxy.happn.services.proxy.config.listenHost;

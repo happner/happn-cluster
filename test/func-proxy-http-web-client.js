@@ -5,18 +5,12 @@
 var path = require('path');
 var filename = path.basename(__filename);
 var Promise = require('bluebird');
-var os = require('os');
-var dface = require('dface');
 
 var HappnCluster = require('../');
-var Mongo = require('./lib/mongo');
+
 var testUtil = require('./lib/test-utils');
 
 var clusterSize = 10;
-var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
-var mongoCollection = 'happn-cluster-test';
-var device = os.platform() == 'linux' ? 'eth0' : 'en0';
-var ipAddress = dface(device);
 
 describe(filename, function () {
 
@@ -24,79 +18,29 @@ describe(filename, function () {
   this.timeout(20000);
 
   before('clear Mongo collection', function (done) {
-    Mongo.clearCollection(mongoUrl, mongoCollection, done);
+    testUtil.clearMongoCollection(done);
   });
 
   before('start cluster', function (done) {
 
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
     var self = this;
-    self.__configs = [];
 
-    var i = 0;
+    testUtil.createMemberConfigs(clusterSize, false, function (err, result) {
 
-    function generateConfig() {
-      i++;
+      if (err)
+        return done(err);
 
-      var fs = require('fs');
+      self.__configs = result;
 
-      var config = {
-        port: 55000 + i,
-        services: {
-          data: {
-            path: 'happn-service-mongo',
-            config: {
-              collection: mongoCollection,
-              url: mongoUrl
-            }
-          },
-          security: {
-            config: {
-              adminUser: {
-                username: '_ADMIN',
-                password: 'secret'
-              }
-            }
-          },
-          membership: {
-            config: {
-              clusterName: 'cluster1',
-              seed: i == 1,
-              seedWait: 500,
-              joinType: 'static',
-              host: device,
-              port: 56000 + i,
-              hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
-
-              // -swim-configs-
-              joinTimeout: 800,
-              pingInterval: 200,
-              pingTimeout: 20,
-              pingReqTimeout: 60
-            }
-          },
-          proxy: {
-            config: {
-              listenHost: '0.0.0.0',
-              listenPort: 8015 + i
-            }
-          }
-        }
-      };
-
-      self.__configs.push(config);
-      return config;
-    }
-
-    Promise.resolve(new Array(clusterSize)).map(function () {
-        return HappnCluster.create(generateConfig())
-      })
-      .then(function (servers) {
-        self.servers = servers;
-      })
-      .then(done)
-      .catch(done);
+      Promise.resolve(self.__configs).map(function (element) {
+          return HappnCluster.create(element)
+        })
+        .then(function (servers) {
+          self.servers = servers;
+        })
+        .then(done)
+        .catch(done)
+    });
   });
 
   it('can create a happn client and send a get request via each proxy instance', function (done) {
@@ -127,12 +71,11 @@ describe(filename, function () {
               return done(e);
 
             console.log('### Response received from proxied cluster node: ' + JSON.stringify(results));
-
-            instance.disconnect();
             currentConfig++;
+            instance.disconnect();
 
             if (currentConfig == self.__configs.length) // we have iterated through all proxy instances
-              done();
+              return done();
           });
         });
       });
