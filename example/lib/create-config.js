@@ -1,5 +1,5 @@
 
-var ipAddress = require('../../lib/get-address')();
+var ipAddress = require('../../lib/utils/get-address')();
 
 module.exports = function(seq) {
   var config = {
