@@ -58,7 +58,7 @@ module.exports.createMemberConfigs = function (memberCount, isSecure, callback) 
             config: {
               clusterName: 'cluster1',
               seed: i == 1,
-              seedWait: 200,
+              seedWait: 500,
               joinType: 'static',
               host: device,
               port: 56000 + i,

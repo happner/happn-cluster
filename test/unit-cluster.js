@@ -31,6 +31,7 @@ describe(filename, function () {
   });
 
   after('stop happn server', function (done) {
+    if (!this.happn) return done();
     this.happn.stop({reconnect: false}, done);
   });
 
@@ -66,6 +67,7 @@ describe(filename, function () {
   });
 
   after('stop happn-cluster server', function (done) {
+    if (!this.happnCluster) return done();
     this.happnCluster.stop(done);
   });
 
