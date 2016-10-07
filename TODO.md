@@ -11,4 +11,4 @@
 * missing pubsub.on('reconnect')
 * make proxy listen at default 55000 so that default client does through it
 * stabilise timeout
-* stabilise errors
+* fix inability to start one member while simultaneously stopping another

@@ -14,7 +14,7 @@ module.exports = function(seq) {
       orchestrator: {
         config: {
           // replicate: ['/*'],
-          stableReportInterval: 1000
+          // stableReportInterval: 2000
         }
       },
       membership: {
