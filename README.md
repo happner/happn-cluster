@@ -16,11 +16,11 @@ See [happn](https://github.com/happner/happn) for full complement of config.
 
 ```javascript
 var HappnCluster = require('happn-cluster');
-var config = {
+var defaultConfig = {
 
   services: {
   
-    // shared data plugin sub-config
+    // shared data plugin sub-config (defaults displayed)
     data: {
       path: 'happn-service-mongo',
       config: {
@@ -61,7 +61,7 @@ var config = {
   }
 }
 
-HappnCluster.create(config)
+HappnCluster.create(defaultConfig)
   .then(function(server) {
     // ...
   })

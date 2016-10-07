@@ -18,15 +18,13 @@ module.exports = function(seq) {
       //   console.log(server.services.orchestrator.peers);
       // }, 1000);
 
+      // server.services.orchestrator.on('peer/add', function(member) {
+      //   console.log('arriving peer\n', member);
+      // });
 
-      server.services.orchestrator.on('peer/add', function(member) {
-        console.log('arriving peer\n', member);
-      });
-
-      server.services.orchestrator.on('peer/remove', function(member) {
-        console.log('departing peer\n', member);
-      });
-
+      // server.services.orchestrator.on('peer/remove', function(member) {
+      //   console.log('departing peer\n', member);
+      // });
 
       process.on('SIGINT', function() {
         server.stop( /*{kill: true, wait: 2000},*/ function() {

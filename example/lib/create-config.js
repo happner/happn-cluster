@@ -4,13 +4,13 @@ var ipAddress = require('../../lib/utils/get-address')();
 module.exports = function(seq) {
   var config = {
     services: {
-      data: {
-        path: 'happn-service-mongo',
-        config: {
-          collection: 'static-happn-cluster',
-          url: 'mongodb://127.0.0.1:27017/static-happn-cluster'
-        }
-      },
+      // data: {
+      //   path: 'happn-service-mongo',
+      //   config: {
+      //     collection: 'static-happn-cluster',
+      //     url: 'mongodb://127.0.0.1:27017/static-happn-cluster'
+      //   }
+      // },
       orchestrator: {
         config: {
           // replicate: ['/*'],
