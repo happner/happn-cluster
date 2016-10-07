@@ -12,3 +12,4 @@
 * make proxy listen at default 55000 so that default client does through it
 * stabilise timeout
 * fix inability to start one member while simultaneously stopping another
+* todo "should we stop the proxy on error?"
