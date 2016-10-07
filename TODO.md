@@ -9,3 +9,6 @@
 * hole in stabalize, don't know when the remote has subscribed
 * secure it
 * missing pubsub.on('reconnect')
+* make proxy listen at default 55000 so that default client does through it
+* stabilise timeout
+* stabilise errors

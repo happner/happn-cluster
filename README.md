@@ -32,7 +32,8 @@ var config = {
     // orchestrator sub-config (defaults displayed)
     orchestrator: {
       config: {
-        replicate: ['/*']
+        replicate: ['/*'],
+        stableReportInterval: 2000
       }
     },
     
@@ -74,6 +75,12 @@ HappnCluster.create(config)
 #### config.replicate
 
 Array of happn paths or path masks that will be replicated throughout the cluster.
+
+#### config.stableReportInterval
+
+Having received the membership list (other cluster nodes), the orchestrator stalls the startup
+procedure until fully connected (stabilised). This interval controls the frequency with which
+the outstanding connection states are reported into the log.
 
 ## Membership Sub-Config
 

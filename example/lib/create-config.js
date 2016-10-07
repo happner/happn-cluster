@@ -13,7 +13,8 @@ module.exports = function(seq) {
       },
       orchestrator: {
         config: {
-          // replicate: ['/*']
+          // replicate: ['/*'],
+          stableReportInterval: 1000
         }
       },
       membership: {

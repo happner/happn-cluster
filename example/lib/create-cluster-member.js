@@ -15,8 +15,18 @@ module.exports = function(seq) {
 
       // setTimeout(function() {
       //   console.log();
-      //   console.log(server.services.orchestrator.members);
-      // }, 3000);
+      //   console.log(server.services.orchestrator.peers);
+      // }, 1000);
+
+
+      server.services.orchestrator.on('peer/add', function(member) {
+        console.log('arriving peer\n', member);
+      });
+
+      server.services.orchestrator.on('peer/remove', function(member) {
+        console.log('departing peer\n', member);
+      });
+
 
       process.on('SIGINT', function() {
         server.stop( /*{kill: true, wait: 2000},*/ function() {
@@ -30,7 +40,7 @@ module.exports = function(seq) {
     })
 
     .catch(function(error) {
-      console.error(error.stack);
+      console.error('\n', error.stack);
       process.exit(1);
     });
 };
