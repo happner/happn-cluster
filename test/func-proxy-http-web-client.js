@@ -10,7 +10,7 @@ var HappnCluster = require('../');
 
 var testUtil = require('./lib/test-utils');
 
-var clusterSize = 10;
+var clusterSize = 3;
 
 describe(filename, function () {
 
@@ -50,7 +50,6 @@ describe(filename, function () {
     setTimeout(function () {
 
       var currentConfig = 0;
-      var errors = [];
 
       self.__configs.forEach(function (config) {
 
@@ -61,7 +60,7 @@ describe(filename, function () {
         testUtil.createBrowserClientInstance(host, port, function (err, instance) {
 
           if (err)
-            return errors.push(err);
+            return done(err);
 
           console.log('### Sending request to -> ' + host + ':' + port);
 
@@ -69,14 +68,14 @@ describe(filename, function () {
           instance.get('/*', null, function (e, results) {
 
             if (e)
-              return errors.push(err);
+              return done(e);
 
             console.log('### Response received from proxied cluster node: ' + JSON.stringify(results));
             currentConfig++;
             instance.disconnect();
 
             if (currentConfig == self.__configs.length) // we have iterated through all proxy instances
-              return done(errors[0]);
+              return done();
           });
         });
       });

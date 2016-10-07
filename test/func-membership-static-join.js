@@ -9,7 +9,7 @@ var HappnCluster = require('../');
 
 var clusterSize = 10;
 
-describe(filename, function () {
+xdescribe(filename, function () {
 
   this.timeout(30000);
 

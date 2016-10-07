@@ -10,7 +10,7 @@ var HappnCluster = require('../');
 
 var testUtil = require('./lib/test-utils');
 
-var clusterSize = 10;
+var clusterSize = 3;
 
 describe(filename, function () {
 
