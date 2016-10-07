@@ -7,16 +7,16 @@ module.exports = function(seq) {
 
   var config = createConfig(seq);
 
-  console.log(JSON.stringify(config, null, 2));
+  // console.log(JSON.stringify(config, null, 2));
 
   HappnCluster.create(config)
 
     .then(function(server) {
 
-      setTimeout(function() {
-        console.log();
-        console.log(server.services.orchestrator.members);
-      }, 3000);
+      // setTimeout(function() {
+      //   console.log();
+      //   console.log(server.services.orchestrator.members);
+      // }, 3000);
 
       process.on('SIGINT', function() {
         server.stop( /*{kill: true, wait: 2000},*/ function() {
