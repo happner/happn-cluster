@@ -6,6 +6,7 @@ var path = require('path');
 var filename = path.basename(__filename);
 var Proxy = require('../lib/services/proxy');
 var MockHappn = require('./mocks/mock-happn');
+var util = require('util');
 
 describe(filename, function () {
 
@@ -19,8 +20,11 @@ describe(filename, function () {
       logger: {
         createLogger: function (name) {
           return {
-            info: function (info) {
-              console.log(info)
+            info: function () {
+              console.log('info -', util.format.apply(this, arguments));
+            },
+            error: function () {
+              console.log('error -', util.format.apply(this, arguments));
             }
           };
         }
@@ -99,7 +103,7 @@ describe(filename, function () {
     });
 
     // the proxied server is set up as the target in happn (the mock in this case)
-    console.log('Target port: ' + targetPort);
+    // console.log('Target port: ' + targetPort);
     proxiedServer.listen(targetPort);
 
 
@@ -120,7 +124,7 @@ describe(filename, function () {
               });
 
               res.on('end', function () {
-                console.log(result);
+                // console.log(result);
                 assert.equal(result, EXPECTED);
 
                 proxy.stop(null, function (err) {

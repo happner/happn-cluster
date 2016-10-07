@@ -12,3 +12,4 @@
 * stabilise timeout
 * todo "should we stop the proxy on error?"
 * expire faulty from swim after long long time
+* msgpack5 into swim for dissemination payload compression

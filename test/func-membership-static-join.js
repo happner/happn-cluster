@@ -7,7 +7,7 @@ var testUtil = require('./lib/test-utils');
 
 var HappnCluster = require('../');
 
-var clusterSize = 10; // increasing this may require increasing -swim-configs-
+var clusterSize = 10;
 
 describe(filename, function () {
 

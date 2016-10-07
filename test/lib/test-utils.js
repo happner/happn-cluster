@@ -58,7 +58,7 @@ module.exports.createMemberConfigs = function (memberCount, isSecure, callback) 
             config: {
               clusterName: 'cluster1',
               seed: i == 1,
-              seedWait: 500,
+              seedWait: 200,
               joinType: 'static',
               host: device,
               port: 56000 + i,
@@ -196,7 +196,9 @@ module.exports.createBrowserClientInstance = function (host, port, callback) {
 
     if (!exists) {
 
-      fs.mkdir(tempDir);
+      try {
+        fs.mkdirSync(tempDir);
+      } catch (err) {}
 
       download(function (err) {
         if (err)

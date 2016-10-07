@@ -50,6 +50,7 @@ describe(filename, function () {
     setTimeout(function () {
 
       var currentConfig = 0;
+      var errors = [];
 
       self.__configs.forEach(function (config) {
 
@@ -60,7 +61,7 @@ describe(filename, function () {
         testUtil.createBrowserClientInstance(host, port, function (err, instance) {
 
           if (err)
-            return done(err);
+            return errors.push(err);
 
           console.log('### Sending request to -> ' + host + ':' + port);
 
@@ -68,14 +69,14 @@ describe(filename, function () {
           instance.get('/*', null, function (e, results) {
 
             if (e)
-              return done(e);
+              return errors.push(err);
 
             console.log('### Response received from proxied cluster node: ' + JSON.stringify(results));
             currentConfig++;
             instance.disconnect();
 
             if (currentConfig == self.__configs.length) // we have iterated through all proxy instances
-              return done();
+              return done(errors[0]);
           });
         });
       });

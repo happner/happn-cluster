@@ -19,7 +19,7 @@ module.exports.generateCertificate = function (certDir, keyName, certName, callb
     fs.exists(certDir, function (exists) {
 
       if (!exists)
-        fs.mkdir(certDir);
+        fs.mkdirSync(certDir);
 
       fs.writeFileSync(keyPath, keys.serviceKey);
       fs.writeFileSync(certPath, keys.certificate);
