@@ -13,6 +13,7 @@ module.exports = function(seq) {
       // },
       orchestrator: {
         config: {
+          minimumPeers: 6,
           // replicate: ['/*'],
           // stableReportInterval: 2000
         }

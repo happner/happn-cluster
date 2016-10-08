@@ -60,6 +60,7 @@ var defaultConfig = {
     // orchestrator sub-config (defaults displayed)
     orchestrator: {
       config: {
+        minimumPeers: 1,
         replicate: ['/*'],
         stableReportInterval: 5000
       }
@@ -121,6 +122,11 @@ TODO: remaining proxy config
 
 
 ## Orchestrator Sub-Config
+
+#### config.minimumPeers
+
+This pends the starting of the proxy until there are this many known peers in the cluster. This prevents
+the `thundering herd` (of clients) from attacking the first started node.
 
 #### config.replicate
 

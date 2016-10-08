@@ -54,6 +54,12 @@ module.exports.createMemberConfigs = function (memberCount, isSecure, callback) 
             }
           }
           ,
+          orchestrator: {
+            config: {
+              minimumPeers: memberCount
+            }
+          }
+          ,
           membership: {
             config: {
               clusterName: 'cluster1',
