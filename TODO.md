@@ -12,3 +12,4 @@
 * msgpack5 into swim for dissemination payload compression
 * proxy to implement listenHost
 * proxy to have own key/cert such that proxy can be https independently of what happn is doing
+* orchestrator minimumPeers
