@@ -12,7 +12,25 @@ Requires that each cluster member mounts the same shared data service. See [happ
 
 `npm install happn-cluster happn-service-mongo --save`
 
-See [happn](https://github.com/happner/happn) for full complement of config.
+### Minimum Config
+
+### Starting Seed Node
+
+TODO
+
+```javacsript
+```
+
+### Starting Other Nodes
+
+TODO
+
+```javascript
+```
+
+## Configuration
+
+See [happn](https://github.com/happner/happn) for full complement of happn config.
 
 ```javascript
 var HappnCluster = require('happn-cluster');
@@ -25,7 +43,7 @@ var defaultConfig = {
       path: 'happn-service-mongo',
       config: {
         collection: 'happn-cluster',
-        url: 'mongodb://mongodb.mydomain.com:27017/happn-cluster'
+        url: 'mongodb://127.0.0.1:27017/happn-cluster'
       }
     },
     
@@ -33,17 +51,16 @@ var defaultConfig = {
     orchestrator: {
       config: {
         replicate: ['/*'],
-        stableReportInterval: 2000
+        stableReportInterval: 5000
       }
     },
     
     // membership sub-config (defaults displayed)
     membership: {
       config: {
-        clusterName: 'cluster-name',
+        clusterName: 'happn-cluster',
         seed: false,
         seedWait: 0,
-        joinType: 'dynamic',
         host: 'eth0',
         port: 11000,
         // hosts: [],
@@ -99,25 +116,11 @@ the first member.
 Each other member should include the seed member, among others, in their **config.hosts**
 list of hosts to join when starting.
 
-The seed member should include a selection of other members certain to be online in it's 
-**membership.hosts** so that it can rejoin an already running cluster in case
-of an unscheduled reboot.
-
 #### config.seedWait
 
 Members that are not the seed member pause this long before starting. This allows for a booting host that
 contains multiple cluster member instances all starting concurrently where one is the seed member. By waiting,
 the seed member will be up and running before the others attempt to join it in the cluster.
-
-#### config.joinType
-
-This refers to the method used to obtain/configure the sub-list of hosts to join in the cluster. 
-
-If joinType is 'static' the list should be hardcoded into **config.hosts**
-
-If joinType is 'dynamic' the list is obtained from the most recent membership records in the shared database.
-
-Both 'dynamic' and 'static' require **exactly one** seed member in the cluster.
 
 #### config.[host, port]
 
@@ -134,7 +137,14 @@ seed member and a selection of other members likely to be online.
 Items in the list are composed of `host:port` as configured on the remote members' **config.host**
 and **config.port** above.
 
-Example: `['10.0.0.1:11000', '10.0.0.2:11000', '10.0.0.3:11000']`
+Example: `['10.0.0.1:56000', '10.0.0.2:56000', '10.0.0.3:56000']`
+
+It is **strongly recommended** that all nodes in the cluster use the same **config.hosts** list to avoid 
+the posibility of orphaned subclusters arising. It must therefore also be ensured that at least one of
+the hosts in the list is online at all times. They can be upgraded one at a time but not all together.
+
+In the event of all nodes in the **config.hosts** going down simultaneously the remaining nodes in the
+cluster will be orphaned and require a restart.
 
 #### config.joinTimeout
 
@@ -170,26 +180,3 @@ with cluster size determines for how many pings in the `cycle` any given members
 dissemination. All eligible updates are sent with every ping up to the available **maxDgramSize**.
 
 See [swim.js](https://github.com/happner/swim-js)
-
-
-
-
-
-
-
-
-### Static Membership Join Config
-
-With static membership config the seed list of hosts-to-join is predefined in config.
-
-```javascript
-
-```
-
-### Dynamic Membership Join Config
-
-With dynamic membership config the seed list of hosts-to-join is populated from membership records in the shared database.
-
-```javascript
-
-```
