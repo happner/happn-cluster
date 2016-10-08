@@ -13,3 +13,5 @@
 * todo "should we stop the proxy on error?"
 * expire faulty from swim after long long time
 * msgpack5 into swim for dissemination payload compression
+* proxy does to implement listenHost
+* proxy to have own key/cert such that proxy can be https independently of what happn is doing
