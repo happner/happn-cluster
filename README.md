@@ -19,6 +19,7 @@ Requires that each cluster member mounts the same shared data service. See [happ
 TODO
 
 ```javacsript
+
 ```
 
 ### Starting Other Nodes
@@ -26,9 +27,10 @@ TODO
 TODO
 
 ```javascript
+
 ```
 
-## Configuration
+## Full Configuration
 
 See [happn](https://github.com/happner/happn) for full complement of happn config.
 
@@ -47,6 +49,14 @@ var defaultConfig = {
       }
     },
     
+    // proxy sub-config (defaults displayed)
+    proxy: {
+      config: {
+        listenPort: 57000,
+        // listenHost: '0.0.0.0' // <--- not implemented
+      }
+    },
+    
     // orchestrator sub-config (defaults displayed)
     orchestrator: {
       config: {
@@ -61,7 +71,7 @@ var defaultConfig = {
         clusterName: 'happn-cluster',
         seed: false,
         seedWait: 0,
-        host: 'eth0',
+        // host: undefined, // defaults to first public IPv4 address
         port: 11000,
         // hosts: [],
         joinTimeout: 2000,
@@ -85,7 +95,30 @@ HappnCluster.create(defaultConfig)
   .catch(function(error) {
     process.exit(1);
   });
+  
 ```
+
+## Shared Data Sub-Config
+
+By configuring a shared data service all nodes in the cluster can serve the same data to clients. The
+default uses the [happn mongo plugin](https://github.com/happner/happn-service-mongo). The localhost
+url is porbably not what you want.
+
+## Proxy Sub-Config
+
+A starting cluster node immediately starts the happn service listening to allow the orchestrator to
+establish the inter-cluster replication bridges.
+  
+Clients attaching to this happn service port will therefore be connecting before the node is ready.
+
+Instead, clients should connect through the proxy port, whose start is pended until the node is ready.
+
+#### config.[listenPort, listenHost]
+
+The socket address where the proxy listens for clients.
+
+TODO: remaining proxy config
+
 
 ## Orchestrator Sub-Config
 
@@ -96,8 +129,8 @@ Array of happn paths or path masks that will be replicated throughout the cluste
 #### config.stableReportInterval
 
 Having received the membership list (other cluster nodes), the orchestrator stalls the startup
-procedure until fully connected (stabilised). This interval controls the frequency with which
-the outstanding connection states are reported into the log.
+procedure (pending the proxy start) until fully connected (stabilised). This interval controls
+the frequency with which the outstanding connection states are reported into the log.
 
 ## Membership Sub-Config
 
