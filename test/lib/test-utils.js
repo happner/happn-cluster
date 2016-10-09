@@ -14,7 +14,7 @@ module.exports.clearMongoCollection = function(callback){
   Mongo.clearCollection(mongoUrl, mongoCollection, callback);
 };
 
-module.exports.createMemberConfigs = function (memberCount, isSecure, callback) {
+module.exports.createMemberConfigs = function (clusterSize, isSecure, callback) {
 
   var os = require('os');
   var dface = require('dface');
@@ -29,7 +29,7 @@ module.exports.createMemberConfigs = function (memberCount, isSecure, callback) 
     var configs = [];
     var i = 0;
 
-    while (i < memberCount) {
+    while (i < clusterSize) {
 
       i++;
 
@@ -56,7 +56,7 @@ module.exports.createMemberConfigs = function (memberCount, isSecure, callback) 
           ,
           orchestrator: {
             config: {
-              minimumPeers: memberCount
+              minimumPeers: clusterSize
             }
           }
           ,
@@ -87,6 +87,8 @@ module.exports.createMemberConfigs = function (memberCount, isSecure, callback) 
           }
         }
       };
+
+      // console.log(JSON.stringify(config, null, 2));
 
       configs.push(config);
     }

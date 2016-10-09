@@ -6,12 +6,11 @@ var assert = require('assert');
 var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
-var Promise = require('bluebird');
+var testUtils = require('./lib/test-utils');
+var hooks = require('./lib/hooks');
 
-var HappnCluster = require('../');
-
-var testUtil = require('./lib/test-utils');
 var clusterSize = 2;
+var isSecure = false;
 
 describe(filename, function () {
 
@@ -19,48 +18,11 @@ describe(filename, function () {
 
   benchmarket.start();
 
-  before('clear collection (before)', function (done) {
-    testUtil.clearMongoCollection(done);
+  hooks.startCluster({
+    size: clusterSize,
+    isSecure: isSecure
   });
 
-  before('start cluster', function (done) {
-
-    var self = this;
-
-    testUtil.createMemberConfigs(clusterSize, false, function (err, result) {
-
-      if (err)
-        return done(err);
-
-      self.__configs = result;
-
-      Promise.resolve(self.__configs).map(function (element) {
-          return HappnCluster.create(element)
-        })
-        .then(function (servers) {
-          self.servers = servers;
-        })
-        .then(done)
-        .catch(done)
-    });
-  });
-
-
-  after('stop cluster', function (done) {
-    if (!this.servers) return done();
-    Promise.resolve(this.servers).map(function (server) {
-        return server.stop();
-      })
-      .then(function () {
-        done();
-      })
-      .catch(done);
-  });
-
-
-  after('clear collection (after)', function (done) {
-    testUtil.clearMongoCollection(done);
-  });
 
   it('data set event is propagated to cluster members', function (done) {
 
@@ -84,12 +46,12 @@ describe(filename, function () {
       var testPath = '/EVENT_PROPAGATION_DATA';
       var testData = {testField: 'testValue'};
 
-      testUtil.createClientInstance(member1Host, member1Port, function (err, publisherClient) {
+      testUtils.createClientInstance(member1Host, member1Port, function (err, publisherClient) {
 
         if (err)
           return done(err);
 
-        testUtil.createClientInstance(member2Host, member2Port, function (err, listenerClient) {
+        testUtils.createClientInstance(member2Host, member2Port, function (err, listenerClient) {
 
           if (err)
             return done(err);
@@ -120,6 +82,9 @@ describe(filename, function () {
     }, 3000);
 
   });
+
+
+  hooks.stopCluster();
 
   after(benchmarket.store());
   benchmarket.stop();

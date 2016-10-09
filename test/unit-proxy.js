@@ -4,13 +4,12 @@
 
 var path = require('path');
 var filename = path.basename(__filename);
+var assert = require('assert');
+var util = require('util');
 var Proxy = require('../lib/services/proxy');
 var MockHappn = require('./mocks/mock-happn');
-var util = require('util');
 
 describe(filename, function () {
-
-  var assert = require('assert');
 
   this.timeout(20000);
 
