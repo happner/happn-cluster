@@ -19,7 +19,7 @@ describe(filename, function () {
   });
 
 
-  it('each server has all 10 peers', function (done) {
+  it('each server stabilised with all 10 peers', function (done) {
     var self = this;
 
     var peerCounts = [];

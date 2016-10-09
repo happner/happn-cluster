@@ -16,7 +16,7 @@ Object.defineProperty(MockHappn.prototype, "log", {
         console.log(message);
         throw(err);
       },
-      info: function (message, err) {
+      info: function (message) {
         console.log(message);
       }
     }
