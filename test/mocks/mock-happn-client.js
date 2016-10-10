@@ -1,11 +1,28 @@
-
 var lastLoginConfig;
-
-module.exports.getLastLoginConfig = function() {
+module.exports.getLastLoginConfig = function () {
   return lastLoginConfig;
 };
 
-module.exports.create = function(config, callback) {
+var queuedLoginError = null;
+module.exports.queueLoginError = function (error) {
+  queuedLoginError = error;
+};
+
+var queuedSubscriptionError = null;
+module.exports.queueSubscriptionError = function (error) {
+  queuedSubscriptionError = error;
+};
+
+module.exports.create = function (config, callback) {
+  if (queuedLoginError) {
+    var error = queuedLoginError;
+    queuedLoginError = null;
+    process.nextTick(function () {
+      callback(error);
+    });
+    return;
+  }
+
   var name = 'remote-happn-instance';
 
   // console.log('CONFIG', JSON.stringify(config.info, null, 2));
@@ -15,7 +32,9 @@ module.exports.create = function(config, callback) {
   }
 
   lastLoginConfig = config;
-  callback(null, new MockHappnClient(name));
+  process.nextTick(function () {
+    callback(null, new MockHappnClient(name));
+  });
 };
 
 var instances;
@@ -31,36 +50,44 @@ function MockHappnClient(name) {
 
   var onDestroy, _this = this;
   this.pubsub = {
-    on: function(event, handler) {
+    on: function (event, handler) {
       if (event == 'destroy') {
         onDestroy = handler;
         return;
       }
     },
-    destroy: function() {
+    destroy: function () {
       _this.destroyed = true;
       onDestroy();
     }
   }
 }
 
-MockHappnClient.prototype.onEvent = function(event, handler) {
+MockHappnClient.prototype.onEvent = function (event, handler) {
   this.eventHandlers[event] = this.eventHandlers[event] || [];
   this.eventHandlers[event].push(handler);
 };
 
-MockHappnClient.prototype.offEvent = function() {
+MockHappnClient.prototype.offEvent = function () {
 
 };
 
-MockHappnClient.prototype.on = function(path, opts, handler, callback) {
-  callback();
+MockHappnClient.prototype.on = function (path, opts, handler, callback) {
+  if (queuedSubscriptionError) {
+    var error = queuedSubscriptionError;
+    queuedSubscriptionError = null;
+    process.nextTick(function () {
+      callback(error);
+    });
+    return;
+  }
+  process.nextTick(callback);
 };
 
-MockHappnClient.prototype.emitDisconnect = function() {
+MockHappnClient.prototype.emitDisconnect = function () {
   var handlers = this.eventHandlers['reconnect-scheduled'];
   if (!handlers) return;
-  handlers.forEach(function(fn) {
+  handlers.forEach(function (fn) {
     fn();
   });
 };

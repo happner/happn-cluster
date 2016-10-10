@@ -19,6 +19,10 @@ module.exports = {
         error: function () {
           if (process.env.LOG_LEVEL == 'off') return;
           console.log('error (%s) -', name, util.format.apply(this, arguments));
+        },
+        fatal: function () {
+          if (process.env.LOG_LEVEL == 'off') return;
+          console.log('fatal (%s) -', name, util.format.apply(this, arguments));
         }
       };
     }
