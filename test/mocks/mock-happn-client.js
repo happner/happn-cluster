@@ -20,17 +20,33 @@ module.exports.create = function(config, callback) {
 
 var instances;
 
-module.exports.instances = instances = {};
+module.exports.instances = {};
 
 function MockHappnClient(name) {
   this.serverInfo = {
     name: name
   };
-  instances[name] = this;
+  module.exports.instances[name] = this;
+  this.eventHandlers = {};
+
+  var onDestroy, _this = this;
+  this.pubsub = {
+    on: function(event, handler) {
+      if (event == 'destroy') {
+        onDestroy = handler;
+        return;
+      }
+    },
+    destroy: function() {
+      _this.destroyed = true;
+      onDestroy();
+    }
+  }
 }
 
-MockHappnClient.prototype.onEvent = function() {
-
+MockHappnClient.prototype.onEvent = function(event, handler) {
+  this.eventHandlers[event] = this.eventHandlers[event] || [];
+  this.eventHandlers[event].push(handler);
 };
 
 MockHappnClient.prototype.offEvent = function() {
@@ -39,4 +55,12 @@ MockHappnClient.prototype.offEvent = function() {
 
 MockHappnClient.prototype.on = function(path, opts, handler, callback) {
   callback();
+};
+
+MockHappnClient.prototype.emitDisconnect = function() {
+  var handlers = this.eventHandlers['reconnect-scheduled'];
+  if (!handlers) return;
+  handlers.forEach(function(fn) {
+    fn();
+  });
 };

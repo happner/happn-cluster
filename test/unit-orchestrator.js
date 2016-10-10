@@ -205,6 +205,10 @@ describe(filename, function () {
 
     var o;
 
+    beforeEach(function () {
+      MockHappnClient.instances = {};
+    });
+
     beforeEach(function (done) {
       o = new Orchestrator(mockOpts);
       o.happn = new MockHappn('http', 9000);
@@ -218,10 +222,6 @@ describe(filename, function () {
     });
 
     context('first member in cluster', function () {
-
-      before(function () {
-        MockHappnClient.instances = {};
-      });
 
       it('immediately stabilises with only self as member', function (done) {
 
@@ -384,7 +384,7 @@ describe(filename, function () {
 
       // sometimes remote peers logging into us is first to inform of remote member
 
-      it.only('pends stabilise until all are connected to and from', function (done) {
+      it('pends stabilise until all are connected to and from', function (done) {
 
         Object.keys(o.members).should.eql(['__self']);
 
@@ -460,40 +460,201 @@ describe(filename, function () {
           })
           .catch(done);
 
-        setTimeout(function() {
+        setTimeout(function () {
 
           stable.should.equal(false);
 
-          // last member logs in
-          MockPubsub.instance.emit('authentic', {
-            info: {
-              name: '10-0-0-4_55001',
-              clusterName: 'cluster-name',
-              memberId: '10.0.0.4:56001',
-              url: 'http://10.0.0.4:55001'
-            }
+          // correction: socket reports last member actually gone
+          MockHappnClient.instances['10-0-0-4_55001'].emitDisconnect();
+          stable.should.equal(false);
+
+          // correction confirmed: swim reports last member actually gone
+          MockMembership.instance.emit('remove', {
+            memberId: '10.0.0.4:56001'
           });
 
-          stable.should.equal(true);
-          done();
+          setTimeout(function() {
+
+            // no longer waiting for 4 peer
+            stable.should.equal(true);
+            done();
+
+          }, 20);
 
         }, 20);
       });
     });
 
 
-    context('events', function () {
+    context('event peer/add', function () {
 
-      it('emits peers/add');
+      it('is emitted when a member becomes fully connected', function (done) {
 
-      it('emits peers/remove');
+        var emitted = {};
+        o.on('peer/add', function (name, member) {
+          if (name == 'local-happn-instance') return;
+          emitted.name = name;
+          emitted.member = member;
+        });
 
+        MockMembership.instance.emit('add', {
+          memberId: '10.0.0.1:56001',
+          url: 'http://10.0.0.1:55001'
+        });
+
+        // not emitted on new member
+        emitted.should.eql({});
+        Object.keys(o.peers).should.eql(['local-happn-instance']);
+
+        // but is emitted once new member fully connected (per login back)
+        MockPubsub.instance.emit('authentic', {
+          info: {
+            name: '10-0-0-1_55001',
+            clusterName: 'cluster-name',
+            memberId: '10.0.0.1:56001',
+            url: 'http://10.0.0.1:55001'
+          }
+        });
+
+        emitted.should.eql({
+          name: '10-0-0-1_55001',
+          member: o.peers['10-0-0-1_55001']
+        });
+        done();
+
+      });
+
+    });
+
+    context('event peer/remove', function () {
+
+      it('is emitted when a peer socket disconnects from us', function (done) {
+
+        MockMembership.instance.emit('add', {
+          memberId: '10.0.0.1:56001',
+          url: 'http://10.0.0.1:55001'
+        });
+
+        MockPubsub.instance.emit('authentic', {
+          info: {
+            name: '10-0-0-1_55001',
+            clusterName: 'cluster-name',
+            memberId: '10.0.0.1:56001',
+            url: 'http://10.0.0.1:55001'
+          }
+        });
+
+        should.exist(o.peers['10-0-0-1_55001']);
+
+        var happnClient = MockHappnClient.instances['10-0-0-1_55001'];
+
+        o.on('peer/remove', function (name, member) {
+
+          name.should.equal('10-0-0-1_55001');
+
+          // it remains a member (reconnect loop) ...
+          member.should.equal(o.members['10.0.0.1:56001']);
+
+          // ...until our client disconnects
+          MockHappnClient.instances['10-0-0-1_55001'].emitDisconnect();
+          should.exist(o.members['10.0.0.1:56001']);
+
+          // ...and swim confirms
+          MockMembership.instance.emit('remove', {
+            memberId: '10.0.0.1:56001'
+          });
+
+          setTimeout(function () {
+            should.not.exist(o.members['10.0.0.1:56001']);
+            happnClient.destroyed.should.equal(true);
+            done();
+          }, 20);
+
+        });
+
+        MockPubsub.instance.emit('disconnect', {
+          info: {
+            name: '10-0-0-1_55001',
+            clusterName: 'cluster-name',
+            memberId: '10.0.0.1:56001',
+            url: 'http://10.0.0.1:55001'
+          }
+        });
+      });
+
+
+      it('is emitted when our socket to the peer disconnects', function (done) {
+
+        MockMembership.instance.emit('add', {
+          memberId: '10.0.0.1:56001',
+          url: 'http://10.0.0.1:55001'
+        });
+
+        MockPubsub.instance.emit('authentic', {
+          info: {
+            name: '10-0-0-1_55001',
+            clusterName: 'cluster-name',
+            memberId: '10.0.0.1:56001',
+            url: 'http://10.0.0.1:55001'
+          }
+        });
+
+        should.exist(o.peers['10-0-0-1_55001']);
+
+        o.on('peer/remove', function (name, member) {
+
+          name.should.equal('10-0-0-1_55001');
+          member.should.equal(o.members['10.0.0.1:56001']);
+          done();
+
+        });
+
+        MockHappnClient.instances['10-0-0-1_55001'].emitDisconnect();
+      });
+
+      it('is NOT emitted when swim reports departure but sockets are connected', function (done) {
+        // swim flaps when large numbers of new members get added at once
+        // so it gets ignored if peer (happn client) sockets are still connected
+        // (ws pingpong will pick up the slack)
+
+        MockMembership.instance.emit('add', {
+          memberId: '10.0.0.1:56001',
+          url: 'http://10.0.0.1:55001'
+        });
+
+        MockPubsub.instance.emit('authentic', {
+          info: {
+            name: '10-0-0-1_55001',
+            clusterName: 'cluster-name',
+            memberId: '10.0.0.1:56001',
+            url: 'http://10.0.0.1:55001'
+          }
+        });
+
+        should.exist(o.peers['10-0-0-1_55001']);
+
+        var removed = false;
+        o.on('peer/remove', function (name, member) {
+          removed = true;
+        });
+
+        MockMembership.instance.emit('remove', {
+          memberId: '10.0.0.1:56001'
+        });
+
+        setTimeout(function () {
+          removed.should.equal(false);
+          done();
+        }, 20);
+      });
     });
 
 
     context('errors', function () {
 
       it('on login failure');
+
+      it('on subscription failure');
 
       it('on ECONNREFUSED');
 
