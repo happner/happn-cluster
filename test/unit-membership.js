@@ -10,7 +10,7 @@ var address = require('../lib/utils/get-address')();
 
 describe(filename, function () {
 
-  before(function() {
+  before(function () {
     this.logLevel = process.env.LOG_LEVEL;
     process.env.LOG_LEVEL = 'off';
   });
@@ -49,7 +49,7 @@ describe(filename, function () {
     });
 
 
-    it('can assign all config', function(done) {
+    it('can assign all config', function (done) {
 
       var m = new Membership(mockOpts);
 
@@ -434,15 +434,15 @@ describe(filename, function () {
         .catch(done);
     });
 
-    it('stops swim', function(done) {
+    it('stops swim', function (done) {
 
       var left = false;
 
-      this.membership.swim.leave = function() {
+      this.membership.swim.leave = function () {
         left = true;
       }
 
-      this.membership.stop(function() {
+      this.membership.stop(function () {
         left.should.equal(true);
         done();
       });
@@ -450,7 +450,7 @@ describe(filename, function () {
 
   });
 
-  after(function() {
+  after(function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
 

@@ -11,7 +11,7 @@ var MockHappn = function (mode, targetPort) {
   this.__mode = mode;
   this.__targetPort = targetPort;
 
-  this.name = 'happn-instance-name';
+  this.name = 'local-happn-instance';
   this.services = {
     pubsub: new MockPubsub(),
     proxy: {
