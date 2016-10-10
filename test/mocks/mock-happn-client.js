@@ -61,6 +61,9 @@ function MockHappnClient(name) {
       onDestroy();
     }
   }
+
+  this.__subscribed = [];
+  this.__subscriptionHandlers = {};
 }
 
 MockHappnClient.prototype.onEvent = function (event, handler) {
@@ -81,6 +84,8 @@ MockHappnClient.prototype.on = function (path, opts, handler, callback) {
     });
     return;
   }
+  this.__subscribed.push(path);
+  this.__subscriptionHandlers[path] = handler;
   process.nextTick(callback);
 };
 
@@ -90,4 +95,9 @@ MockHappnClient.prototype.emitDisconnect = function () {
   handlers.forEach(function (fn) {
     fn();
   });
+};
+
+MockHappnClient.prototype.emitHappnEvent = function(path, data, meta) {
+  if (!this.__subscriptionHandlers[path]) return;
+  this.__subscriptionHandlers[path](data, meta);
 };

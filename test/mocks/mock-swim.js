@@ -16,8 +16,6 @@ MockSwim.prototype.bootstrap = function (hostsToJoin, callback) {
     delete MockSwim.__queuedError;
     return;
   }
-
-  this.__hostsToJoin = hostsToJoin;
   callback();
 };
 
