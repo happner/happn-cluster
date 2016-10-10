@@ -13,10 +13,7 @@ module.exports = function(seq) {
 
     .then(function(server) {
 
-      // setTimeout(function() {
-      //   console.log();
-      //   console.log(server.services.orchestrator.peers);
-      // }, 1000);
+      // console.log(server.services.orchestrator.peers);
 
       // server.services.orchestrator.on('peer/add', function(member) {
       //   console.log('arriving peer\n', member);

@@ -5,7 +5,6 @@ var should = require('should');
 var Membership = require('../lib/services/membership');
 var MockSwim = require('./mocks/mock-swim');
 var MockHappn = require('./mocks/mock-happn');
-
 var mockOpts = require('./mocks/mock-opts');
 var address = require('../lib/utils/get-address')();
 
@@ -16,14 +15,14 @@ describe(filename, function () {
     process.env.LOG_LEVEL = 'off';
   });
 
-  context('defaults', function () {
+  context('initialize', function () {
 
 
-    it('requires only config.hosts to join', function (done) {
+    it('defaults all but config.hosts', function (done) {
 
-      var m = this.membership = new Membership(mockOpts);
+      var m = new Membership(mockOpts);
 
-      this.membership.initialize({
+      m.initialize({
         hosts: ['10.10.10.10:11111']
       }, function (e) {
         if (e) return done(e);
@@ -44,6 +43,51 @@ describe(filename, function () {
             maxDgramSize: 512
           },
           disseminationFactor: 15
+        });
+        done();
+      });
+    });
+
+
+    it('can assign all config', function(done) {
+
+      var m = new Membership(mockOpts);
+
+      m.initialize({
+        clusterName: 'seven-sisters',
+        hosts: ['10.10.10.10:11111'],
+        seed: true,
+        seedWait: 200,
+        host: address + '1',
+        port: 9000,
+        joinTimeout: 100,
+        pingInterval: 100,
+        pingTimeout: 20,
+        pingReqTimeout: 60,
+        pingReqGroupSize: 2,
+        udp: {
+          maxDgramSize: 768
+        },
+        disseminationFactor: 13
+      }, function (e) {
+        if (e) return done(e);
+
+        m.config.should.eql({
+          clusterName: 'seven-sisters',
+          hosts: ['10.10.10.10:11111'],
+          seed: true,
+          seedWait: 200,
+          host: address + '1',
+          port: 9000,
+          joinTimeout: 100,
+          pingInterval: 100,
+          pingTimeout: 20,
+          pingReqTimeout: 60,
+          pingReqGroupSize: 2,
+          udp: {
+            maxDgramSize: 768
+          },
+          disseminationFactor: 13
         });
         done();
       });

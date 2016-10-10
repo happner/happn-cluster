@@ -4,9 +4,24 @@
 
 var path = require('path');
 
+var MockPubsub = require('./mock-pubsub');
+var MockMembership = require('./mock-membership');
+
 var MockHappn = function (mode, targetPort) {
   this.__mode = mode;
   this.__targetPort = targetPort;
+
+  this.name = 'happn-instance-name';
+  this.services = {
+    pubsub: new MockPubsub(),
+    proxy: {
+      config: {
+        listenHost: '0.0.0.0',
+        listenPort: 8015
+      }
+    },
+    membership: new MockMembership()
+  }
 };
 
 Object.defineProperty(MockHappn.prototype, "log", {
@@ -35,19 +50,6 @@ Object.defineProperty(MockHappn.prototype, "config", {
       port: this.__targetPort,
       transport: {
         mode: this.__mode
-      }
-    }
-  }
-});
-
-Object.defineProperty(MockHappn.prototype, "services", {
-  get: function () {
-    return {
-      proxy: {
-        config: {
-          listenHost: '0.0.0.0',
-          listenPort: 8015
-        }
       }
     }
   }
