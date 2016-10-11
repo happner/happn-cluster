@@ -1,4 +1,3 @@
-* prevent happn login with clusterName into other clusterName?
 * finalise replicate
 * stabilise timeout
 * update member, eg. remote restarted and changed happn port or cluster name (remove)
@@ -17,3 +16,5 @@
 
 * expire faulty from swim after long long time
 * msgpack5 into swim for dissemination payload compression
+
+* **swim is insecure, protect the port, otherwise anyone can join the cluster and and we would login to them, exposing the admin password**

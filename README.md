@@ -115,7 +115,7 @@ HappnCluster.create(defaultConfig)
 Inter-cluster connections are made using the admin user. All nodes in the cluster will need the same
 admin username and password configured.
 
-** NB: Once created, the admin user's password cannot be changed from config.**
+**NB: Once created, the admin user's password cannot be changed from config.**
 
 To change the admin password.
 
