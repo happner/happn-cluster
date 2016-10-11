@@ -1,3 +1,4 @@
+* prevent happn login with clusterName into other clusterName?
 * finalise replicate
 * stabilise timeout
 * update member, eg. remote restarted and changed happn port or cluster name (remove)
@@ -10,7 +11,6 @@
 * make proxy listen at default 55000 so that default client does through it
 
 
-* prevent happn login with clusterName into other clusterName?
 * hole in stabalize, don't know when the remote has subscribed
 * handle /_SYSTEM/_NETWORK/_SETTINGS/NAME overwrite from each cluster member
 

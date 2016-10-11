@@ -3,14 +3,23 @@ var ipAddress = require('../../lib/utils/get-address')();
 
 module.exports = function(seq) {
   var config = {
+    secure: true,
     services: {
-      // data: {
-      //   path: 'happn-service-mongo',
-      //   config: {
-      //     collection: 'static-happn-cluster',
-      //     url: 'mongodb://127.0.0.1:27017/static-happn-cluster'
-      //   }
-      // },
+      security: {
+        config: {
+          adminUser: {
+            username: '_ADMIN',
+            password: 'secret'
+          }
+        }
+      },
+      data: {
+        path: 'happn-service-mongo',
+        config: {
+          collection: 'example-happn-cluster',
+          url: 'mongodb://127.0.0.1:27017/example-happn-cluster'
+        }
+      },
       orchestrator: {
         config: {
           minimumPeers: 6,

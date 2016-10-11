@@ -35,7 +35,7 @@ module.exports = function(seq) {
     })
 
     .catch(function(error) {
-      console.error('\n', error.stack);
+      console.error('\n', error.stack ? error.stack : error);
       process.exit(1);
     });
 };
