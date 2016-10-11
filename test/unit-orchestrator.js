@@ -83,6 +83,142 @@ describe(filename, function () {
       });
     });
 
+    context.only('reduce replication paths', function() {
+
+      var o;
+
+      beforeEach(function() {
+        o = new Orchestrator(mockOpts);
+        o.happn = new MockHappn('http', 9000);
+      });
+
+      it('removes duplicate paths', function(done) {
+
+        o.initialize({
+          replicate: [
+            '/same/path',
+            '/same/path'
+          ]
+        }, function(e) {
+          if (e) return done(e);
+
+          o.config.replicate.should.eql(['/same/path']);
+          done();
+
+        });
+      });
+
+      it('collapses simple wildcard paths (forward)', function (done) {
+        o.initialize({
+          replicate: [
+            '/same/*',
+            '/same/path'
+          ]
+        }, function(e) {
+          if (e) return done(e);
+
+          o.config.replicate.should.eql(['/same/*']);
+          done();
+
+        });
+      });
+
+      it('collapses simple wildcard paths (backwards)', function (done) {
+        o.initialize({
+          replicate: [
+            '/same/path',
+            '/same/*'
+          ]
+        }, function(e) {
+          if (e) return done(e);
+
+          o.config.replicate.should.eql(['/same/*']);
+          done();
+
+        });
+      });
+
+      it('collapses complicated wildcard paths (forward)', function (done) {
+        o.initialize({
+          replicate: [
+            '/same/*/with/*/more',
+            '/same/path',
+            '/same/path/with/some/more'
+          ]
+        }, function(e) {
+          if (e) return done(e);
+
+          o.config.replicate.should.eql([
+            '/same/*/with/*/more',
+            '/same/path'
+          ]);
+          done();
+
+        });
+      });
+
+      it('collapses complicated wildcard paths (reverse)', function (done) {
+        o.initialize({
+          replicate: [
+            '/same/path/with/some/more',
+            '/same/*/with/*/more',
+            '/same/path/*'
+          ]
+        }, function(e) {
+          if (e) return done(e);
+
+          o.config.replicate.should.eql([
+            '/same/*/with/*/more',
+            '/same/path/*'
+          ]);
+          done();
+
+        });
+      });
+
+      it('does the obvious', function (done) {
+        o.initialize({
+          replicate: [
+            '/same/*/with/some/more',
+            '/same/path/with/*/more',
+            '/same/path',
+            '/*'
+          ]
+        }, function(e) {
+          if (e) return done(e);
+
+          o.config.replicate.should.eql([
+            '/*'
+          ]);
+          done();
+
+        });
+      });
+
+      it('is idiot proof', function (done) {
+        o.initialize({
+          replicate: [
+            '/*/*/*/*/*/*/*/*/*',
+            '/*/*/*/*/*/*/*/*',
+            '/*/*/*/*/*/*/*',
+            '/*/*/*/*/*/*',
+            '/*/*/*/*/*',
+            '/*/*/*/*',
+            '/*/*/*',
+            '/*/*',
+            '/*'
+          ]
+        }, function(e) {
+          if (e) return done(e);
+
+          o.config.replicate.should.eql([
+            '/*'
+          ]);
+          done();
+
+        });
+      });
+    });
   });
 
 
