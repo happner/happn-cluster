@@ -83,7 +83,7 @@ describe(filename, function () {
       });
     });
 
-    context.only('reduce replication paths', function() {
+    context('reduce replication paths', function() {
 
       var o;
 
