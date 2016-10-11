@@ -45,15 +45,6 @@ module.exports.createMemberConfigs = function (clusterSize, isSecure, callback) 
             }
           }
           ,
-          security: {
-            config: {
-              adminUser: {
-                username: '_ADMIN',
-                password: 'secret'
-              }
-            }
-          }
-          ,
           orchestrator: {
             config: {
               minimumPeers: clusterSize
@@ -69,8 +60,6 @@ module.exports.createMemberConfigs = function (clusterSize, isSecure, callback) 
               host: device,
               port: 56000 + i,
               hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
-
-              // -swim-configs-
               joinTimeout: 800,
               pingInterval: 200,
               pingTimeout: 20,
@@ -87,6 +76,18 @@ module.exports.createMemberConfigs = function (clusterSize, isSecure, callback) 
           }
         }
       };
+
+      if (isSecure) {
+        config.secure = true;
+        config.services.security = {
+          config: {
+            adminUser: {
+              username: '_ADMIN',
+              password: 'secret'
+            }
+          }
+        }
+      }
 
       // console.log(JSON.stringify(config, null, 2));
 

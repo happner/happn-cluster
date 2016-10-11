@@ -1,4 +1,3 @@
-* secure it
 * finalise replicate
 * stabilise timeout
 * update member, eg. remote restarted and changed happn port or cluster name (remove)

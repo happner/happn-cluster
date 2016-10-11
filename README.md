@@ -38,7 +38,18 @@ See [happn](https://github.com/happner/happn) for full complement of happn confi
 var HappnCluster = require('happn-cluster');
 var defaultConfig = {
 
+  // secure: true // (to enable security)
   services: {
+    
+    // // security sub-config (to enable security)
+    // security: {
+    //   config: {
+    //     adminUser: {
+    //       username: '_ADMIN',
+    //       password: 'secret'
+    //     }
+    //   }
+    // },
   
     // shared data plugin sub-config (defaults displayed)
     data: {
@@ -98,6 +109,11 @@ HappnCluster.create(defaultConfig)
   });
   
 ```
+
+## Security Sub-Config
+
+Inter-cluster connections are made using the admin user. All nodes in the cluster will need the same
+admin username and password configured.
 
 ## Shared Data Sub-Config
 
