@@ -115,6 +115,20 @@ HappnCluster.create(defaultConfig)
 Inter-cluster connections are made using the admin user. All nodes in the cluster will need the same
 admin username and password configured.
 
+** NB: Once created, the admin user's password cannot be changed from config.**
+
+To change the admin password.
+
+* Stop all cluster nodes.
+* Put the new password into all cluster node configs.
+* Delete the old _ADMIN user and _ADMIN group membership from the shared database.
+```bash
+mongo mongodb://127.0.0.1:27017/happn-cluster
+> use happn-cluster
+> db['happn-cluster'].remove({path: {$in: ['/_SYSTEM/_SECURITY/_USER/_ADMIN', '/_SYSTEM/_SECURITY/_USER/_ADMIN/_USER_GROUP/_ADMIN']}});
+```
+* Restart the cluster.
+
 ## Shared Data Sub-Config
 
 By configuring a shared data service all nodes in the cluster can serve the same data to clients. The

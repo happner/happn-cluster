@@ -16,8 +16,8 @@ module.exports = function(seq) {
       data: {
         path: 'happn-service-mongo',
         config: {
-          collection: 'example-happn-cluster',
-          url: 'mongodb://127.0.0.1:27017/example-happn-cluster'
+          collection: 'happn-cluster',
+          url: 'mongodb://127.0.0.1:27017/happn-cluster'
         }
       },
       orchestrator: {
