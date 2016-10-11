@@ -84,7 +84,7 @@ var defaultConfig = {
         seed: false,
         seedWait: 0,
         // host: undefined, // defaults to first public IPv4 address
-        port: 11000,
+        port: 56000,
         // hosts: [],
         joinTimeout: 2000,
         pingInterval: 1000,
