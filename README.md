@@ -45,7 +45,7 @@ var defaultConfig = {
     // security: {
     //   config: {
     //     adminUser: {
-    //       username: '_ADMIN',
+    //       username: '_ADMIN', // <---- leave this as _ADMIN
     //       password: 'secret'
     //     }
     //   }
@@ -127,7 +127,7 @@ mongo mongodb://127.0.0.1:27017/happn-cluster
 > use happn-cluster
 > db['happn-cluster'].remove({path: {$in: ['/_SYSTEM/_SECURITY/_USER/_ADMIN', '/_SYSTEM/_SECURITY/_USER/_ADMIN/_USER_GROUP/_ADMIN']}});
 ```
-* Restart the cluster.
+* Restart the cluster (admin user will be regenerated with new password)
 
 ## Shared Data Sub-Config
 
