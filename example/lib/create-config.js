@@ -9,7 +9,7 @@ module.exports = function(seq) {
         config: {
           adminUser: {
             username: '_ADMIN',
-            password: 'secret'
+            password: 'happn'
           }
         }
       },

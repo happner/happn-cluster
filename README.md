@@ -46,7 +46,7 @@ var defaultConfig = {
     //   config: {
     //     adminUser: {
     //       username: '_ADMIN', // <---- leave this as _ADMIN
-    //       password: 'secret'
+    //       password: 'happn'
     //     }
     //   }
     // },
@@ -105,7 +105,7 @@ HappnCluster.create(defaultConfig)
     // ...
   })
   .catch(function(error) {
-    process.exit(1);
+    process.exit(0);
   });
   
 ```
@@ -115,7 +115,7 @@ HappnCluster.create(defaultConfig)
 Inter-cluster connections are made using the admin user. All nodes in the cluster will need the same
 admin username and password configured.
 
-**NB: Once created, the admin user's password cannot be changed from config.**
+**Once created, the admin user's password cannot be changed from config.**
 
 To change the admin password.
 
@@ -129,6 +129,10 @@ mongo mongodb://127.0.0.1:27017/happn-cluster
 ```
 * Restart the cluster (admin user will be regenerated with new password)
 
+**The above also applies after starting a cluster with security unconfigured. The admin user is still
+created with the default password 'happn'. Upon turning on security later the password will then need
+to be changed as describe above.**
+
 ## Shared Data Sub-Config
 
 By configuring a shared data service all nodes in the cluster can serve the same data to clients. The
@@ -139,7 +143,7 @@ url is porbably not what you want.
 
 A starting cluster node immediately starts the happn service listening to allow the orchestrator to
 establish the inter-cluster replication bridges.
-  
+
 Clients attaching to this happn service port will therefore be connecting before the node is ready.
 
 Instead, clients should connect through the proxy port, whose start is pended until the node is ready.
