@@ -4,6 +4,8 @@ var benchmarket = require('benchmarket');
 
 xdescribe(filename, function () {
 
+  this.timeout(30000);
+
   benchmarket.start();
 
 

@@ -18,6 +18,6 @@
 
 ### swim issues (later)
 
-* expire faulty from swim after long long time (otherwise fault list lives on forever)
+* expire faulty from swim after long long time (otherwise faulty list lives on forever)
 * msgpack5 into swim for dissemination payload compression (minor size improvement, much slower)
 * encrypt swim payloads?

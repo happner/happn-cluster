@@ -4,8 +4,8 @@
 
 var http = require('http');
 var https = require('https');
-
-var Mongo = require('../lib/mongo');
+var Promise = require('bluebird');
+var Mongo = require('./mongo');
 
 var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
 var mongoCollection = 'happn-cluster-test';
@@ -129,6 +129,52 @@ module.exports.__generateCertificate = function (callback) {
     callback(null, {certDir: certDir, certName: certName, keyName: keyName});
   });
 };
+
+module.exports.awaitExactMembershipCount = Promise.promisify(function (servers, callback) {
+  var interval, gotExactCount = false;
+
+  interval = setInterval(function () {
+
+    gotExactCount = true;
+
+    servers.forEach(function (server) {
+      if (Object.keys(server.services.membership.members).length != servers.length - 1) {
+        // console.log('short with', Object.keys(server.services.membership.members).length);
+        gotExactCount = false;
+      }
+    });
+
+    if (gotExactCount) {
+      clearInterval(interval);
+      callback();
+    }
+
+  }, 100);
+
+});
+
+module.exports.awaitExactPeerCount = Promise.promisify(function (servers, callback) {
+  var interval, gotExactCount = false;
+
+  interval = setInterval(function () {
+
+    gotExactCount = true;
+
+    servers.forEach(function (server) {
+      if (Object.keys(server.services.orchestrator.peers).length != servers.length) {
+        // console.log('short with', Object.keys(server.services.membership.members).length);
+        gotExactCount = false;
+      }
+    });
+
+    if (gotExactCount) {
+      clearInterval(interval);
+      callback();
+    }
+
+  }, 100);
+
+});
 
 module.exports.createClientInstance = function (host, port, callback) {
 
