@@ -107,10 +107,6 @@ describe(filename, function () {
         })
 
         .then(function () {
-          return Promise.delay(1000);
-        })
-
-        .then(function () {
           for (var i = 0; i < replicatedEvents.length; i++) {
             expect(replicatedEvents[i]).to.eql(controlEvent);
           }
@@ -161,10 +157,6 @@ describe(filename, function () {
             unpause = resolve;
             fail = reject;
           });
-        })
-
-        .then(function () {
-          return Promise.delay(1000);
         })
 
         .then(function () {
