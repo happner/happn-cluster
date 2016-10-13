@@ -344,7 +344,7 @@ describe(filename, function () {
 
   });
 
-  context('on merge events', function () {
+  context.only('on merge events', function () {
 
     it('replicates', function (done) {
 
@@ -360,7 +360,7 @@ describe(filename, function () {
 
         .then(function () {
           return Promise.resolve(_this.clients).map(function (client, i) {
-            return client.onAsync('/*', function (data, meta) {
+            return client.onAsync('/some/path/to/merge/on', function (data, meta) {
               delete meta.sessionId;
               if (i == 0) {
                 controlEvent = {
