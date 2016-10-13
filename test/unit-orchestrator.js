@@ -53,7 +53,8 @@ describe(filename, function () {
         o.config.should.eql({
           minimumPeers: 1,
           replicate: ['/*'],
-          stableReportInterval: 5000
+          stableReportInterval: 5000,
+          stabiliseTimeout: 120000
         });
 
         done();
@@ -76,7 +77,8 @@ describe(filename, function () {
         o.config.should.eql({
           minimumPeers: 3,
           replicate: [],
-          stableReportInterval: 10000
+          stableReportInterval: 10000,
+          stabiliseTimeout: 120000
         });
 
         done();

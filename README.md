@@ -73,7 +73,8 @@ var defaultConfig = {
       config: {
         minimumPeers: 1,
         replicate: ['/*'],
-        stableReportInterval: 5000
+        stableReportInterval: 5000,
+        stabiliseTimeout: 120 * 1000 // 0 disables
       }
     },
     
@@ -171,6 +172,12 @@ Array of happn paths or path masks that will be replicated throughout the cluste
 Having received the membership list (other cluster nodes), the orchestrator stalls the startup
 procedure (pending the proxy start) until fully connected (stabilised). This interval controls
 the frequency with which the outstanding connection states are reported into the log.
+
+#### config.stabiliseTimeout
+
+Defines how long to wait for this starting node to become fully connected (stabilised) before giving up and stopping the node. In all known cases a starting node will either reach stability or fail explicitly with an error. This is a failsafe (for unknown cases) to prevent endlessly awaiting stability where it would be better to stop and try joining the cluster again.
+
+**Note that this acts in opposition to `minimumPeers` - A starting node awaiting minimum peers will still time out.** 
 
 ## Membership Sub-Config
 

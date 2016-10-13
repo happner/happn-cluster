@@ -24,7 +24,8 @@ module.exports = function(seq) {
         config: {
           minimumPeers: 6,
           // replicate: ['/*'],
-          // stableReportInterval: 2000
+          // stableReportInterval: 2000,
+          // stabiliseTimeout: 10 * 1000,
         }
       },
       membership: {
