@@ -22,6 +22,12 @@ function MockOrchestrator(opts) {
 
   this.members = {};
   this.peers = {};
+
+  this.happn = {
+    services: {
+      pubsub: {}
+    }
+  }
 }
 
 MockOrchestrator.prototype.__stateUpdate = function() {

@@ -45,7 +45,6 @@ describe(filename, function () {
 
     var readyNames = {};
     Orchestrator.prototype.__stateUpdate = function () {
-      console.log('UPDATE STATE', this.happn.name);
 
       // call original so that nothing is out of the ordinary,
       // `this` refers to the orchestrator instance for the necessary context
@@ -55,7 +54,6 @@ describe(filename, function () {
         // got all the peers we should have in order to trigger starting the last one
         readyNames[this.happn.name] = 1;
       }
-
     };
 
     // set waiting interval to start last peer

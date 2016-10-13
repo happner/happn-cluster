@@ -3,7 +3,6 @@ var filename = path.basename(__filename);
 var should = require('should');
 
 var Member = require('../lib/services/orchestrator/member');
-var EventMapper = require('../lib/mappers/event-mapper');
 var MockOrchestrator = require('./mocks/mock-orchestrator');
 var mockOpts = require('./mocks/mock-opts');
 var MockHappnClient = require('./mocks/mock-happn-client');
@@ -31,7 +30,6 @@ describe(filename, function () {
 
       var m = new Member({
         orchestrator: this.orchestrator,
-        eventMapper: new EventMapper(),
         clusterName: 'cluster-name',
         memberFromLogin: {
           memberId: 'MEMBER_ID',
@@ -63,7 +61,6 @@ describe(filename, function () {
 
       var m = new Member({
         orchestrator: this.orchestrator,
-        eventMapper: new EventMapper(),
         clusterName: 'cluster-name',
         member: {
           memberId: 'MEMBER_ID',
@@ -94,7 +91,6 @@ describe(filename, function () {
 
       var m = new Member({
         orchestrator: this.orchestrator,
-        eventMapper: new EventMapper(),
         clusterName: 'cluster-name',
         member: {
           memberId: 'MEMBER_ID',
@@ -119,7 +115,6 @@ describe(filename, function () {
 
       var m = new Member({
         orchestrator: this.orchestrator,
-        eventMapper: new EventMapper(),
         clusterName: 'cluster-name',
         member: {
           memberId: 'MEMBER_ID',
@@ -143,7 +138,6 @@ describe(filename, function () {
 
       var m = new Member({
         orchestrator: this.orchestrator,
-        eventMapper: new EventMapper(),
         clusterName: 'cluster-name',
         member: {
           memberId: 'MEMBER_ID',
@@ -161,49 +155,6 @@ describe(filename, function () {
       }, 20);
     });
 
-
-    it('relays events to local happn through mapper', function(done) {
-
-      var eventMapper = {
-        mapMemberEventToPubSubData: function(eventData, eventMeta, clusterName, callback) {
-          callback(null, {message: 'MESSAGE', payload: 'PAYLOAD'})
-        }
-      };
-
-      this.orchestrator.config.replicate = ['/path'];
-
-      this.orchestrator.happn = {
-        services: {
-          pubsub: {
-            publish: function(message, payload) {
-              message.should.equal('MESSAGE');
-              payload.should.equal('PAYLOAD');
-              done();
-            }
-          }
-        }
-      };
-
-      var m = new Member({
-        orchestrator: this.orchestrator,
-        eventMapper: eventMapper,
-        clusterName: 'cluster-name',
-        member: {
-          memberId: 'MEMBER_ID',
-          url: 'http://10.0.0.2:55000'
-        }
-      });
-
-      setTimeout(function () {
-
-        var replicationClient = MockHappnClient.instances['10-0-0-2_55000'];
-        var data = {};
-        var meta = {};
-        replicationClient.emitHappnEvent('/path', data, meta);
-
-      }, 20);
-    });
-
   });
 
 
@@ -215,7 +166,6 @@ describe(filename, function () {
 
       var m = new Member({
         orchestrator: this.orchestrator,
-        eventMapper: new EventMapper(),
         clusterName: 'cluster-name',
         member: {
           memberId: 'MEMBER_ID',
@@ -240,7 +190,6 @@ describe(filename, function () {
 
       var m = new Member({
         orchestrator: this.orchestrator,
-        eventMapper: new EventMapper(),
         clusterName: 'cluster-name',
         member: {
           memberId: 'MEMBER_ID',
