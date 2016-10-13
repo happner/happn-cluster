@@ -14,7 +14,7 @@ module.exports.clearMongoCollection = function(callback){
   Mongo.clearCollection(mongoUrl, mongoCollection, callback);
 };
 
-module.exports.createMemberConfigs = function (clusterSize, isSecure, callback) {
+module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, isSecure, callback) {
 
   var os = require('os');
   var dface = require('dface');
@@ -113,7 +113,7 @@ module.exports.createMemberConfigs = function (clusterSize, isSecure, callback) 
   } else {
     callback(null, generateConfigs());
   }
-};
+});
 
 module.exports.__generateCertificate = function (callback) {
 
@@ -130,16 +130,22 @@ module.exports.__generateCertificate = function (callback) {
   });
 };
 
-module.exports.awaitExactMembershipCount = Promise.promisify(function (servers, callback) {
+module.exports.awaitExactMembershipCount = Promise.promisify(function (servers, count, callback) {
   var interval, gotExactCount = false;
 
+  if (typeof count == 'function') {
+    callback = count;
+    count = servers.length;
+  }
+
   interval = setInterval(function () {
+
+    if (servers.length !== count) return;
 
     gotExactCount = true;
 
     servers.forEach(function (server) {
-      if (Object.keys(server.services.membership.members).length != servers.length - 1) {
-        // console.log('short with', Object.keys(server.services.membership.members).length);
+      if (Object.keys(server.services.membership.members).length != count - 1) {
         gotExactCount = false;
       }
     });
@@ -153,16 +159,22 @@ module.exports.awaitExactMembershipCount = Promise.promisify(function (servers, 
 
 });
 
-module.exports.awaitExactPeerCount = Promise.promisify(function (servers, callback) {
+module.exports.awaitExactPeerCount = Promise.promisify(function (servers, count, callback) {
   var interval, gotExactCount = false;
 
+  if (typeof count == 'function') {
+    callback = count;
+    count = servers.length;
+  }
+
   interval = setInterval(function () {
+
+    if (servers.length !== count) return;
 
     gotExactCount = true;
 
     servers.forEach(function (server) {
-      if (Object.keys(server.services.orchestrator.peers).length != servers.length) {
-        // console.log('short with', Object.keys(server.services.membership.members).length);
+      if (Object.keys(server.services.orchestrator.peers).length != count) {
         gotExactCount = false;
       }
     });

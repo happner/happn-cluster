@@ -21,10 +21,6 @@ describe(filename, function () {
     isSecure: isSecure
   });
 
-  // before('wait for lagging swim membership from initial bootstrap', function (done) {
-  //   testUtils.awaitExactMembershipCount(this.servers, done);
-  // });
-
   before('create extra config', function (done) {
     var _this = this;
     testUtils.createMemberConfigs(clusterSize + 1, false, function (e, configs) {
