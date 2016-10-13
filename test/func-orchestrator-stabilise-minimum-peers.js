@@ -10,7 +10,6 @@ var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
 var clusterSize = 3;
-var isSecure = false;
 
 describe(filename, function () {
 
@@ -78,7 +77,7 @@ describe(filename, function () {
     Promise.resolve()
 
       .then(function () {
-        return testUtils.createMemberConfigs(clusterSize, isSecure);
+        return testUtils.createMemberConfigs(clusterSize);
       })
 
       .then(function (_configs) {

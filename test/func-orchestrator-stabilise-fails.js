@@ -25,7 +25,7 @@ describe(filename, function () {
 
   before('create extra config', function (done) {
     var _this = this;
-    testUtils.createMemberConfigs(clusterSize + 1, false, function (e, configs) {
+    testUtils.createMemberConfigs(clusterSize + 1, function (e, configs) {
       if (e) return done(e);
       _this.extraConfig = configs.pop();
       done();

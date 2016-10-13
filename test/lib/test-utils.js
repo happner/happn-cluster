@@ -5,24 +5,37 @@
 var http = require('http');
 var https = require('https');
 var Promise = require('bluebird');
+
+var getAddress = require('../../lib/utils/get-address');
 var Mongo = require('./mongo');
 
 var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
 var mongoCollection = 'happn-cluster-test';
 
-module.exports.clearMongoCollection = function(callback){
+module.exports.clearMongoCollection = function (callback) {
   Mongo.clearCollection(mongoUrl, mongoCollection, callback);
 };
 
-module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, isSecure, callback) {
+module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, isSecure, services, callback) {
 
-  var os = require('os');
-  var dface = require('dface');
-  var device = os.platform() == 'linux' ? 'eth0' : 'en0'; // windows?
-  var ipAddress = dface(device);
+  // var os = require('os');
+  // var dface = require('dface');
+  // var device = os.platform() == 'linux' ? 'eth0' : 'en0'; // windows?
+  var ipAddress = getAddress();
   var fs = require('fs');
 
   var transport = null;
+
+  if (typeof isSecure == 'function') {
+    callback = isSecure;
+    isSecure = false;
+    services = {};
+  }
+
+  if (typeof services == 'function') {
+    callback = services;
+    services = {};
+  }
 
   var generateConfigs = function () {
 
@@ -57,7 +70,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, is
               seed: i == 1,
               seedWait: 500,
               joinType: 'static',
-              host: device,
+              host: ipAddress,
               port: 56000 + i,
               hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
               joinTimeout: 800,
@@ -88,6 +101,13 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, is
           }
         }
       }
+
+      Object.keys(services).forEach(function (serviceName) {
+        var ammendDefaultService = services[serviceName];
+        Object.keys(ammendDefaultService).forEach(function (keyName) {
+          config.services[serviceName].config[keyName] = ammendDefaultService[keyName];
+        });
+      });
 
       // console.log(JSON.stringify(config, null, 2));
 
@@ -265,7 +285,8 @@ module.exports.createBrowserClientInstance = function (host, port, callback) {
 
       try {
         fs.mkdirSync(tempDir);
-      } catch (err) {}
+      } catch (err) {
+      }
 
       download(function (err) {
         if (err)

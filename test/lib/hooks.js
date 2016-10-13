@@ -8,6 +8,7 @@ module.exports.startCluster = function(clusterOpts) {
 
   var clusterSize = clusterOpts.size || 5;
   var isSecure = typeof clusterOpts.isSecure == 'boolean' ? clusterOpts.isSecure : false;
+  var services = clusterOpts.services || {};
 
   before('clear collection (before)', function (done) {
     testUtils.clearMongoCollection(done);
@@ -17,7 +18,7 @@ module.exports.startCluster = function(clusterOpts) {
 
     var self = this;
 
-    testUtils.createMemberConfigs(clusterSize, isSecure, function (err, result) {
+    testUtils.createMemberConfigs(clusterSize, isSecure, services, function (err, result) {
 
       if (err)
         return done(err);
