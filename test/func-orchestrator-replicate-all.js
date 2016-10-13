@@ -210,7 +210,7 @@ describe(filename, function () {
         })
 
         .then(function () {
-          return _this.clients[0].remove('/some/path/to/remove/on', {some: 'data'});
+          return _this.clients[0].remove('/some/path/to/remove/on');
         })
 
         .then(function () {
