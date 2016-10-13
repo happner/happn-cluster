@@ -259,6 +259,52 @@ describe(filename, function () {
             return client.onAsync('/*', function (data, meta) {
               delete meta.sessionId;
               delete meta.action; // <---------------------------------- can't replicate .action in tag operations
+
+              /*
+
+              should look like this
+              ---------------------
+
+              data = { // raw data, including stored meta being "tagged"
+                data: { some: 'data' },
+                _meta: {
+                  created: 1476388008625,
+                  modified: 1476388008625,
+                  path: '/some/path/to/tag/on',
+                  _id: '/some/path/to/tag/on'
+                }
+              }
+              meta = {
+                path: '/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02',
+                tag: 'TAGNAME',
+                type: 'data',
+                action: '/SET@/some/path/to/tag/on',
+                channel: '/ALL@/*'
+              }
+
+              after replication it looks like this
+              ------------------------------------
+
+              data = {
+                data: { some: 'data' },
+                _meta: {
+                  created: 1476388375945,
+                  modified: 1476388375945,
+                  path: '/some/path/to/tag/on',
+                  _id: '/some/path/to/tag/on'
+                }
+              }
+
+              meta = {
+                path: '/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02',
+                tag: 'TAGNAME',
+                action: '/SET@/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02', <--- different
+                channel: '/ALL@/*',
+                type: 'data'
+              }
+
+              */
+
               if (i == 0) {
                 controlEvent = {
                   data: data,
@@ -291,6 +337,10 @@ describe(filename, function () {
         })
 
         .then(function() {
+
+          // console.log(controlEvent);
+          // console.log(replicatedEvents[0]);
+
           for (var i = 0; i < replicatedEvents.length; i++) {
             expect(replicatedEvents[i]).to.eql(controlEvent);
           }

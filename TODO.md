@@ -3,6 +3,8 @@
 * make proxy listen at default 55000 for default client
 * example subscribe/replicate
 
+* install behind realworld aws load balancer and spawn from images
+
 ### proxy
 
 * should we stop the proxy on error?
