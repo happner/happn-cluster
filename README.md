@@ -37,8 +37,10 @@ See [happn](https://github.com/happner/happn) for full complement of happn confi
 ```javascript
 var HappnCluster = require('happn-cluster');
 var defaultConfig = {
-
-  // secure: true // (to enable security)
+  // name: undefined,  // defaults from happn service host:port (10-0-0-1_55000)
+  // host: '0.0.0.0', // happn service ip
+  // port: 55000,    // happn service port
+  // secure: true,  // to enable security
   services: {
     
     // // security sub-config (to enable security)
@@ -110,6 +112,26 @@ HappnCluster.create(defaultConfig)
   });
   
 ```
+
+## Happen Config
+
+#### name
+
+Each happn node in the cluster requires a unique name. The name will default from the host:port below to produce something like '10-0-0-1_55000'. If happn is configured to listen at 0.0.0.0 then the name will default instead from the first public IPv4 address found in interfaces.
+
+#### host
+
+The host/ip that the happn service should listen on. Also supports [dface](https://github.com/happner/dface) spec for cloning nodes into a DHCP environment.
+
+#### port
+
+The port that the happn service should listen on.
+
+#### secure
+
+Set true to enable security.
+
+**If one cluster node is secure, they all need to be secure.**
 
 ## Security Sub-Config
 
@@ -202,7 +224,7 @@ contains multiple cluster member instances all starting concurrently where one i
 #### config.[host, port]
 
 The host and port on which this member's SWIM service should listen. Host should be an actual ip address
-or hostname, not '0.0.0.0'. It can also be specified using [interface](https://github.com/happner/dface) (eg 'eth0')
+or hostname, not '0.0.0.0'. It can also be specified using [dface](https://github.com/happner/dface) spec.
 
 **Important: The membership service protocol is currently insecure. These ports need to be protected in a private cluster.** [issues/1](https://github.com/happner/happn-cluster/issues/1)
 

@@ -1,8 +1,8 @@
-
 var ipAddress = require('../../lib/utils/get-address')();
 
-module.exports = function(seq) {
+module.exports = function (seq, name) {
   var config = {
+    name: name,
     secure: true,
     services: {
       security: {

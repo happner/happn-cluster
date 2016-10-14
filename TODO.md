@@ -8,6 +8,7 @@
 * proxy to have own key/cert such that proxy can be https independently of what happn is doing
 * make proxy listen at default 55000 for default clients, move happn default to 57000
 * remove setTimeout(3000) from proxy tests where possible to speed up test runs
+* support dface for listenHost
 
 ### later
 

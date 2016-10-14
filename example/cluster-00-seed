@@ -5,4 +5,4 @@
 var path = require('path');
 var seq = parseInt(path.basename(__filename).split('-')[1]);
 
-require('./lib/create-cluster-member')(seq);
+require('./lib/create-cluster-member')(seq /*, 'NAME' */);

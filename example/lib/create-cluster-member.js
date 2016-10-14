@@ -1,17 +1,15 @@
-
-
 var HappnCluster = require('../../');
 var createConfig = require('./create-config');
 
-module.exports = function(seq) {
+module.exports = function (seq, name) {
 
-  var config = createConfig(seq);
+  var config = createConfig(seq, name);
 
   // console.log(JSON.stringify(config, null, 2));
 
   HappnCluster.create(config)
 
-    .then(function(server) {
+    .then(function (server) {
 
       // console.log(server.services.orchestrator.peers);
 
@@ -23,8 +21,8 @@ module.exports = function(seq) {
       //   console.log('departing peer\n', member);
       // });
 
-      process.on('SIGINT', function() {
-        server.stop( /*{kill: true, wait: 2000},*/ function() {
+      process.on('SIGINT', function () {
+        server.stop(/*{kill: true, wait: 2000},*/ function () {
           // if (seq == 9) {
           //   console.log('kill', process.pid);
           //   return;
@@ -34,7 +32,7 @@ module.exports = function(seq) {
       })
     })
 
-    .catch(function(error) {
+    .catch(function (error) {
       console.error('\n', error.stack ? error.stack : error);
       process.exit(1);
     });
