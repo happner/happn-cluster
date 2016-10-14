@@ -8,29 +8,13 @@ Extends happn with cluster ability.
 
 Requires that each cluster member mounts the same shared data service. See [happn-service-mongo](https://github.com/happner/happn-service-mongo).
 
-## Getting Started
+## Install
 
 `npm install happn-cluster happn-service-mongo --save`
 
-### Minimum Config
+Note data service installed separately.
 
-### Starting Seed Node
-
-TODO
-
-```javacsript
-
-```
-
-### Starting Other Nodes
-
-TODO
-
-```javascript
-
-```
-
-## Full Configuration
+## Configure
 
 See [happn](https://github.com/happner/happn) for full complement of happn config.
 
@@ -113,7 +97,9 @@ HappnCluster.create(defaultConfig)
   
 ```
 
-## Happen Config
+
+
+### Happen Config
 
 #### name
 
@@ -133,7 +119,9 @@ Set true to enable security.
 
 **If one cluster node is secure, they all need to be secure.**
 
-## Security Sub-Config
+
+
+### Security Sub-Config
 
 Inter-cluster connections are made using the admin user. All nodes in the cluster will need the same
 admin username and password configured.
@@ -154,13 +142,17 @@ mongo mongodb://127.0.0.1:27017/happn-cluster
 
 **The above also applies after starting a cluster with security unconfigured. The admin user is still created with the default password 'happn'. Upon turning on security later the password will then need to be changed as described above.**
 
-## Shared Data Sub-Config
+
+
+### Shared Data Sub-Config
 
 By configuring a shared data service all nodes in the cluster can serve the same data to clients. The
 default uses the [happn mongo plugin](https://github.com/happner/happn-service-mongo). The localhost
 url is porbably not what you want.
 
-## Proxy Sub-Config
+
+
+### Proxy Sub-Config
 
 A starting cluster node immediately starts the happn service listening to allow the orchestrator to
 establish the inter-cluster replication bridges.
@@ -176,7 +168,8 @@ The socket address where the proxy listens for clients.
 TODO: remaining proxy config
 
 
-## Orchestrator Sub-Config
+
+### Orchestrator Sub-Config
 
 #### config.minimumPeers
 
@@ -199,7 +192,9 @@ Defines how long to wait for this starting node to become fully connected (stabi
 
 **Note that this acts in opposition to `minimumPeers` - A starting node awaiting minimum peers will still time out.** 
 
-## Membership Sub-Config
+
+
+### Membership Sub-Config
 
 #### config.clusterName
 
