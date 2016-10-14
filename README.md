@@ -8,6 +8,8 @@ Extends happn with cluster ability.
 
 Requires that each cluster member mounts the same shared data service. See [happn-service-mongo](https://github.com/happner/happn-service-mongo).
 
+See also [happn cluster aws example](https://github.com/happner/happn-cluster-aws-example)
+
 ## Install
 
 `npm install happn-cluster happn-service-mongo --save`

@@ -1,5 +1,6 @@
 * example subscribe/replicate
 * install behind realworld aws load balancer and spawn from images
+* finalise aws example once released
 
 ### proxy
 
