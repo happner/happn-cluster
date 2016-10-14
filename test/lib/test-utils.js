@@ -68,12 +68,12 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, is
             config: {
               clusterName: 'cluster1',
               seed: i == 1,
-              seedWait: 500,
+              seedWait: 1000,
               joinType: 'static',
               host: ipAddress,
               port: 56000 + i,
               hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
-              joinTimeout: 800,
+              joinTimeout: 1000,
               pingInterval: 200,
               pingTimeout: 20,
               pingReqTimeout: 60
