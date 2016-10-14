@@ -1,8 +1,4 @@
-* document the importance of starting the seed member alone and first
-* document **swim is insecure, protect the port, otherwise anyone can join the cluster and and we would login to them, exposing the admin password**
-* make proxy listen at default 55000 for default client
 * example subscribe/replicate
-
 * install behind realworld aws load balancer and spawn from images
 
 ### proxy
@@ -10,6 +6,8 @@
 * should we stop the proxy on error?
 * proxy to implement listenHost
 * proxy to have own key/cert such that proxy can be https independently of what happn is doing
+* make proxy listen at default 55000 for default clients, move happn default to 57000
+* remove setTimeout(3000) from proxy tests where possible to speed up test runs
 
 ### later
 

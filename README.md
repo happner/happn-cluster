@@ -130,9 +130,7 @@ mongo mongodb://127.0.0.1:27017/happn-cluster
 ```
 * Restart the cluster (admin user will be regenerated with new password)
 
-**The above also applies after starting a cluster with security unconfigured. The admin user is still
-created with the default password 'happn'. Upon turning on security later the password will then need
-to be changed as describe above.**
+**The above also applies after starting a cluster with security unconfigured. The admin user is still created with the default password 'happn'. Upon turning on security later the password will then need to be changed as described above.**
 
 ## Shared Data Sub-Config
 
@@ -161,7 +159,7 @@ TODO: remaining proxy config
 #### config.minimumPeers
 
 This pends the starting of the proxy until there are this many known peers in the cluster. This prevents
-the `thundering herd` (of clients) from attacking the first started node.
+the `thundering herd` (of clients) from settling all their sockets permanently onto the first started node.
 
 #### config.replicate
 
@@ -183,8 +181,8 @@ Defines how long to wait for this starting node to become fully connected (stabi
 
 #### config.clusterName
 
-Every member of the cluster should have the same configured name.
-Name is limited to characters acceptable in happn paths, namely '_*-', numbers and letters.
+Every member of the cluster should have the same configured `clusterName`.
+The name is limited to characters acceptable in happn paths, namely '_*-', numbers and letters.
 Joining members with a different clusterName will be ignored by the orchestrator.
 
 #### config.seed
@@ -199,15 +197,14 @@ list of hosts to join when starting.
 #### config.seedWait
 
 Members that are not the seed member pause this long before starting. This allows for a booting host that
-contains multiple cluster member instances all starting concurrently where one is the seed member. By waiting,
-the seed member will be up and running before the others attempt to join it in the cluster.
+contains multiple cluster member instances all starting concurrently where one is the seed member. By waiting, the seed member will be up and running before the others attempt to join it in the cluster.
 
 #### config.[host, port]
 
 The host and port on which this member's SWIM service should listen. Host should be an actual ip address
 or hostname, not '0.0.0.0'. It can also be specified using [interface](https://github.com/happner/dface) (eg 'eth0')
 
-Default: 'eth0', 11000
+**Important: The membership service protocol is currently insecure. These ports need to be protected in a private cluster.** [issues/1](https://github.com/happner/happn-cluster/issues/1)
 
 #### config.hosts
 
@@ -232,21 +229,15 @@ The bootstrapping SWIM member waits this long to accumulate the full membership 
 
 #### config.pingInterval
 
-The running SWIM member `cycles` through it's member list sending a ping to determine if the member is still there.
-A ping is sent once every interval. The default 1000ms results in a noticable delay in detecting departed members.
-It's a tradeoff between cluster-size/detection-time/ping-bandwidth. Keep in mind that all members are doing the
-cyclic ping so worst-case discovery time is not `1000ms * memberCount`.
+The running SWIM member `cycles` through it's member list sending a ping to determine if the member is still there. A ping is sent once every interval. The default 1000ms results in a noticable delay in detecting departed members. It's a tradeoff between cluster-size/detection-time/ping-bandwidth. Keep in mind that all members are doing the cyclic ping so worst-case discovery time is not `1000ms * memberCount`.
 
 #### config.pingTimeout
 
-The running SWIM member expects a reply to its ping. Receiving none within this time results in the pinged member
-coming under suspicion of being faulty/offline. At this point secondary ping requests are sent to a random selection
-of other members to ping the suspect themselves to confirm the suspicion.
+The running SWIM member expects a reply to its ping. Receiving none within this time results in the pinged member coming under suspicion of being faulty/offline. At this point secondary ping requests are sent to a random selection of other members to ping the suspect themselves to confirm the suspicion.
 
 #### config.pingReqTimeout
 
-The running SWIM member expects a reply from those secondary ping requests within this time. If not received the
-suspect is declared faulty/offline and this information is disseminated into the cluster.
+The running SWIM member expects a reply from those secondary ping requests within this time. If not received the suspect is declared faulty/offline and this information is disseminated into the cluster.
 
 #### config.pingReqGroupSize
 
@@ -254,9 +245,6 @@ Secondary ping requests are sent to this many other members.
 
 #### config.[udp, disseminationFactor]
 
-Members updates (arrived/departed) are disseminated throughout the cluster on the back of the pings already
-being sent. **udp.maxDgramSize** limits the size of those payloads. **disseminationFactor** combined logarithmically
-with cluster size determines for how many pings in the `cycle` any given membership update remains eligible for
-dissemination. All eligible updates are sent with every ping up to the available **maxDgramSize**.
+Members updates (arrived/departed) are disseminated throughout the cluster on the back of the pings already being sent. **udp.maxDgramSize** limits the size of those payloads. **disseminationFactor** combined logarithmically with cluster size determines for how many pings in the `cycle` any given membership update remains eligible for dissemination. All eligible updates are sent with every ping up to the available **maxDgramSize**.
 
 See [swim.js](https://github.com/happner/swim-js)

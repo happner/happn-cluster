@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var HappnCluster = require('../../');
 var testUtils = require('./test-utils');
 
-module.exports.startCluster = function(clusterOpts) {
+module.exports.startCluster = function (clusterOpts) {
 
   var clusterSize = clusterOpts.size || 5;
   var isSecure = typeof clusterOpts.isSecure == 'boolean' ? clusterOpts.isSecure : false;
@@ -37,14 +37,14 @@ module.exports.startCluster = function(clusterOpts) {
   });
 };
 
-module.exports.stopCluster = function() {
+module.exports.stopCluster = function () {
 
   after('stop cluster', function (done) {
 
     if (!this.servers) return done();
     Promise.resolve(this.servers).map(function (server) {
       return server.stop()
-        .then(function() {
+        .then(function () {
           // stopping all at once causes replicator client happn logouts to timeout
           // because happn logout attempts unsubscribe on server, and all servers
           // are gone

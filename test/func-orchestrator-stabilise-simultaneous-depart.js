@@ -56,7 +56,7 @@ describe(filename, function () {
       .then(function (config) {
         var stopServer = _this.servers.pop();
         setTimeout(function () {
-          stopServer.stop().then(function() {
+          stopServer.stop().then(function () {
           }).catch(done);
         }, config.services.membership.config.joinTimeout - 20);
 
@@ -64,7 +64,7 @@ describe(filename, function () {
         return HappnCluster.create(config);
       })
 
-      .then(function(newServer) {
+      .then(function (newServer) {
         _this.servers.push(newServer);
       })
 

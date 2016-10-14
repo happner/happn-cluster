@@ -101,25 +101,25 @@ describe(filename, function () {
           // send GET request to proxy - this should pass the request to the target
           http.request({port: proxyPort, host: proxyHost}, function (res) {
 
-              var result = '';
+            var result = '';
 
-              res.on('data', function (chunk) {
-                result += chunk;
-              });
+            res.on('data', function (chunk) {
+              result += chunk;
+            });
 
-              res.on('end', function () {
-                // console.log(result);
-                assert.equal(result, EXPECTED);
+            res.on('end', function () {
+              // console.log(result);
+              assert.equal(result, EXPECTED);
 
-                proxy.stop(null, function (err) {
-                  if (err)
-                    return done(err);
+              proxy.stop(null, function (err) {
+                if (err)
+                  return done(err);
 
-                  return done();
-                })
-              });
+                return done();
+              })
+            });
 
-            })
+          })
             .end();
         })
         .catch(function (err) {

@@ -97,7 +97,7 @@ MockHappnClient.prototype.emitDisconnect = function () {
   });
 };
 
-MockHappnClient.prototype.emitHappnEvent = function(path, data, meta) {
+MockHappnClient.prototype.emitHappnEvent = function (path, data, meta) {
   if (!this.__subscriptionHandlers[path]) return;
   this.__subscriptionHandlers[path](data, meta);
 };

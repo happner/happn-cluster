@@ -31,6 +31,6 @@ MockSwim.__queueError = function (error) {
   MockSwim.__queuedError = error;
 };
 
-MockSwim.prototype.__emitUpdate = function(member) {
+MockSwim.prototype.__emitUpdate = function (member) {
   this.emit(Swim.EventType.Update, member);
 };

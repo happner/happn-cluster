@@ -220,7 +220,7 @@ describe(filename, function () {
           });
         })
 
-        .then(function() {
+        .then(function () {
           for (var i = 0; i < replicatedEvents.length; i++) {
             expect(replicatedEvents[i]).to.eql(controlEvent);
           }
@@ -254,48 +254,48 @@ describe(filename, function () {
 
               /*
 
-              should look like this
-              ---------------------
+               should look like this
+               ---------------------
 
-              data = { // raw data, including stored meta being "tagged"
-                data: { some: 'data' },
-                _meta: {
-                  created: 1476388008625,
-                  modified: 1476388008625,
-                  path: '/some/path/to/tag/on',
-                  _id: '/some/path/to/tag/on'
-                }
-              }
-              meta = {
-                path: '/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02',
-                tag: 'TAGNAME',
-                type: 'data',
-                action: '/SET@/some/path/to/tag/on',
-                channel: '/ALL@/*'
-              }
+               data = { // raw data, including stored meta being "tagged"
+               data: { some: 'data' },
+               _meta: {
+               created: 1476388008625,
+               modified: 1476388008625,
+               path: '/some/path/to/tag/on',
+               _id: '/some/path/to/tag/on'
+               }
+               }
+               meta = {
+               path: '/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02',
+               tag: 'TAGNAME',
+               type: 'data',
+               action: '/SET@/some/path/to/tag/on',
+               channel: '/ALL@/*'
+               }
 
-              after replication it looks like this
-              ------------------------------------
+               after replication it looks like this
+               ------------------------------------
 
-              data = {
-                data: { some: 'data' },
-                _meta: {
-                  created: 1476388375945,
-                  modified: 1476388375945,
-                  path: '/some/path/to/tag/on',
-                  _id: '/some/path/to/tag/on'
-                }
-              }
+               data = {
+               data: { some: 'data' },
+               _meta: {
+               created: 1476388375945,
+               modified: 1476388375945,
+               path: '/some/path/to/tag/on',
+               _id: '/some/path/to/tag/on'
+               }
+               }
 
-              meta = {
-                path: '/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02',
-                tag: 'TAGNAME',
-                action: '/SET@/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02', <--- different
-                channel: '/ALL@/*',
-                type: 'data'
-              }
+               meta = {
+               path: '/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02',
+               tag: 'TAGNAME',
+               action: '/SET@/_TAGS/some/path/to/tag/on/62c70bc4927e48ba893daca24e716d02', <--- different
+               channel: '/ALL@/*',
+               type: 'data'
+               }
 
-              */
+               */
 
               if (i == 0) {
                 controlEvent = {
@@ -328,7 +328,7 @@ describe(filename, function () {
           });
         })
 
-        .then(function() {
+        .then(function () {
 
           // console.log(controlEvent);
           // console.log(replicatedEvents[0]);
@@ -344,7 +344,7 @@ describe(filename, function () {
 
   });
 
-  context.only('on merge events', function () {
+  context('on merge events', function () {
 
     it('replicates', function (done) {
 
@@ -393,7 +393,7 @@ describe(filename, function () {
           });
         })
 
-        .then(function() {
+        .then(function () {
           for (var i = 0; i < replicatedEvents.length; i++) {
             expect(replicatedEvents[i]).to.eql(controlEvent);
           }

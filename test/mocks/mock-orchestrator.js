@@ -30,6 +30,6 @@ function MockOrchestrator(opts) {
   }
 }
 
-MockOrchestrator.prototype.__stateUpdate = function() {
+MockOrchestrator.prototype.__stateUpdate = function () {
 
 };

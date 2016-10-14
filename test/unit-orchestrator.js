@@ -85,23 +85,23 @@ describe(filename, function () {
       });
     });
 
-    context('reduce replication paths', function() {
+    context('reduce replication paths', function () {
 
       var o;
 
-      beforeEach(function() {
+      beforeEach(function () {
         o = new Orchestrator(mockOpts);
         o.happn = new MockHappn('http', 9000);
       });
 
-      it('removes duplicate paths', function(done) {
+      it('removes duplicate paths', function (done) {
 
         o.initialize({
           replicate: [
             '/same/path',
             '/same/path'
           ]
-        }, function(e) {
+        }, function (e) {
           if (e) return done(e);
 
           o.config.replicate.should.eql(['/same/path']);
@@ -116,7 +116,7 @@ describe(filename, function () {
             '/same/*',
             '/same/path'
           ]
-        }, function(e) {
+        }, function (e) {
           if (e) return done(e);
 
           o.config.replicate.should.eql(['/same/*']);
@@ -131,7 +131,7 @@ describe(filename, function () {
             '/same/path',
             '/same/*'
           ]
-        }, function(e) {
+        }, function (e) {
           if (e) return done(e);
 
           o.config.replicate.should.eql(['/same/*']);
@@ -147,7 +147,7 @@ describe(filename, function () {
             '/same/path',
             '/same/path/with/some/more'
           ]
-        }, function(e) {
+        }, function (e) {
           if (e) return done(e);
 
           o.config.replicate.should.eql([
@@ -166,7 +166,7 @@ describe(filename, function () {
             '/same/*/with/*/more',
             '/same/path/*'
           ]
-        }, function(e) {
+        }, function (e) {
           if (e) return done(e);
 
           o.config.replicate.should.eql([
@@ -186,7 +186,7 @@ describe(filename, function () {
             '/same/path',
             '/*'
           ]
-        }, function(e) {
+        }, function (e) {
           if (e) return done(e);
 
           o.config.replicate.should.eql([
@@ -210,7 +210,7 @@ describe(filename, function () {
             '/*/*',
             '/*'
           ]
-        }, function(e) {
+        }, function (e) {
           if (e) return done(e);
 
           o.config.replicate.should.eql([
