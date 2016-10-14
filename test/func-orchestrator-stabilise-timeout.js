@@ -26,7 +26,7 @@ describe(filename, function () {
 
     var _this = this;
 
-    this.timeout(4000);
+    this.timeout(8000);
 
     Promise.resolve()
 
