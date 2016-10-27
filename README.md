@@ -51,8 +51,8 @@ var defaultConfig = {
     // proxy sub-config (defaults displayed)
     proxy: {
       config: {
-        listenPort: 57000,
-        // listenHost: '0.0.0.0' // <--- not implemented
+        port: 57000,
+        // host: '0.0.0.0' // <--- not implemented
       }
     },
     
@@ -163,7 +163,7 @@ Clients attaching to this happn service port will therefore be connecting before
 
 Instead, clients should connect through the proxy port, whose start is pended until the node is ready.
 
-#### config.[listenPort, listenHost]
+#### config.[port, host]
 
 The socket address where the proxy listens for clients.
 

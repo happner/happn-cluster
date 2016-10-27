@@ -30,8 +30,8 @@ describe(filename, function () {
 
       self.__configs.forEach(function (config) {
 
-        var port = config.services.proxy.config.listenPort;
-        var host = config.services.proxy.config.listenHost;
+        var port = config.services.proxy.config.port;
+        var host = config.services.proxy.config.host;
 
         // create happn client instance and log in
         testUtils.createBrowserClientInstance(host, port, function (err, instance) {

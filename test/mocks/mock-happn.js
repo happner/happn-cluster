@@ -16,8 +16,8 @@ var MockHappn = function (mode, targetPort) {
     pubsub: new MockPubsub(),
     proxy: {
       config: {
-        listenHost: '0.0.0.0',
-        listenPort: 8015
+        host: '0.0.0.0',
+        port: 8015
       }
     },
     membership: new MockMembership()

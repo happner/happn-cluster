@@ -38,7 +38,7 @@ module.exports = function (seq, name) {
       },
       proxy: {
         config: {
-          listenPort: 57000 + seq
+          port: 57000 + seq
         }
       }
     },

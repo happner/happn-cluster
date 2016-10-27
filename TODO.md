@@ -11,6 +11,7 @@
 * remove setTimeout(3000) from proxy tests where possible to speed up test runs
 * support dface for listenHost
 * finish proxy section in main readme
+* allowSelfSignedCerts config huh?
 
 ### later
 

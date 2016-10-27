@@ -27,8 +27,8 @@ describe(filename, function () {
       var loginConfig = {
         config: {
           secure: isSecure,
-          host: config.services.proxy.config.listenHost,
-          port: config.services.proxy.config.listenPort,
+          host: config.services.proxy.config.host,
+          port: config.services.proxy.config.port,
           protocol: 'http',
           username: config.services.security.config.adminUser.username,
           password: config.services.security.config.adminUser.password

@@ -13,11 +13,16 @@ describe(filename, function () {
 
   this.timeout(20000);
 
+  before(function () {
+    this.logLevel = process.env.LOG_LEVEL;
+    process.env.LOG_LEVEL = 'off';
+  });
+
   before('sets up configuration', function (done) {
 
     this.__config = {
-      listenHost: '0.0.0.0',
-      listenPort: 8015
+      host: '0.0.0.0',
+      port: 8015
     };
 
     Object.defineProperty(Proxy.prototype, "happn", {
@@ -72,8 +77,8 @@ describe(filename, function () {
 
     var http = require('http');
 
-    var proxyHost = proxy.happn.services.proxy.config.listenHost;
-    var proxyPort = proxy.happn.services.proxy.config.listenPort;
+    var proxyHost = proxy.happn.services.proxy.config.host;
+    var proxyPort = proxy.happn.services.proxy.config.port;
     var targetHost = proxy.happn.server.address().host;
     var targetPort = proxy.happn.config.port;
 
@@ -127,5 +132,10 @@ describe(filename, function () {
         })
     });
   });
+
+  after(function () {
+    process.env.LOG_LEVEL = this.logLevel;
+  });
+
 });
 
