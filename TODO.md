@@ -2,12 +2,6 @@
 * install behind realworld aws load balancer and spawn from images
 * finalise aws example once released
 
-### proxy
-
-* proxy to have own key/cert such that proxy can be https independently of what happn is doing
-* finish proxy section in main readme
-* allowSelfSignedCerts config huh?
-
 ### later
 
 * hole in stabalize, don't know when the remote has subscribed
