@@ -22,8 +22,8 @@ module.exports = function (seq, name) {
       },
       orchestrator: {
         config: {
-          minimumPeers: 6,
-          // replicate: ['/*'],
+          // minimumPeers: 6,
+          // replicate: ['/*'], //  ['/something/*', '/else'],
           // stableReportInterval: 2000,
           // stabiliseTimeout: 10 * 1000,
         }
@@ -38,11 +38,11 @@ module.exports = function (seq, name) {
       },
       proxy: {
         config: {
-          port: 57000 + seq
+          port: 55000 + seq
         }
       }
     },
-    port: 55000 + seq
+    port: 57000 + seq
   };
 
   return config;

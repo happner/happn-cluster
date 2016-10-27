@@ -25,7 +25,7 @@ var HappnCluster = require('happn-cluster');
 var defaultConfig = {
   // name: undefined,  // defaults from happn service host:port (10-0-0-1_55000)
   // host: '0.0.0.0', // happn service ip
-  // port: 55000,    // happn service port
+  // port: 57000,    // happn service port
   // secure: true,  // to enable security
   services: {
     
@@ -51,7 +51,7 @@ var defaultConfig = {
     // proxy sub-config (defaults displayed)
     proxy: {
       config: {
-        port: 57000,
+        port: 55000,
         // host: '0.0.0.0' // <--- not implemented
       }
     },
