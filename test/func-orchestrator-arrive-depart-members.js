@@ -1,7 +1,7 @@
 var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
-var should = require('should');
+var expect = require('expect.js');
 
 var HappnCluster = require('../');
 var hooks = require('./lib/hooks');
@@ -15,6 +15,11 @@ describe(filename, function () {
   this.timeout(30000);
 
   benchmarket.start();
+
+  before(function () {
+    this.logLevel = process.env.LOG_LEVEL;
+    process.env.LOG_LEVEL = 'off';
+  });
 
   hooks.startCluster({
     size: clusterSize,
@@ -75,8 +80,8 @@ describe(filename, function () {
 
       .then(function () {
         // console.log(emittedAdd);
-        Object.keys(emittedAdd).length.should.equal(clusterSize);
-        Object.keys(emittedRemove).length.should.equal(clusterSize);
+        expect(Object.keys(emittedAdd).length).to.equal(clusterSize);
+        expect(Object.keys(emittedRemove).length).to.equal(clusterSize);
       })
 
       .then(done).catch(done);
@@ -85,6 +90,10 @@ describe(filename, function () {
 
 
   hooks.stopCluster();
+
+  after(function () {
+    process.env.LOG_LEVEL = this.logLevel;
+  });
 
   after(benchmarket.store());
   benchmarket.stop();

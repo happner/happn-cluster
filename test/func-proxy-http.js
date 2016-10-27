@@ -4,6 +4,7 @@
 
 var path = require('path');
 var filename = path.basename(__filename);
+var benchmarket = require('benchmarket');
 var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
@@ -13,6 +14,13 @@ var isSecure = false;
 describe(filename, function () {
 
   this.timeout(20000);
+
+  benchmarket.start();
+
+  before(function () {
+    this.logLevel = process.env.LOG_LEVEL;
+    process.env.LOG_LEVEL = 'off';
+  });
 
   hooks.startCluster({
     size: clusterSize,
@@ -32,22 +40,18 @@ describe(filename, function () {
       // create happn client instance and log in
       testUtils.createClientInstance(host, port, function (err, instance) {
 
-        if (err)
-          return done(err);
-
-        console.log('### Sending request to -> ' + host + ':' + port);
+        if (err) return done(err);
 
         // send get request for wildcard resources in root
         instance.get('/*', null, function (e, results) {
 
-          if (e)
-            return done(e);
+          if (e) return done(e);
 
-          console.log('### Response received from proxied cluster node: ' + JSON.stringify(results));
           currentConfig++;
           instance.disconnect();
 
-          if (currentConfig == self.__configs.length) // we have iterated through all proxy instances
+          if (currentConfig == self.__configs.length)
+            // we have iterated through all proxy instances without error
             return done();
         });
       });
@@ -55,5 +59,12 @@ describe(filename, function () {
   });
 
   hooks.stopCluster();
+
+  after(function () {
+    process.env.LOG_LEVEL = this.logLevel;
+  });
+
+  after(benchmarket.store());
+  benchmarket.stop();
 
 });

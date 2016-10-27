@@ -1,6 +1,6 @@
 var path = require('path');
 var filename = path.basename(__filename);
-var should = require('should');
+var expect = require('expect.js');
 
 var Member = require('../lib/services/orchestrator/member');
 var MockOrchestrator = require('./mocks/mock-orchestrator');
@@ -37,17 +37,17 @@ describe(filename, function () {
         }
       });
 
-      m.connectingTo.should.equal(true);
+      expect(m.connectingTo).to.equal(true);
 
       // wait for login
       setTimeout(function () {
 
-        should.exist(MockHappnClient.instances['10-0-0-2_55000']);
+        expect(MockHappnClient.instances['10-0-0-2_55000']).to.not.be(undefined);
 
-        m.connectingTo.should.equal(false);
-        m.connectedTo.should.equal(true);
-        m.connectedFrom.should.equal(false);
-        m.name.should.equal('10-0-0-2_55000');
+        expect(m.connectingTo).to.equal(false);
+        expect(m.connectedTo).to.equal(true);
+        expect(m.connectedFrom).to.equal(false);
+        expect(m.name).to.equal('10-0-0-2_55000');
 
         done();
       }, 20);
@@ -68,16 +68,16 @@ describe(filename, function () {
         }
       });
 
-      m.connectingTo.should.equal(true);
+      expect(m.connectingTo).to.equal(true);
 
       setTimeout(function () {
 
-        should.exist(MockHappnClient.instances['10-0-0-2_55000']);
+        expect(MockHappnClient.instances['10-0-0-2_55000']).to.not.be(undefined);
 
-        m.connectingTo.should.equal(false);
-        m.connectedTo.should.equal(true);
-        m.connectedFrom.should.equal(false);
-        m.name.should.equal('10-0-0-2_55000');
+        expect(m.connectingTo).to.equal(false);
+        expect(m.connectedTo).to.equal(true);
+        expect(m.connectedFrom).to.equal(false);
+        expect(m.name).to.equal('10-0-0-2_55000');
 
         done();
       }, 20);
@@ -101,8 +101,8 @@ describe(filename, function () {
       setTimeout(function () {
 
         var replicationClient = MockHappnClient.instances['10-0-0-2_55000'];
-        replicationClient.__subscribed.should.eql(['/*']);
-        m.subscribedTo.should.equal(true);
+        expect(replicationClient.__subscribed).to.eql(['/*']);
+        expect(m.subscribedTo).to.equal(true);
 
         done();
       }, 20);
@@ -125,8 +125,8 @@ describe(filename, function () {
       setTimeout(function () {
 
         var replicationClient = MockHappnClient.instances['10-0-0-2_55000'];
-        replicationClient.__subscribed.should.eql(['/alternative/*', '/paths/*']);
-        m.subscribedTo.should.equal(true);
+        expect(replicationClient.__subscribed).to.eql(['/alternative/*', '/paths/*']);
+        expect(m.subscribedTo).to.equal(true);
 
         done();
       }, 20);
@@ -148,8 +148,8 @@ describe(filename, function () {
       setTimeout(function () {
 
         var replicationClient = MockHappnClient.instances['10-0-0-2_55000'];
-        replicationClient.__subscribed.should.eql([]);
-        m.subscribedTo.should.equal(true);
+        expect(replicationClient.__subscribed).to.eql([]);
+        expect(m.subscribedTo).to.equal(true);
 
         done();
       }, 20);
@@ -177,7 +177,7 @@ describe(filename, function () {
 
       setTimeout(function () {
 
-        m.error.message.should.equal('login error');
+        expect(m.error.message).to.equal('login error');
         done();
 
       }, 20);
@@ -201,7 +201,7 @@ describe(filename, function () {
 
       setTimeout(function () {
 
-        m.error.message.should.equal('subscription error');
+        expect(m.error.message).to.equal('subscription error');
         done();
 
       }, 20);

@@ -16,6 +16,11 @@ describe(filename, function () {
 
   benchmarket.start();
 
+  before(function () {
+    this.logLevel = process.env.LOG_LEVEL;
+    process.env.LOG_LEVEL = 'off';
+  });
+
   hooks.startCluster({
     size: clusterSize,
     isSecure: isSecure,
@@ -190,6 +195,10 @@ describe(filename, function () {
   });
 
   hooks.stopCluster();
+
+  after(function () {
+    process.env.LOG_LEVEL = this.logLevel;
+  });
 
   after(benchmarket.store());
   benchmarket.stop();

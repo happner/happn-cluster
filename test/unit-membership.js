@@ -1,6 +1,6 @@
 var path = require('path');
 var filename = path.basename(__filename);
-var should = require('should');
+var expect = require('expect.js');
 
 var Membership = require('../lib/services/membership');
 var MockSwim = require('./mocks/mock-swim');
@@ -27,7 +27,7 @@ describe(filename, function () {
       }, function (e) {
         if (e) return done(e);
 
-        m.config.should.eql({
+        expect(m.config).to.eql({
           clusterName: 'happn-cluster',
           hosts: ['10.10.10.10:11111'],
           seed: false,
@@ -72,7 +72,7 @@ describe(filename, function () {
       }, function (e) {
         if (e) return done(e);
 
-        m.config.should.eql({
+        expect(m.config).to.eql({
           clusterName: 'seven-sisters',
           hosts: ['10.10.10.10:11111'],
           seed: true,
@@ -115,7 +115,7 @@ describe(filename, function () {
         m = this.membership;
         m.bootstrap()
           .then(function () {
-            m.swim.__config.local.should.eql({
+            expect(m.swim.__config.local).to.eql({
               host: address + ':56000',
               meta: {
                 cluster: 'happn-cluster',
@@ -137,7 +137,7 @@ describe(filename, function () {
           throw new Error('not this');
         })
         .catch(function (error) {
-          error.message.should.equal('JoinFailedError');
+          expect(error.message).to.equal('JoinFailedError');
           done();
         })
         .catch(done);
@@ -177,7 +177,7 @@ describe(filename, function () {
 
       this.membership.bootstrap()
         .then(function () {
-          added.should.eql([
+          expect(added).to.eql([
             {
               memberId: '10.0.0.1:56000',
               url: 'http://10.0.0.1:55000'
@@ -188,7 +188,7 @@ describe(filename, function () {
             }
           ]);
 
-          m.members.should.eql({
+          expect(m.members).to.eql({
             '10.0.0.1:56000': {
               url: 'http://10.0.0.1:55000'
             },
@@ -249,11 +249,11 @@ describe(filename, function () {
       var m = this.membership;
 
       this.membership.on('remove', function (member) {
-        member.should.eql({
+        expect(member).to.eql({
           memberId: '10.0.0.1:56000'
         });
 
-        m.members.should.eql({
+        expect(m.members).to.eql({
           '10.0.0.2:56000': {
             url: 'http://10.0.0.2:55000'
           }
@@ -279,12 +279,12 @@ describe(filename, function () {
       var m = this.membership;
 
       this.membership.on('add', function (member) {
-        member.should.eql({
+        expect(member).to.eql({
           memberId: '10.0.0.3:56000',
           url: 'http://10.0.0.3:55000'
         });
 
-        m.members.should.eql({
+        expect(m.members).to.eql({
           '10.0.0.1:56000': {
             url: 'http://10.0.0.1:55000'
           },
@@ -330,8 +330,8 @@ describe(filename, function () {
       });
 
       setTimeout(function () {
-        Object.keys(m.members).length.should.equal(2);
-        added.should.equal(false);
+        expect(Object.keys(m.members).length).to.equal(2);
+        expect(added).to.equal(false);
         done();
       }, 10);
     });
@@ -356,8 +356,8 @@ describe(filename, function () {
       });
 
       setTimeout(function () {
-        Object.keys(m.members).length.should.equal(2);
-        added.should.equal(false);
+        expect(Object.keys(m.members).length).to.equal(2);
+        expect(added).to.equal(false);
         done();
       }, 10);
     });
@@ -381,8 +381,8 @@ describe(filename, function () {
       });
 
       setTimeout(function () {
-        Object.keys(m.members).length.should.equal(2);
-        removed.should.equal(false);
+        expect(Object.keys(m.members).length).to.equal(2);
+        expect(removed).to.equal(false);
         done();
       }, 10);
     });
@@ -407,8 +407,8 @@ describe(filename, function () {
       });
 
       setTimeout(function () {
-        Object.keys(m.members).length.should.equal(2);
-        added.should.equal(false);
+        expect(Object.keys(m.members).length).to.equal(2);
+        expect(added).to.equal(false);
         done();
       }, 10);
     });
@@ -443,7 +443,7 @@ describe(filename, function () {
       }
 
       this.membership.stop(function () {
-        left.should.equal(true);
+        expect(left).to.equal(true);
         done();
       });
     });

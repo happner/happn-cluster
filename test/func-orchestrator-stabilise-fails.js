@@ -2,7 +2,7 @@ var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var Promise = require('bluebird');
-var should = require('should');
+var expect = require('expect.js');
 
 var HappnCluster = require('../');
 var Member = require('../lib/services/orchestrator/member');
@@ -17,6 +17,11 @@ describe(filename, function () {
   this.timeout(30000);
 
   benchmarket.start();
+
+  before(function () {
+    this.logLevel = process.env.LOG_LEVEL;
+    process.env.LOG_LEVEL = 'off';
+  });
 
   hooks.startCluster({
     size: clusterSize,
@@ -60,7 +65,7 @@ describe(filename, function () {
       })
 
       .catch(function (error) {
-        error.message.should.equal('Fake failure to subscribe');
+        expect(error.message).to.equal('Fake failure to subscribe');
         done();
       })
 
@@ -70,6 +75,10 @@ describe(filename, function () {
 
 
   hooks.stopCluster();
+
+  after(function () {
+    process.env.LOG_LEVEL = this.logLevel;
+  });
 
   after(benchmarket.store());
   benchmarket.stop();

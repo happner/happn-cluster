@@ -1,7 +1,7 @@
 var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
-var should = require('should');
+var expect = require('expect.js');
 var Promise = require('bluebird');
 
 var HappnCluster = require('../');
@@ -17,11 +17,15 @@ describe(filename, function () {
 
   benchmarket.start();
 
+  before(function () {
+    this.logLevel = process.env.LOG_LEVEL;
+    process.env.LOG_LEVEL = 'off';
+  });
+
   // hooks.startCluster({
   //   size: clusterSize,
   //   isSecure: isSecure
   // });;
-
 
   before('backup functions being mocked', function () {
     this.original__stateUpdate = Orchestrator.prototype.__stateUpdate;
@@ -81,7 +85,7 @@ describe(filename, function () {
       .then(function (_configs) {
         configs = _configs;
         // relying on minimumPeers being configured in createMemberConfigs
-        configs[0].services.orchestrator.config.minimumPeers.should.equal(clusterSize);
+        expect(configs[0].services.orchestrator.config.minimumPeers).to.equal(clusterSize);
         lastConfig = configs.pop();
       })
 
@@ -118,6 +122,10 @@ describe(filename, function () {
 
 
   hooks.stopCluster();
+
+  after(function () {
+    process.env.LOG_LEVEL = this.logLevel;
+  });
 
   after(benchmarket.store());
   benchmarket.stop();

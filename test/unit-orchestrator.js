@@ -1,6 +1,6 @@
 var path = require('path');
 var filename = path.basename(__filename);
-var should = require('should');
+var expect = require('expect.js');
 var Promise = require('bluebird');
 var Happn = require('happn');
 
@@ -30,10 +30,10 @@ describe(filename, function () {
       o.initialize({}, function (e) {
         if (e) return done(e);
 
-        MockPubsub.instance._events.authentic.should.eql(
+        expect(MockPubsub.instance._events.authentic).to.eql(
           o.__onConnectionFromHandler
         );
-        MockPubsub.instance._events.disconnect.should.eql(
+        expect(MockPubsub.instance._events.disconnect).to.eql(
           o.__onDisconnectionFromHandler
         );
 
@@ -50,7 +50,7 @@ describe(filename, function () {
       o.initialize({}, function (e) {
         if (e) return done(e);
 
-        o.config.should.eql({
+        expect(o.config).to.eql({
           minimumPeers: 1,
           replicate: ['/*'],
           stableReportInterval: 5000,
@@ -74,7 +74,7 @@ describe(filename, function () {
       }, function (e) {
         if (e) return done(e);
 
-        o.config.should.eql({
+        expect(o.config).to.eql({
           minimumPeers: 3,
           replicate: [],
           stableReportInterval: 10000,
@@ -104,7 +104,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          o.config.replicate.should.eql(['/same/path']);
+          expect(o.config.replicate).to.eql(['/same/path']);
           done();
 
         });
@@ -119,7 +119,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          o.config.replicate.should.eql(['/same/*']);
+          expect(o.config.replicate).to.eql(['/same/*']);
           done();
 
         });
@@ -134,7 +134,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          o.config.replicate.should.eql(['/same/*']);
+          expect(o.config.replicate).to.eql(['/same/*']);
           done();
 
         });
@@ -150,7 +150,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          o.config.replicate.should.eql([
+          expect(o.config.replicate).to.eql([
             '/same/*/with/*/more',
             '/same/path'
           ]);
@@ -169,7 +169,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          o.config.replicate.should.eql([
+          expect(o.config.replicate).to.eql([
             '/same/*/with/*/more',
             '/same/path/*'
           ]);
@@ -189,7 +189,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          o.config.replicate.should.eql([
+          expect(o.config.replicate).to.eql([
             '/*'
           ]);
           done();
@@ -213,7 +213,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          o.config.replicate.should.eql([
+          expect(o.config.replicate).to.eql([
             '/*'
           ]);
           done();
@@ -257,7 +257,7 @@ describe(filename, function () {
 
         o.stop(function (e) {
           if (e) return done(e);
-          stopped.should.equal(3);
+          expect(stopped).to.equal(3);
           done()
         })
 
@@ -285,7 +285,7 @@ describe(filename, function () {
         o.prepare()
           .then(function () {
 
-            o.loginConfig.should.eql({
+            expect(o.loginConfig).to.eql({
               config: {},
               info: {
                 clusterName: 'cluster-name',
@@ -307,10 +307,10 @@ describe(filename, function () {
       o.prepare()
         .then(function () {
 
-          MockMembership.instance._events.add.should.eql(
+          expect(MockMembership.instance._events.add).to.eql(
             o.__addMembershipHandler
           );
-          MockMembership.instance._events.remove.should.eql(
+          expect(MockMembership.instance._events.remove).to.eql(
             o.__removeMembershipHandler
           );
 
@@ -325,7 +325,7 @@ describe(filename, function () {
       o.prepare()
         .then(function () {
 
-          MockHappnClient.getLastLoginConfig().should.eql({
+          expect(MockHappnClient.getLastLoginConfig()).to.eql({
             config: {},
             context: o.happn,
             plugin: Happn.client_plugins.intra_process
@@ -366,8 +366,8 @@ describe(filename, function () {
         o.stabilised()
           .then(function () {
 
-            Object.keys(o.peers).should.eql(['local-happn-instance']);
-            o.peers.__self.should.equal(o.peers['local-happn-instance']);
+            expect(Object.keys(o.peers)).to.eql(['local-happn-instance']);
+            expect(o.peers.__self).to.equal(o.peers['local-happn-instance']);
 
             done();
           })
@@ -388,7 +388,7 @@ describe(filename, function () {
         setTimeout(function () {
 
           // stabilised() has not resolved
-          stable.should.equal(false);
+          expect(stable).to.equal(false);
 
           // new member discovered
           MockMembership.instance.emit('add', {
@@ -397,23 +397,23 @@ describe(filename, function () {
           });
 
           // member record was added
-          should.exist(o.members['10.0.0.1:56001']); // SWIM host as key
+          expect(o.members['10.0.0.1:56001']).to.not.be(undefined); // SWIM host as key
 
           // peer record was not added
-          should.not.exist(o.peers['10-0-0-1_55001']);
+          expect(o.peers['10-0-0-1_55001']).to.be(undefined);
 
           // wait for member login to remote
           setTimeout(function () {
 
             // member logged in to remote
-            should.exist(MockHappnClient.instances['10-0-0-1_55001']); // remote happn.name as key
+            expect(MockHappnClient.instances['10-0-0-1_55001']).to.not.be(undefined); // remote happn.name as key
 
             // member state is correct
-            o.members['10.0.0.1:56001'].connectingTo.should.equal(false);
-            o.members['10.0.0.1:56001'].connectedTo.should.equal(true);
-            o.members['10.0.0.1:56001'].connectedFrom.should.equal(false); // <---- pending login back to us
-            o.members['10.0.0.1:56001'].subscribedTo.should.equal(true);
-            o.members['10.0.0.1:56001'].subscribedFrom.should.equal(true);
+            expect(o.members['10.0.0.1:56001'].connectingTo).to.equal(false);
+            expect(o.members['10.0.0.1:56001'].connectedTo).to.equal(true);
+            expect(o.members['10.0.0.1:56001'].connectedFrom).to.equal(false); // <---- pending login back to us
+            expect(o.members['10.0.0.1:56001'].subscribedTo).to.equal(true);
+            expect(o.members['10.0.0.1:56001'].subscribedFrom).to.equal(true);
 
             // THEN... peer logs back into us
             MockPubsub.instance.emit('authentic', {
@@ -425,13 +425,13 @@ describe(filename, function () {
               }
             });
 
-            o.members['10.0.0.1:56001'].connectedFrom.should.equal(true); // <---- pending login done
+            expect(o.members['10.0.0.1:56001'].connectedFrom).to.equal(true); // <---- pending login done
 
             // added as peer
-            should.exist(o.peers['10-0-0-1_55001']);
+            expect(o.peers['10-0-0-1_55001']).to.not.be(undefined);
 
             // stabilised() has resolved (got 2 peers, self + 1)
-            stable.should.equal(true);
+            expect(stable).to.equal(true);
             done();
 
           }, 20);
@@ -463,16 +463,16 @@ describe(filename, function () {
         });
 
         // members already (immediately) created on discovery
-        should.exist(o.members['10.0.0.1:56001']);
-        should.exist(o.members['10.0.0.2:56001']);
-        should.exist(o.members['10.0.0.3:56001']);
+        expect(o.members['10.0.0.1:56001']).to.not.be(undefined);
+        expect(o.members['10.0.0.2:56001']).to.not.be(undefined);
+        expect(o.members['10.0.0.3:56001']).to.not.be(undefined);
 
         // wait for member logins to remote peers
         setTimeout(function () {
 
-          should.exist(MockHappnClient.instances['10-0-0-1_55001']);
-          should.exist(MockHappnClient.instances['10-0-0-2_55001']);
-          should.exist(MockHappnClient.instances['10-0-0-3_55001']);
+          expect(MockHappnClient.instances['10-0-0-1_55001']).to.not.be(undefined);
+          expect(MockHappnClient.instances['10-0-0-2_55001']).to.not.be(undefined);
+          expect(MockHappnClient.instances['10-0-0-3_55001']).to.not.be(undefined);
 
           var stable = false;
 
@@ -484,7 +484,7 @@ describe(filename, function () {
 
           setTimeout(function () {
 
-            stable.should.equal(false);
+            expect(stable).to.equal(false);
 
             // remotes log back into us
             MockPubsub.instance.emit('authentic', {
@@ -496,7 +496,7 @@ describe(filename, function () {
               }
             });
 
-            stable.should.equal(false);
+            expect(stable).to.equal(false);
 
             MockPubsub.instance.emit('authentic', {
               info: {
@@ -507,7 +507,7 @@ describe(filename, function () {
               }
             });
 
-            stable.should.equal(false);
+            expect(stable).to.equal(false);
 
             MockPubsub.instance.emit('authentic', {
               info: {
@@ -518,7 +518,7 @@ describe(filename, function () {
               }
             });
 
-            stable.should.equal(true);
+            expect(stable).to.equal(true);
             done();
 
           }, 20);
@@ -534,7 +534,7 @@ describe(filename, function () {
 
       it('pends stabilise until all are connected to and from', function (done) {
 
-        Object.keys(o.members).should.eql(['__self']);
+        expect(Object.keys(o.members)).to.eql(['__self']);
 
         // discover members from their login to us
 
@@ -565,23 +565,23 @@ describe(filename, function () {
           }
         });
 
-        Object.keys(o.members).should.eql([
+        expect(Object.keys(o.members)).to.eql([
           '__self',
           '10.0.0.1:56001',
           '10.0.0.2:56001',
           '10.0.0.3:56001'
         ]);
 
-        should.exist(o.members['10.0.0.1:56001']);
-        should.exist(o.members['10.0.0.2:56001']);
-        should.exist(o.members['10.0.0.3:56001']);
+        expect(o.members['10.0.0.1:56001']).to.not.be(undefined);
+        expect(o.members['10.0.0.2:56001']).to.not.be(undefined);
+        expect(o.members['10.0.0.3:56001']).to.not.be(undefined);
 
 
         // wait for members to login to remote peers
         setTimeout(function () {
-          should.exist(MockHappnClient.instances['10-0-0-1_55001']);
-          should.exist(MockHappnClient.instances['10-0-0-2_55001']);
-          should.exist(MockHappnClient.instances['10-0-0-3_55001']);
+          expect(MockHappnClient.instances['10-0-0-1_55001']).to.not.be(undefined);
+          expect(MockHappnClient.instances['10-0-0-2_55001']).to.not.be(undefined);
+          expect(MockHappnClient.instances['10-0-0-3_55001']).to.not.be(undefined);
 
           // then discover same + 1 members from swim
           MockMembership.instance.emit('add', {
@@ -613,11 +613,11 @@ describe(filename, function () {
 
           setTimeout(function () {
 
-            stable.should.equal(false);
+            expect(stable).to.equal(false);
 
             // correction: socket reports last member actually gone
             MockHappnClient.instances['10-0-0-4_55001'].emitDisconnect();
-            stable.should.equal(false);
+            expect(stable).to.equal(false);
 
             // correction confirmed: swim reports last member actually gone
             MockMembership.instance.emit('remove', {
@@ -627,7 +627,7 @@ describe(filename, function () {
             setTimeout(function () {
 
               // no longer waiting for 4 peer
-              stable.should.equal(true);
+              expect(stable).to.equal(true);
               done();
 
             }, 20);
@@ -656,8 +656,8 @@ describe(filename, function () {
         setTimeout(function () {
 
           // not emitted on new member
-          emitted.should.eql({});
-          Object.keys(o.peers).should.eql(['local-happn-instance']);
+          expect(emitted).to.eql({});
+          expect(Object.keys(o.peers)).to.eql(['local-happn-instance']);
 
           // but is emitted once new member fully connected (per login back)
           MockPubsub.instance.emit('authentic', {
@@ -669,7 +669,7 @@ describe(filename, function () {
             }
           });
 
-          emitted.should.eql({
+          expect(emitted).to.eql({
             name: '10-0-0-1_55001',
             member: o.peers['10-0-0-1_55001']
           });
@@ -701,20 +701,20 @@ describe(filename, function () {
         // wait for login
         setTimeout(function () {
 
-          should.exist(o.peers['10-0-0-1_55001']);
+          expect(o.peers['10-0-0-1_55001']).to.not.be(undefined);
 
           var happnClient = MockHappnClient.instances['10-0-0-1_55001'];
 
           o.on('peer/remove', function (name, member) {
 
-            name.should.equal('10-0-0-1_55001');
+            expect(name).to.equal('10-0-0-1_55001');
 
             // it remains a member (reconnect loop) ...
-            member.should.equal(o.members['10.0.0.1:56001']);
+            expect(member).to.equal(o.members['10.0.0.1:56001']);
 
             // ...until our client disconnects
             MockHappnClient.instances['10-0-0-1_55001'].emitDisconnect();
-            should.exist(o.members['10.0.0.1:56001']);
+            expect(o.members['10.0.0.1:56001']).to.not.be(undefined);
 
             // ...and swim confirms
             MockMembership.instance.emit('remove', {
@@ -722,8 +722,8 @@ describe(filename, function () {
             });
 
             setTimeout(function () {
-              should.not.exist(o.members['10.0.0.1:56001']);
-              happnClient.destroyed.should.equal(true);
+              expect(o.members['10.0.0.1:56001']).to.be(undefined);
+              expect(happnClient.destroyed).to.equal(true);
               done();
             }, 20);
 
@@ -760,12 +760,12 @@ describe(filename, function () {
 
         setTimeout(function () {
 
-          should.exist(o.peers['10-0-0-1_55001']);
+          expect(o.peers['10-0-0-1_55001']).to.not.be(undefined);
 
           o.on('peer/remove', function (name, member) {
 
-            name.should.equal('10-0-0-1_55001');
-            member.should.equal(o.members['10.0.0.1:56001']);
+            expect(name).to.equal('10-0-0-1_55001');
+            expect(member).to.equal(o.members['10.0.0.1:56001']);
             done();
 
           });
@@ -796,7 +796,7 @@ describe(filename, function () {
 
         setTimeout(function () {
 
-          should.exist(o.peers['10-0-0-1_55001']);
+          expect(o.peers['10-0-0-1_55001']).to.not.be(undefined);
 
           var removed = false;
           o.on('peer/remove', function () {
@@ -808,7 +808,7 @@ describe(filename, function () {
           });
 
           setTimeout(function () {
-            removed.should.equal(false);
+            expect(removed).to.equal(false);
             done();
           }, 20);
         }, 20);
@@ -832,7 +832,7 @@ describe(filename, function () {
             throw new Error('not this');
           })
           .catch(function (error) {
-            error.message.should.equal('oh no login');
+            expect(error.message).to.equal('oh no login');
             done();
           })
           .catch(done);
@@ -853,7 +853,7 @@ describe(filename, function () {
             throw new Error('not this');
           })
           .catch(function (error) {
-            error.message.should.equal('oh no subscribe');
+            expect(error.message).to.equal('oh no subscribe');
             done();
           });
       });

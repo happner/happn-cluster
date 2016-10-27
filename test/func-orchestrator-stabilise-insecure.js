@@ -1,7 +1,7 @@
 var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
-var should = require('should');
+var expect = require('expect.js');
 var hooks = require('./lib/hooks');
 
 var clusterSize = 10;
@@ -10,6 +10,11 @@ var isSecure = false;
 describe(filename, function () {
 
   this.timeout(30000);
+
+  before(function () {
+    this.logLevel = process.env.LOG_LEVEL;
+    process.env.LOG_LEVEL = 'off';
+  });
 
   benchmarket.start();
 
@@ -28,12 +33,16 @@ describe(filename, function () {
       peerCounts.push(count);
     });
 
-    peerCounts.should.eql([10, 10, 10, 10, 10, 10, 10, 10, 10, 10]);
+    expect(peerCounts).to.eql([10, 10, 10, 10, 10, 10, 10, 10, 10, 10]);
     done();
   });
 
 
   hooks.stopCluster();
+
+  after(function () {
+    process.env.LOG_LEVEL = this.logLevel;
+  });
 
   after(benchmarket.store());
   benchmarket.stop();
