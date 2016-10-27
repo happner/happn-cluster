@@ -4,12 +4,13 @@
 
 var path = require('path');
 var filename = path.basename(__filename);
+var expect = require('expect.js');
 var assert = require('assert');
 var Proxy = require('../lib/services/proxy');
 var MockHappn = require('./mocks/mock-happn');
 var mockOpts = require('./mocks/mock-opts');
 
-describe(filename, function () {
+describe.only(filename, function () {
 
   this.timeout(20000);
 
@@ -18,20 +19,19 @@ describe(filename, function () {
     process.env.LOG_LEVEL = 'off';
   });
 
-  before('sets up configuration', function (done) {
-
+  beforeEach('sets up configuration', function () {
     this.__config = {
-      host: '0.0.0.0',
+      host: '127.0.0.1',
       port: 8015
     };
+  });
 
+  before('create mock happn', function () {
     Object.defineProperty(Proxy.prototype, "happn", {
       get: function () {
         return new MockHappn('http', 9000);
       }
     });
-
-    done();
   });
 
   it('can initialize the proxy', function (done) {
@@ -39,8 +39,7 @@ describe(filename, function () {
     var proxy = new Proxy(mockOpts);
 
     proxy.initialize(this.__config, function (err, result) {
-      if (err)
-        return callback(err);
+      if (err) return done(err);
 
       assert.notEqual(result, null);
       return done();
@@ -52,17 +51,14 @@ describe(filename, function () {
     var proxy = new Proxy(mockOpts);
 
     proxy.initialize(this.__config, function (err, result) {
-      if (err)
-        return callback(err);
+      if (err) return done(err);
 
       proxy.start()
         .then(function (result) {
-          proxy.stop(null, function (err) {
-            if (err)
-              callback(err);
 
-            assert.notEqual(result, null);
-            return done();
+          proxy.stop(function (err) {
+            if (err) done(err);
+            done();
           })
         })
         .catch(function (err) {
@@ -70,6 +66,49 @@ describe(filename, function () {
         })
     });
   });
+
+
+  it('listens on the specified address', function (done) {
+
+    var proxy = new Proxy(mockOpts);
+
+    proxy.initialize(this.__config, function (err) {
+      if (err) return done(err);
+
+      proxy.start()
+        .then(function () {
+          var address = proxy.__proxyServer._server.address();
+          expect(address.port).to.equal(8015);
+          expect(address.address).to.equal('127.0.0.1');
+          proxy.stop(done);
+        })
+        .catch(function (err) {
+          proxy.stop(function () {
+            return done(err);
+          });
+        })
+    });
+  });
+
+
+  it('fails to start on bad address', function (done) {
+    var proxy = new Proxy(mockOpts);
+
+    this.__config.host = '127.0.0.123'; // no can listen
+
+    proxy.initialize(this.__config, function (err) {
+      if (err)
+        return done(err);
+
+      proxy.start()
+        .catch(function (err) {
+          expect(err.code).to.equal('EADDRNOTAVAIL');
+          done();
+        })
+        .catch(done);
+    });
+  });
+
 
   it('can proxy an http server', function (done) {
 
@@ -97,8 +136,7 @@ describe(filename, function () {
 
 
     proxy.initialize(this.__config, function (err, result) {
-      if (err)
-        return callback(err);
+      if (err) return done(err);
 
       proxy.start()
         .then(function () {
@@ -116,7 +154,7 @@ describe(filename, function () {
               // console.log(result);
               assert.equal(result, EXPECTED);
 
-              proxy.stop(null, function (err) {
+              proxy.stop(function (err) {
                 if (err)
                   return done(err);
 

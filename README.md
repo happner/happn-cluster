@@ -52,7 +52,7 @@ var defaultConfig = {
     proxy: {
       config: {
         port: 55000,
-        // host: '0.0.0.0' // <--- not implemented
+        host: '0.0.0.0'
       }
     },
     

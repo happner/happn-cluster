@@ -5,7 +5,7 @@
 ### proxy
 
 * should we stop the proxy on error?
-* proxy to implement listenHost
+* handle server error
 * proxy to have own key/cert such that proxy can be https independently of what happn is doing
 * support dface for listenHost
 * finish proxy section in main readme
