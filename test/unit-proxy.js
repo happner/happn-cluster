@@ -86,10 +86,10 @@ describe(filename, function () {
   });
 
 
-  it('fails to start on bad address', function (done) {
+  it.only('fails to start on bad address', function (done) {
     var proxy = new Proxy(mockOpts);
 
-    this.__config.host = '127.0.0.123'; // no can listen
+    this.__config.host = '99.99.99.99'; // no can listen
 
     proxy.initialize(this.__config, function (err) {
       if (err)
