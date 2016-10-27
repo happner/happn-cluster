@@ -7,8 +7,6 @@
 * should we stop the proxy on error?
 * proxy to implement listenHost
 * proxy to have own key/cert such that proxy can be https independently of what happn is doing
-* make proxy listen at default 55000 for default clients, move happn default to 57000
-* remove setTimeout(3000) from proxy tests where possible to speed up test runs
 * support dface for listenHost
 * finish proxy section in main readme
 * allowSelfSignedCerts config huh?
@@ -17,7 +15,7 @@
 
 * hole in stabalize, don't know when the remote has subscribed
 * handle /_SYSTEM/_NETWORK/_SETTINGS/NAME overwrite from each cluster member
-* ensure support remote stops and changes happn port or cluster name and restarts
+* ensure support for remote member stopping and changing happn port or cluster name and restarting within reconnect loop
 
 ### swim issues (later)
 

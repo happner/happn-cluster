@@ -24,37 +24,34 @@ describe(filename, function () {
     var self = this;
     var currentConfig = 0;
 
-    setTimeout(function () {
+    self.__configs.forEach(function (config) {
 
-      self.__configs.forEach(function (config) {
+      var port = config.services.proxy.config.port;
+      var host = config.services.proxy.config.host;
 
-        var port = config.services.proxy.config.port;
-        var host = config.services.proxy.config.host;
+      // create happn client instance and log in
+      testUtils.createClientInstance(host, port, function (err, instance) {
 
-        // create happn client instance and log in
-        testUtils.createClientInstance(host, port, function (err, instance) {
+        if (err)
+          return done(err);
 
-          if (err)
-            return done(err);
+        console.log('### Sending request to -> ' + host + ':' + port);
 
-          console.log('### Sending request to -> ' + host + ':' + port);
+        // send get request for wildcard resources in root
+        instance.get('/*', null, function (e, results) {
 
-          // send get request for wildcard resources in root
-          instance.get('/*', null, function (e, results) {
+          if (e)
+            return done(e);
 
-            if (e)
-              return done(e);
+          console.log('### Response received from proxied cluster node: ' + JSON.stringify(results));
+          currentConfig++;
+          instance.disconnect();
 
-            console.log('### Response received from proxied cluster node: ' + JSON.stringify(results));
-            currentConfig++;
-            instance.disconnect();
-
-            if (currentConfig == self.__configs.length) // we have iterated through all proxy instances
-              return done();
-          });
+          if (currentConfig == self.__configs.length) // we have iterated through all proxy instances
+            return done();
         });
       });
-    }, 3000);
+    });
   });
 
   hooks.stopCluster();
