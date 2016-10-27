@@ -5,7 +5,7 @@ var expect = require('expect.js');
 var hooks = require('./lib/hooks');
 
 var clusterSize = 10;
-var isSecure = true;
+var happnSecure = true;
 
 describe(filename, function () {
 
@@ -20,7 +20,7 @@ describe(filename, function () {
 
   hooks.startCluster({
     size: clusterSize,
-    isSecure: isSecure
+    happnSecure: happnSecure
   });
 
 

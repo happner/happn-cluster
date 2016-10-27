@@ -9,7 +9,7 @@ var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
 var clusterSize = 3;
-var isSecure = false;
+var happnSecure = false;
 
 describe(filename, function () {
 
@@ -24,7 +24,7 @@ describe(filename, function () {
 
   hooks.startCluster({
     size: clusterSize,
-    isSecure: isSecure
+    happnSecure: happnSecure
   });
 
   it('can create a happn client and send a get request via each proxy instance', function (done) {

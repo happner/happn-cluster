@@ -7,7 +7,8 @@ var testUtils = require('./test-utils');
 module.exports.startCluster = function (clusterOpts) {
 
   var clusterSize = clusterOpts.size || 5;
-  var isSecure = typeof clusterOpts.isSecure == 'boolean' ? clusterOpts.isSecure : false;
+  var happnSecure = typeof clusterOpts.happnSecure == 'boolean' ? clusterOpts.happnSecure : false;
+  var proxySecure = typeof clusterOpts.proxySecure == 'boolean' ? clusterOpts.proxySecure : false;
   var services = clusterOpts.services || {};
 
   before('clear collection (before)', function (done) {
@@ -18,7 +19,7 @@ module.exports.startCluster = function (clusterOpts) {
 
     var self = this;
 
-    testUtils.createMemberConfigs(clusterSize, isSecure, services, function (err, result) {
+    testUtils.createMemberConfigs(clusterSize, happnSecure, proxySecure, services, function (err, result) {
 
       if (err)
         return done(err);

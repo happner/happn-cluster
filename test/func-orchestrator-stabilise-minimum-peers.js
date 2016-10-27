@@ -24,7 +24,7 @@ describe(filename, function () {
 
   // hooks.startCluster({
   //   size: clusterSize,
-  //   isSecure: isSecure
+  //   happnSecure: happnSecure
   // });;
 
   before('backup functions being mocked', function () {
@@ -79,7 +79,7 @@ describe(filename, function () {
     Promise.resolve()
 
       .then(function () {
-        return testUtils.createMemberConfigs(clusterSize);
+        return testUtils.createMemberConfigs(clusterSize, false, false, {});
       })
 
       .then(function (_configs) {

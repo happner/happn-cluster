@@ -38,12 +38,7 @@ describe(filename, function () {
 
     var proxy = new Proxy(mockOpts);
 
-    proxy.initialize(this.__config, function (err, result) {
-      if (err) return done(err);
-
-      assert.notEqual(result, null);
-      return done();
-    })
+    proxy.initialize(this.__config, done);
   });
 
   it('can start and stop the proxy', function (done) {

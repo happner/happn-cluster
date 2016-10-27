@@ -8,7 +8,7 @@ var Happn = require('happn');
 var hooks = require('./lib/hooks');
 
 var clusterSize = 3;
-var isSecure = true;
+var happnSecure = true;
 
 describe(filename, function () {
 
@@ -23,7 +23,7 @@ describe(filename, function () {
 
   hooks.startCluster({
     size: clusterSize,
-    isSecure: isSecure
+    happnSecure: happnSecure
   });
 
   before('connect a client to each server', function (done) {
@@ -31,7 +31,7 @@ describe(filename, function () {
     Promise.resolve(this.__configs).map(function (config) {
       var loginConfig = {
         config: {
-          secure: isSecure,
+          secure: happnSecure,
           host: config.services.proxy.config.host,
           port: config.services.proxy.config.port,
           protocol: 'http',

@@ -8,7 +8,7 @@ var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
 var clusterSize = 10;
-var isSecure = false;
+var happnSecure = false;
 
 describe(filename, function () {
 
@@ -23,7 +23,7 @@ describe(filename, function () {
 
   hooks.startCluster({
     size: clusterSize,
-    isSecure: isSecure
+    happnSecure: happnSecure
   });
 
   before('wait for lagging swim membership from initial bootstrap', function (done) {
@@ -32,7 +32,7 @@ describe(filename, function () {
 
   before('create extra config', function (done) {
     var _this = this;
-    testUtils.createMemberConfigs(clusterSize + 1, function (e, configs) {
+    testUtils.createMemberConfigs(clusterSize + 1, false, false, {}, function (e, configs) {
       if (e) return done(e);
       _this.extraConfig = configs.pop();
       done();

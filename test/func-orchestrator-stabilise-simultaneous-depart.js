@@ -8,7 +8,7 @@ var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
 var clusterSize = 3;
-var isSecure = false;
+var happnSecure = false;
 
 describe(filename, function () {
 
@@ -23,7 +23,7 @@ describe(filename, function () {
 
   hooks.startCluster({
     size: clusterSize,
-    isSecure: isSecure,
+    happnSecure: happnSecure,
     services: {
       membership: {
         pingInterval: 2000
@@ -47,7 +47,7 @@ describe(filename, function () {
     Promise.resolve()
 
       .then(function () {
-        return testUtils.createMemberConfigs(clusterSize + 1, isSecure, {
+        return testUtils.createMemberConfigs(clusterSize + 1, happnSecure, false, {
           membership: {
             pingInterval: 2000
           }

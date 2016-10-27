@@ -52,7 +52,10 @@ var defaultConfig = {
     proxy: {
       config: {
         port: 55000,
-        host: '0.0.0.0'
+        host: '0.0.0.0',
+        allowSelfSignedCerts: false,
+        // keyPath: 'path/to/key',
+        // certPath: 'path/to/cert'
       }
     },
     
@@ -167,7 +170,13 @@ Instead, clients should connect through the proxy port, whose start is pended un
 
 The socket address where the proxy listens for clients.
 
-TODO: remaining proxy config
+#### config.[keyPath, certPath]
+
+Specify key and cert filenames to switch switch on https
+
+#### config.allowSelfSignedCerts
+
+Allow connecting to local happn which is listening with https and self signed cert.
 
 
 

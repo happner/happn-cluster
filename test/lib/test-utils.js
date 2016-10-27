@@ -16,139 +16,104 @@ module.exports.clearMongoCollection = function (callback) {
   Mongo.clearCollection(mongoUrl, mongoCollection, callback);
 };
 
-module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, isSecure, services, callback) {
+module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, happnSecure, proxySecure, services, callback) {
 
-  // var os = require('os');
-  // var dface = require('dface');
-  // var device = os.platform() == 'linux' ? 'eth0' : 'en0'; // windows?
   var ipAddress = getAddress();
   var fs = require('fs');
-
   var transport = null;
+  var certPath, keyPath;
 
-  if (typeof isSecure == 'function') {
-    callback = isSecure;
-    isSecure = false;
-    services = {};
+  if (happnSecure) {
+    transport = {
+      mode: 'https',
+      certPath: 'test/keys/happn.com.cert',
+      keyPath: 'test/keys/happn.com.key'
+    };
   }
 
-  if (typeof services == 'function') {
-    callback = services;
-    services = {};
-  }
+  var configs = [];
+  var i = 0;
 
-  var generateConfigs = function () {
+  while (i < clusterSize) {
 
-    var configs = [];
-    var i = 0;
+    i++;
 
-    while (i < clusterSize) {
-
-      i++;
-
-      var config = {
-        port: 55000 + i,
-        transport: transport,
-        services: {
-          data: {
-            path: 'happn-service-mongo',
-            config: {
-              collection: mongoCollection,
-              url: mongoUrl
-            }
-          }
-          ,
-          orchestrator: {
-            config: {
-              minimumPeers: clusterSize
-            }
-          }
-          ,
-          membership: {
-            config: {
-              clusterName: 'cluster1',
-              seed: i == 1,
-              seedWait: 1000,
-              joinType: 'static',
-              host: ipAddress,
-              port: 56000 + i,
-              hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
-              joinTimeout: 1000,
-              pingInterval: 200,
-              pingTimeout: 20,
-              pingReqTimeout: 60
-            }
-          }
-          ,
-          proxy: {
-            config: {
-              host: '0.0.0.0',
-              port: 8015 + i,
-              allowSelfSignedCerts: true
-            }
+    var config = {
+      port: 57000 + i,
+      transport: transport,
+      services: {
+        data: {
+          path: 'happn-service-mongo',
+          config: {
+            collection: mongoCollection,
+            url: mongoUrl
           }
         }
-      };
-
-      if (isSecure) {
-        config.secure = true;
-        config.services.security = {
+        ,
+        orchestrator: {
           config: {
-            adminUser: {
-              username: '_ADMIN',
-              password: 'secret'
-            }
+            minimumPeers: clusterSize
+          }
+        }
+        ,
+        membership: {
+          config: {
+            clusterName: 'cluster1',
+            seed: i == 1,
+            seedWait: 1000,
+            joinType: 'static',
+            host: ipAddress,
+            port: 56000 + i,
+            hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
+            joinTimeout: 1000,
+            pingInterval: 200,
+            pingTimeout: 20,
+            pingReqTimeout: 60
+          }
+        }
+        ,
+        proxy: {
+          config: {
+            host: '0.0.0.0',
+            port: 55000 + i,
+            allowSelfSignedCerts: true
           }
         }
       }
+    };
 
-      Object.keys(services).forEach(function (serviceName) {
-        var ammendDefaultService = services[serviceName];
-        Object.keys(ammendDefaultService).forEach(function (keyName) {
-          config.services[serviceName].config[keyName] = ammendDefaultService[keyName];
-        });
-      });
-
-      // console.log(JSON.stringify(config, null, 2));
-
-      configs.push(config);
+    if (happnSecure) {
+      config.secure = true;
+      config.services.security = {
+        config: {
+          adminUser: {
+            username: '_ADMIN',
+            password: 'secret'
+          }
+        }
+      }
     }
 
-    return configs;
-  };
+    if (proxySecure) {
+      config.services.proxy.config.certPath = 'test/keys/proxy.com.cert';
+      config.services.proxy.config.keyPath = 'test/keys/proxy.com.key';
+    }
 
-  if (isSecure) {
-    this.__generateCertificate(function (err, result) {
-      if (err)
-        return callback(err);
-
-      transport = {
-        mode: 'https',
-        certPath: result.certDir + result.certName,
-        keyPath: result.certDir + result.keyName
-      };
-
-      callback(null, generateConfigs());
+    Object.keys(services).forEach(function (serviceName) {
+      var ammendDefaultService = services[serviceName];
+      Object.keys(ammendDefaultService).forEach(function (keyName) {
+        config.services[serviceName].config[keyName] = ammendDefaultService[keyName];
+      });
     });
-  } else {
-    callback(null, generateConfigs());
+
+    // console.log(JSON.stringify(config, null, 2));
+
+    configs.push(config);
   }
+
+  callback(null, configs);
+
 });
-
-module.exports.__generateCertificate = function (callback) {
-
-  var certUtil = require('../lib/cert-utils');
-  var certDir = 'test/keys/';
-  var certName = 'test_cert.pem';
-  var keyName = 'test_key.rsa';
-
-  certUtil.generateCertificate(certDir, keyName, certName, function (err) {
-    if (err)
-      return callback(err);
-
-    callback(null, {certDir: certDir, certName: certName, keyName: keyName});
-  });
-};
 
 module.exports.awaitExactMembershipCount = Promise.promisify(function (servers, count, callback) {
   var interval, gotExactCount = false;

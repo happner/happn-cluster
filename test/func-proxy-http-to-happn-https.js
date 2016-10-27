@@ -9,7 +9,7 @@ var HappnClient = require('happn').client;
 var hooks = require('./lib/hooks');
 
 var clusterSize = 1;
-var happnSecure = false;
+var happnSecure = true;
 
 describe(filename, function () {
 
@@ -48,7 +48,9 @@ describe(filename, function () {
     var client;
     HappnClient.create({
       config: {
-        url: 'http://127.0.0.1:' + port
+        url: 'http://127.0.0.1:' + port,
+        username: '_ADMIN',
+        password: 'secret'
       }
     })
       .then(function (_client) {

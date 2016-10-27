@@ -9,7 +9,7 @@ var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
 var clusterSize = 3;
-var isSecure = false;
+var happnSecure = false;
 
 describe(filename, function () {
 
@@ -24,7 +24,7 @@ describe(filename, function () {
 
   hooks.startCluster({
     size: clusterSize,
-    isSecure: isSecure
+    happnSecure: happnSecure
   });
 
 
@@ -37,7 +37,7 @@ describe(filename, function () {
     Promise.resolve()
 
       .then(function () {
-        return testUtils.createMemberConfigs(clusterSize + 1, isSecure, {
+        return testUtils.createMemberConfigs(clusterSize + 1, happnSecure, false, {
           orchestrator: {
             minimumPeers: clusterSize + 2,
             stabiliseTimeout: 2000
