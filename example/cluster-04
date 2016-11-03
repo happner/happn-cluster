@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+// LOG_LEVEL=debug LOG_COMPONENTS=Orchestrator,Membership,Proxy example/cluster-04
+
+var path = require('path');
+var seq = parseInt(path.basename(__filename).split('-')[1]);
+
+require('./lib/create-cluster-member')(seq);

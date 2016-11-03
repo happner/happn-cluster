@@ -1,0 +1,1 @@
+openssl req -x509 -newkey rsa:2048 -keyout example.com.key -out example.com.cert -nodes -days 3650
