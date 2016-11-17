@@ -1,16 +1,25 @@
 FROM ubuntu:14.04
 MAINTAINER ig-grant
 
-ARG NODE_VERSION=4.*
+# Declare constants
+ENV NVM_VERSION v0.32.*
+ENV NODE_VERSION v4.*
 
 #### General ####
 RUN apt-get update && apt-get install -y curl wget git git-core curl build-essential
 
 #### Install NVM (Node Version Manager) ####
 
-RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
-RUN command -v nvm
-RUN nvm run node --$NODE_VERSION
+# Replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# Install NVM
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/${NVM_VERSION}/install.sh | bash
+
+# Install NODE
+RUN source ~/.nvm/nvm.sh; \
+    nvm install $NODE_VERSION; \
+    nvm use --delete-prefix $NODE_VERSION;
 
 #### Clone Github repos ####
 
