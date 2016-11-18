@@ -45,7 +45,7 @@ WORKDIR /home/happn-cluster
 
 EXPOSE 8005
 
-CMD ["/bin/bash"]
+CMD mongod --fork --logpath mongodb.log && /bin/bash
 
 # To build: sudo docker build --build-arg NODE_VERSION=4.* -t happner/happn-cluster:v1 .
 
