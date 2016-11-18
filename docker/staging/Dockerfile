@@ -33,6 +33,13 @@ RUN git clone https://github.com/happner/happn-cluster.git /home/happn-cluster
 # Install npm dependencies
 RUN cd /home/happn-cluster && npm install
 
+#### Set up MongoDB ####
+
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/10gen.list
+RUN apt-get update && apt-get install -y mongodb-org
+RUN mkdir -p /data/db
+
 ### Set up working directory
 WORKDIR /home/happn-cluster
 
