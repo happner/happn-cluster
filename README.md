@@ -292,7 +292,7 @@ The cluster can be deployed inside a Docker container; the prerequisites for thi
   `> mkdir -p /home/projects/happn-cluster`  
 * Create a Dockerfile:
   `> cd /home/projects/happn-cluster && touch Dockerfile`
-* Add the contents of the sample Dockerfile found in `happn-cluster/docker/staging/Dockerfile` to this new file
+* Add the contents of the sample Dockerfile found in [https://github.com/happner/happn-cluster/blob/master/docker/staging/Dockerfile](https://github.com/happner/happn-cluster/blob/master/docker/staging/Dockerfile) to this new file
 * You are now ready to kick off a Docker build
 
 ### Build a Docker image of the project
