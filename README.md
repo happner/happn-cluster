@@ -305,7 +305,7 @@ The cluster can be deployed inside a Docker container; the prerequisites for thi
   * Clones the [repo](https://github.com/happner/happn-cluster.git)
   * Runs `> npm install`
   * Installs MongoDB on the same image as the application
-  * To run the build:
+* To run the build:
   `> cd /home/projects/happn-cluster && sudo docker build -t happn-cluster:v1 .` (don't forget the '.' at the end!)
   * This will take some time and will output progress to the terminal
   
