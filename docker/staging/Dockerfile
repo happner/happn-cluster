@@ -1,35 +1,39 @@
 FROM ubuntu:14.04
 MAINTAINER ig-grant
 
-# Declare constants
-ENV NVM_VERSION v0.32.*
-ENV NODE_VERSION v4.*
+# Declare args
+ARG NVM_DIR=$HOME/.nvm
+ARG NVM_VERSION=0.32.0
+ARG NODE_VERSION=4.6.2
 
 #### General ####
 RUN apt-get update && apt-get install -y curl wget git git-core curl build-essential
 
 #### Install NVM (Node Version Manager) ####
 
-# Replace shell with bash so we can source files
+# Replace sh with bash
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# Install NVM
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/${NVM_VERSION}/install.sh | bash
+# Install nvm with node and npm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.0/install.sh | bash \
+    && source $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm alias default $NODE_VERSION \
+    && nvm use default
 
-# Install NODE
-RUN source ~/.nvm/nvm.sh; \
-    nvm install $NODE_VERSION; \
-    nvm use --delete-prefix $NODE_VERSION;
+# Set up our PATH correctly so we don't have to long-reference npm, node, &c.
+ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-#### Clone Github repos ####
+#### Clone Github repo ####
 
 RUN mkdir -p home
 RUN git clone https://github.com/happner/happn-cluster.git /home/happn-cluster
-RUN cd /home/happn-cluster && \
-    npm install
+
+# Install npm dependencies
+RUN cd /home/happn-cluster && npm install
 
 ### Set up working directory
-
 WORKDIR /home/happn-cluster
 
 EXPOSE 8005
@@ -41,8 +45,8 @@ CMD ["/bin/bash"]
 # To run (PRODUCTION): sudo docker run -p 8005:8005 -it --rm happner/happn-cluster:v1
 
 # Inspect: sudo docker inspect [container_id]
-# Delete all containers: sudo docker rm $(docker ps -a -q)
-# Delete all images: sudo docker rmi $(docker images -q)
+# Delete all containers: sudo docker rm $(sudo docker ps -a -q)
+# Delete all images: sudo docker rmi $(sudo docker images -q)
 # Connect to running container: sudo docker exec -it [container_id] bash
 # Attach to running container: sudo docker attach [container_id]
 # Detach from running container without stopping process: Ctrl-p Ctrl-q
