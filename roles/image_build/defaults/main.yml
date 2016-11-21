@@ -1,0 +1,12 @@
+happn-cluster_base_name: happn-cluster/baseimage
+happn-cluster_base_tag: "latest"
+happn-cluster_version: ""
+happn-cluster_build_dir: /tmp/happn-cluster
+happn-cluster_repo: https://github.com/happner/happn-cluster.git
+happn-cluster_extra_tag: latest
+happn-cluster_image_name: happn-cluster
+happn-cluster_image_tag: >
+    {{ happn-cluster_version }}
+    {%- if happn-cluster_iteration -%}
+    -{{ happn-cluster_iteration }}
+    {%- endif -%}

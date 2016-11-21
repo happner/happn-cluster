@@ -1,0 +1,22 @@
+#
+# SEE:
+# https://fangpenlin.com/posts/2014/08/11/building-docker-image-with-ansible/
+# http://docs.ansible.com/ansible/docker_module.html
+# https://github.com/ansible/ansible/blob/devel/docsite/rst/guide_docker.rst
+
+---
+- name: Build happn-cluster app image
+  hosts: all
+  sudo: yes
+  vars_prompt:
+    - name: happn-cluster_version
+      prompt: "happn-cluster_version"
+      default: "1.0.0"
+      private: no
+    - name: happn-cluster_iteration
+      prompt: "happn-cluster_iteration"
+      default: 1
+      private: no
+  roles:
+    - Ansibles.apt
+    - image_build
