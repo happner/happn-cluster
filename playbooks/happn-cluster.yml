@@ -18,5 +18,4 @@
       default: 1
       private: no
   roles:
-    - Ansibles.apt
     - image_build

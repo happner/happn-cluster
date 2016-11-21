@@ -53,4 +53,4 @@
     docker tag -f
     {{ happn-cluster_image_name }}:{{ happn-cluster_image_tag }}
     {{ happn-cluster_image_name }}:{{ happn-cluster_extra_tag }}
-when: happn-cluster_extra_tag != ''
+  when: happn-cluster_extra_tag != ''
