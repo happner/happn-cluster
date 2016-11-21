@@ -29,9 +29,9 @@ ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 ## Create cluster dir and install packages
 RUN mkdir -p home
 
-ADD happn-cluster.tar /home/happn-cluster
-RUN echo "{{ happn-cluster_image_tag }}" > /home/happn-cluster/happn-cluster/version.txt
-RUN echo "{{ happn-cluster_repo.after }}" > /home/happn-cluster/happn-cluster/git_revision.txt
+ADD happn_cluster.tar /home/happn-cluster
+RUN echo "{{ happn_cluster_image_tag }}" > /home/happn-cluster/happn-cluster/version.txt
+RUN echo "{{ happn_cluster_repo.after }}" > /home/happn-cluster/happn-cluster/git_revision.txt
 
 # Install npm dependencies
 RUN cd /home/happn-cluster && npm install
