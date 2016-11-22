@@ -277,7 +277,7 @@ Members updates (arrived/departed) are disseminated throughout the cluster on th
 
 See [swim.js](https://github.com/happner/swim-js)
 
-## Docker deployment
+## Docker automation
 
 The cluster can be deployed inside a Docker container; the prerequisites for this are as follows:
 
@@ -302,7 +302,7 @@ The cluster can be deployed inside a Docker container; the prerequisites for thi
 * Building the image from the newly created Dockerfile will do the following:
   * Install Ubuntu version 14.04
   * Install a specific version of Node (based on parameters passed in to the build) - this defaults to 4.6.2
-  * Clones the [repo](https://github.com/happner/happn-cluster.git)
+  * Clones the repo ([https://github.com/happner/happn-cluster.git](https://github.com/happner/happn-cluster.git))
   * Runs `> npm install`
   * Installs MongoDB on the same image as the application
 * To run the build:
@@ -326,6 +326,21 @@ The cluster can be deployed inside a Docker container; the prerequisites for thi
 
 Docker is great for building images that can be spun up into containers within seconds. However it is not a deployment or orchestration tool. Ansible enables us to deploy our images to remote Docker hosts and to then spin up containers on demand.
  
+### Installing Ansible (Ubuntu)
+
+```
+sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install ansible
+```
+
+See also:
+
+* [http://docs.ansible.com/ansible/intro_getting_started.html](http://docs.ansible.com/ansible/intro_getting_started.html)
+* [https://github.com/ansible/ansible](https://github.com/ansible/ansible)
+* [https://github.com/ansible/ansible-examples](https://github.com/ansible/ansible-examples)
+
 ### Using Ansible to build Docker images and deploy to Docker hosts
 
 #### Deploying a cluster
