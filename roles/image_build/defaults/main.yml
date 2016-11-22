@@ -5,8 +5,4 @@ happn_cluster_build_dir: /tmp/happn_cluster
 happn_cluster_repo: https://github.com/happner/happn-cluster.git
 happn_cluster_extra_tag: latest
 happn_cluster_image_name: happn_cluster
-happn_cluster_image_tag: >
-    {{ happn_cluster_version }}
-    {%- if happn_cluster_iteration -%}
-    -{{ happn_cluster_iteration }}
-    {%- endif -%}
+happn_cluster_image_tag: "{{ happn_cluster_version }}-{{ happn_cluster_iteration }}"

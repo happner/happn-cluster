@@ -1,4 +1,4 @@
-FROM {{ happn-cluster_base_name }}:{{ happn-cluster_base_tag }}
+FROM ubuntu:14.04
 MAINTAINER ig-grant
 
 # Declare args
