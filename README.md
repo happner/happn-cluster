@@ -331,12 +331,14 @@ Docker is great for building images that can be spun up into containers within s
 
 __Deploying a cluster__
 
-* A "fleet" of Docker hosts (eg: AWS instances with Docker engine installed on each)
-* A build server
-  * Ansible installed
-  * Pulls the latest version of happn-cluster from Github when changes detected
+* Prerequisites: 
+  * A "fleet" of Docker hosts (eg: AWS instances with Docker engine installed on each)
+  * A build server with Ansible installed
+
+* Process:
+  * Build server pulls the latest version of happn-cluster from Github when changes detected
   * Runs the Ansible playbook to build a Docker image
-  * Connects to the Docker host fleet and deploys the image to each
+  * Connects to the Docker host fleet and deploys the image to each member
   * Executes the Docker command remotely on each Docker host to start a container (including environment variables to set things such as ports, cluster info etc.)
 
 * Commands run on the build server
