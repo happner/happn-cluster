@@ -30,8 +30,8 @@ ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN mkdir -p home
 
 ADD happn_cluster.tar /home/happn-cluster
-RUN echo "{{ happn_cluster_image_tag }}" > /home/happn-cluster/happn-cluster/version.txt
-RUN echo "{{ happn_cluster_repo.after }}" > /home/happn-cluster/happn-cluster/git_revision.txt
+RUN echo "{{ happn_cluster_image_tag }}" > /home/happn-cluster/version.txt
+RUN echo "{{ happn_cluster_repo.after }}" > /home/happn-cluster/git_revision.txt
 
 # Install npm dependencies
 RUN cd /home/happn-cluster && npm install

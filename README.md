@@ -321,3 +321,24 @@ The cluster can be deployed inside a Docker container; the prerequisites for thi
   `> npm test`
   * This will kick off all the tests
   
+### Using Ansible to build Docker images and deploy to Docker hosts
+ 
+#### Premise
+
+Docker is great for building images that can be spun up into containers within seconds. However it is not a deployment or orchestration tool. Ansible enables us to deploy our images to remote Docker hosts and to then spin up containers on demand. 
+
+#### Scenarios
+
+__Deploying a cluster__
+
+* A "fleet" of Docker hosts (eg: AWS instances with Docker engine installed on each)
+* A build server
+  * Ansible installed
+  * Pulls the latest version of happn-cluster from Github when changes detected
+  * Runs the Ansible playbook to build a Docker image
+  * Connects to the Docker host fleet and deploys the image to each
+  * Executes the Docker command remotely on each Docker host to start a container (including environment variables to set things such as ports, cluster info etc.)
+
+* Commands run on the build server
+ * Based on the playbook found in the `playbooks` directory:
+   `sudo ansible-playbook -i hosts -vvvv --connection=local playbooks/happn-cluster.yml`
