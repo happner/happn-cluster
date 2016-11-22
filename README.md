@@ -343,4 +343,6 @@ __Deploying a cluster__
 
 * Commands run on the build server
  * Based on the playbook found in the `playbooks` directory:
-   `sudo ansible-playbook -i hosts -vvvv --connection=local playbooks/happn-cluster.yml`
+   `
+   > sudo ansible-playbook -i hosts -vvvv --connection=local playbooks/happn-cluster.yml
+   `
