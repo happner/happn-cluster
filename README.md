@@ -343,7 +343,10 @@ __Deploying a cluster__
 
 * Commands run on the build server
  * Based on the playbook found in the `/playbooks` directory:
-   
    ```
-   > sudo ansible-playbook -i hosts -vvvv --connection=local playbooks/happn-cluster.yml
+   > sudo ansible-playbook -i hosts -vvvv -c local playbooks/happn-cluster.yml
    ```
+   * -i: inventory (the file that specifies the host list)
+   * -vvvv: enables connection debugging
+   * -c: connection type
+   * (the path to the playbook to execute)
