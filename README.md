@@ -342,11 +342,14 @@ __Deploying a cluster__
   * Executes the Docker command remotely on each Docker host to start a container (including environment variables to set things such as ports, cluster info etc.)
 
 * Commands run on the build server
+ * Execute a playbook:
+ 
+  ```
+  > sudo ansible-playbook -i [file containing host list] -vvvv -c [connection type] playbooks/happn-cluster.yml
+  ```
+  
  * Based on the playbook found in the `/playbooks` directory:
+ 
    ```
    > sudo ansible-playbook -i hosts -vvvv -c local playbooks/happn-cluster.yml
    ```
-   * -i: inventory (the file that specifies the host list)
-   * -vvvv: enables connection debugging
-   * -c: connection type
-   * (the path to the playbook to execute)
