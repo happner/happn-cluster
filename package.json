@@ -1,6 +1,6 @@
 {
   "name": "happn-cluster",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
@@ -31,19 +31,19 @@
     "benchmarket": "^0.1.0",
     "coveralls": "^2.11.13",
     "expect.js": "^0.3.1",
-    "happn-service-mongo": "^0.3.2",
+    "happn-service-mongo-2": "^0.0.2",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
     "mongodb": "^2.2.10",
     "request": "^2.76.0"
   },
   "dependencies": {
-    "bluebird": "^3.4.6",
-    "clone": "^1.0.2",
-    "dface": "^1.0.0",
-    "happn": "2.16.0",
-    "happn-swim": "^1.0.3",
-    "http-proxy": "^1.15.1",
-    "sillyname": "^0.1.0"
+    "bluebird": "3.4.6",
+    "clone": "1.0.2",
+    "dface": "1.0.1",
+    "happn-3": "0.5.0",
+    "happn-swim": "1.0.3",
+    "http-proxy": "1.15.2",
+    "sillyname": "0.1.0"
   }
 }

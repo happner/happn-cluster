@@ -32,8 +32,12 @@ module.exports.startCluster = function (clusterOpts) {
         .then(function (servers) {
           self.servers = servers;
         })
-        .then(done)
-        .catch(done)
+        .then(function(e){
+          done(e);
+        })
+        .catch(function(e){
+          done(e);
+        })
     });
   });
 };

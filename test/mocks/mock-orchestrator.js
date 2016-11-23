@@ -18,7 +18,7 @@ function MockOrchestrator(opts) {
       memberId: '10.0.0.1:56000',
       url: 'http://10.0.0.1:55000'
     }
-  }
+  };
 
   this.members = {};
   this.peers = {};

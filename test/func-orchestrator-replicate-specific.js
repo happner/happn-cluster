@@ -3,7 +3,7 @@ var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var Promise = require('bluebird');
-var Happn = require('happn');
+var Happn = require('happn-3');
 
 var hooks = require('./lib/hooks');
 
@@ -158,7 +158,10 @@ describe(filename, function () {
         }
       })
 
-      .then(done).catch(done);
+      .then(function(){
+        console.log('TEST1 COMPLETED:::');
+        done();
+      }).catch(done);
 
   });
 
@@ -190,10 +193,14 @@ describe(filename, function () {
         expect(receivedCount).to.eql(1);
       })
 
-      .then(done).catch(done);
+      .then(function(){
+        console.log('TEST2 COMPLETED:::');
+        done();
+      }).catch(done);
 
   });
 
+  console.log('STOPPING CLUSTER:::');
   hooks.stopCluster();
 
   after(function () {

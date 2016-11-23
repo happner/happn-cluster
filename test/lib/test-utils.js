@@ -43,7 +43,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, ha
       transport: transport,
       services: {
         data: {
-          path: 'happn-service-mongo',
+          path: 'happn-service-mongo-2',
           config: {
             collection: mongoCollection,
             url: mongoUrl

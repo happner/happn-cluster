@@ -2,7 +2,7 @@ var path = require('path');
 var filename = path.basename(__filename);
 var expect = require('expect.js');
 var Promise = require('bluebird');
-var Happn = require('happn');
+var Happn = require('happn-3');
 
 var Orchestrator = require('../lib/services/orchestrator');
 var MockHappn = require('./mocks/mock-happn');

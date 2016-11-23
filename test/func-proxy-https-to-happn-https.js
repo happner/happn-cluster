@@ -4,7 +4,7 @@ var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
-var HappnClient = require('happn').client;
+var HappnClient = require('happn-3').client;
 
 var hooks = require('./lib/hooks');
 
