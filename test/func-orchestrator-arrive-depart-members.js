@@ -14,7 +14,7 @@ describe(filename, function () {
 
   this.timeout(30000);
 
-  benchmarket.start();
+  // benchmarket.start();
 
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
@@ -95,7 +95,7 @@ describe(filename, function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
 
-  after(benchmarket.store());
-  benchmarket.stop();
+  // after(benchmarket.store());
+  // benchmarket.stop();
 
 });

@@ -5,18 +5,18 @@ var expect = require('expect.js');
 var hooks = require('./lib/hooks');
 
 var clusterSize = 10;
-var happnSecure = false;
+var happnSecure = true;
 
 describe(filename, function () {
 
   this.timeout(30000);
 
+ // benchmarket.start();
+
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
     process.env.LOG_LEVEL = 'off';
   });
-
-  benchmarket.start();
 
   hooks.startCluster({
     size: clusterSize,
@@ -44,7 +44,7 @@ describe(filename, function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
 
-  after(benchmarket.store());
-  benchmarket.stop();
+  // after(benchmarket.store());
+  // benchmarket.stop();
 
 });

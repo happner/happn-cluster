@@ -175,7 +175,7 @@ module.exports.awaitExactPeerCount = Promise.promisify(function (servers, count,
 
 module.exports.createClientInstance = function (host, port, callback) {
 
-  (require('happn')).client.create({
+  (require('happn-3')).client.create({
     config: {
       secure: true,
       host: host,
