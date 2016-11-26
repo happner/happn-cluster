@@ -4,7 +4,6 @@ services:
   - mongodb
 
 node_js:
-  - "6"
   - "5"
 
 script: "npm run-script test-cover"
