@@ -48,18 +48,25 @@ module.exports.stopCluster = function () {
 
     if (!this.servers) return done();
     Promise.resolve(this.servers).map(function (server) {
+
+      console.log('stopping server:::', server.config.name);
+
       return server.stop()
         .then(function () {
           // stopping all at once causes replicator client happn logouts to timeout
           // because happn logout attempts unsubscribe on server, and all servers
           // are gone
-          return Promise.delay(200); // ...so pause between stops
+          return Promise.delay(500); // ...so pause between stops
         })
     }, {concurrency: 1}) // ...and do them one at a time
       .then(function () {
         done()
       })
-      .catch(done);
+      .catch(function(e){
+
+        console.log('failed stopping:::', e.toString());
+        done(e);
+      });
   });
 
   after('clear collection (after)', function (done) {
