@@ -54,3 +54,6 @@
     {{ happn_cluster_image_name }}:{{ happn_cluster_image_tag }}
     {{ happn_cluster_image_name }}:{{ happn_cluster_extra_tag }}
   when: happn_cluster_extra_tag != ''
+
+- name: run happn-cluster
+  docker: image={{ happn_cluster_image_name }}:{{ happn_cluster_extra_tag }}

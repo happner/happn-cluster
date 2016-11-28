@@ -340,6 +340,7 @@ See also:
 * [http://docs.ansible.com/ansible/intro_getting_started.html](http://docs.ansible.com/ansible/intro_getting_started.html)
 * [https://github.com/ansible/ansible](https://github.com/ansible/ansible)
 * [https://github.com/ansible/ansible-examples](https://github.com/ansible/ansible-examples)
+* [https://galaxy.ansible.com/list#/roles](https://galaxy.ansible.com/list#/roles?page=1&page_size=10)
 
 ### Using Ansible to build Docker images and deploy to Docker hosts
 
