@@ -59,13 +59,12 @@ describe(filename, function () {
 
   after('disconnect all clients', function (done) {
     if (!this.clients) return done();
-    Promise.resolve(this.clients).map(function (client) {
-      return client.disconnect();
-    })
-      .then(function () {
-        done();
-      })
-      .catch(done);
+
+    var async = require('async');
+
+    async.eachSeries(this.clients, function (client, clientCB) {
+      return client.disconnect(clientCB);
+    }, done);
   });
 
 
