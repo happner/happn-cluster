@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha test",
     "unit": "mocha test/unit-*",
-    "test-cover": "istanbul cover _mocha -- silence.js test"
+    "test-cover": "istanbul cover _mocha -- silence.js test",
+    "test-benchmarket": "node test/lib/serial-run --expose-gc"
   },
   "repository": {
     "type": "git",
@@ -32,7 +33,6 @@
     "coveralls": "^2.11.13",
     "expect.js": "^0.3.1",
     "gulp": "^3.9.1",
-    "gulp-spawn-mocha": "^3.1.0",
     "happn-service-mongo-2": "^0.0.2",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
@@ -44,7 +44,7 @@
     "bluebird": "3.4.6",
     "clone": "1.0.2",
     "dface": "1.0.1",
-    "happn-3": "0.7.0",
+    "happn-3": "0.7.1",
     "happn-swim": "1.0.3",
     "http-proxy": "1.15.2",
     "sillyname": "0.1.0"
