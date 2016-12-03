@@ -287,7 +287,6 @@ describe(filename, function () {
           .then(function () {
 
             expect(o.loginConfig).to.eql({
-              config: {},
               info: {
                 clusterName: 'cluster-name',
                 memberId: 'MEMBER_ID',
@@ -324,16 +323,17 @@ describe(filename, function () {
     it('connects intra-process client to self', function (done) {
 
       o.prepare()
+
         .then(function () {
 
-          expect(MockHappnClient.getLastLoginConfig()).to.eql(
-            { config: { url: 'http://10.0.0.2:55000', connectTimeout: 5000 },
-            info:
-            { name: 'local-instance-name',
-              clusterName: 'cluster-name',
-              memberId: '10.0.0.1:56000',
-              url: 'http://10.0.0.1:55000' }
-            });
+          expect(MockHappnClient.getLastLoginConfig()).to.eql({
+          context: {},
+          info:
+          { name: 'local-happn-instance',
+            clusterName: 'cluster-name',
+            memberId: 'MEMBER_ID',
+            url: 'http://10.0.0.5:9000' }
+          });
 
           done();
         })
@@ -379,6 +379,7 @@ describe(filename, function () {
       });
 
       it('pends stabilise if minimumPeers is set', function (done) {
+
         var stable = false;
 
         o.config.minimumPeers = 2;
@@ -408,7 +409,7 @@ describe(filename, function () {
 
           // wait for member login to remote
           setTimeout(function () {
-
+            
             // member logged in to remote
             expect(MockHappnClient.instances['10-0-0-1_55001']).to.not.be(undefined); // remote happn.name as key
 
@@ -438,7 +439,7 @@ describe(filename, function () {
             expect(stable).to.equal(true);
             done();
 
-          }, 20);
+          }, 1000);
 
         }, 20);
       });

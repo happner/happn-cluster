@@ -3,7 +3,9 @@ module.exports = MockOrchestrator;
 var MockHappnClient = require('./mock-happn-client');
 
 function MockOrchestrator(opts) {
+
   this.log = opts.logger.createLogger('Orchestrator');
+
   this.HappnClient = MockHappnClient;
 
   this.config = {
@@ -29,6 +31,22 @@ function MockOrchestrator(opts) {
     }
   }
 }
+
+MockOrchestrator.prototype.getLoginConfig = function(){
+
+  var clone = require('clone');
+
+  if (!this.loginConfig) return null;
+
+  var clonedConfig = clone(this.loginConfig);
+
+  return {
+    info:clonedConfig.info,
+    username:clonedConfig.username,
+    password:clonedConfig.password
+  }
+
+};
 
 MockOrchestrator.prototype.__stateUpdate = function () {
 

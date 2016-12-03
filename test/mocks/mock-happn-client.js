@@ -1,6 +1,11 @@
 var lastLoginConfig;
 module.exports.getLastLoginConfig = function () {
-  return lastLoginConfig;
+
+  var cloned = JSON.parse(JSON.stringify(lastLoginConfig));
+
+  delete cloned.plugin;
+
+  return cloned;
 };
 
 var queuedLoginError = null;
@@ -14,6 +19,7 @@ module.exports.queueSubscriptionError = function (error) {
 };
 
 module.exports.create = function (config, callback) {
+
   if (queuedLoginError) {
     var error = queuedLoginError;
     queuedLoginError = null;
@@ -23,15 +29,18 @@ module.exports.create = function (config, callback) {
     return;
   }
 
+  if (config.config && config.config.url) config = config.config;
+
   var name = 'remote-happn-instance';
 
   // console.log('CONFIG', JSON.stringify(config.info, null, 2));
 
-  if (config.config.url) {
-    name = config.config.url.split('//')[1].replace(/\./g, '-').replace(/\:/g, '_');
+  if (config.url) {
+    name = config.url.split('//')[1].replace(/\./g, '-').replace(/\:/g, '_');
   }
 
   lastLoginConfig = config;
+
   process.nextTick(function () {
     callback(null, new MockHappnClient(name));
   });
@@ -49,7 +58,7 @@ function MockHappnClient(name) {
   this.eventHandlers = {};
 
   var onDestroy, _this = this;
-  this.pubsub = {
+  this.socket = {
     on: function (event, handler) {
       if (event == 'destroy') {
         onDestroy = handler;
@@ -60,7 +69,7 @@ function MockHappnClient(name) {
       _this.destroyed = true;
       onDestroy();
     }
-  }
+  };
 
   this.__subscribed = [];
   this.__subscriptionHandlers = {};

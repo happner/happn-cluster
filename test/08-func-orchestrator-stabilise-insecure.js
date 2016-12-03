@@ -16,7 +16,7 @@ describe(filename, function () {
     process.env.LOG_LEVEL = 'off';
   });
 
-  //benchmarket.start();
+  benchmarket.start();
 
   hooks.startCluster({
     size: clusterSize,
@@ -43,8 +43,8 @@ describe(filename, function () {
   after(function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
-  //
-  // after(benchmarket.store());
-  // benchmarket.stop();
+
+  after(benchmarket.store());
+  benchmarket.stop();
 
 });

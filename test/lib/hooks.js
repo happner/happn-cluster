@@ -52,9 +52,7 @@ module.exports.stopCluster = function () {
 
     async.eachSeries(this.servers, function (server, serverCB) {
 
-      //console.log('stopping server:::', server.config.name);
-
-      server.stop(serverCB);
+      server.stop(setTimeout(serverCB, 100));
 
     }, done);
 
