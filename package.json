@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha test --benchmarket-off",
     "unit": "mocha test/unit-* --benchmarket-off",
-    "test-cover": "istanbul cover _mocha -- silence.js test --benchmarket-off",
+    "test-cover": "istanbul cover _mocha -- test --benchmarket-off",
+    "XXX-test-cover": "istanbul cover _mocha -- silence.js test --benchmarket-off",
     "test-benchmarket": "node --expose-gc test/lib/serial-run"
   },
   "repository": {
