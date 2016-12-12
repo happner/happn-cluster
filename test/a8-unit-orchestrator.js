@@ -327,12 +327,13 @@ describe(filename, function () {
         .then(function () {
 
           expect(MockHappnClient.getLastLoginConfig()).to.eql({
-          context: {},
-          info:
-          { name: 'local-happn-instance',
-            clusterName: 'cluster-name',
-            memberId: 'MEMBER_ID',
-            url: 'http://10.0.0.5:9000' }
+            context: {},
+            info: {
+              name: 'local-happn-instance',
+              clusterName: 'cluster-name',
+              memberId: 'MEMBER_ID',
+              url: 'http://' + address + ':9000'
+            }
           });
 
           done();
@@ -409,7 +410,7 @@ describe(filename, function () {
 
           // wait for member login to remote
           setTimeout(function () {
-            
+
             // member logged in to remote
             expect(MockHappnClient.instances['10-0-0-1_55001']).to.not.be(undefined); // remote happn.name as key
 
@@ -728,7 +729,6 @@ describe(filename, function () {
 
             setTimeout(function () {
               expect(o.members['10.0.0.1:56001']).to.be(undefined);
-              expect(happnClient.destroyed).to.equal(true);
               done();
             }, 20);
 

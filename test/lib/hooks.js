@@ -3,6 +3,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 var path = require('path');
 var Promise = require('bluebird');
 var ChildProcess = require('child_process');
+var clone = require('clone');
 var HappnCluster = require('../../');
 var testUtils = require('./test-utils');
 
@@ -28,7 +29,7 @@ module.exports.startCluster = function (clusterOpts) {
       self.__configs = result;
 
       Promise.resolve(self.__configs).map(function (config) {
-        return HappnCluster.create(config)
+        return HappnCluster.create(clone(config))
       })
         .then(function (servers) {
           self.servers = servers;

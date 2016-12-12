@@ -7,11 +7,11 @@ var hooks = require('./lib/hooks');
 var MultiRandomActivity = require('./lib/multi-random-activity');
 
 var clusterSize = 10;
-var happnSecure = true;
-var proxySecure = true;
+var happnSecure = false;
+var proxySecure = false;
 var duration = 2000;
 
-xdescribe(filename, function () {
+describe(filename, function () {
 
   this.timeout(30000);
   benchmarket.start();
@@ -32,12 +32,9 @@ xdescribe(filename, function () {
     Promise.resolve(this.__configs).map(function (config) {
       var loginConfig = {
         config: {
-          secure: happnSecure,
           host: config.services.proxy.config.host,
           port: config.services.proxy.config.port,
-          protocol: 'https',
-          username: config.services.security.config.adminUser.username,
-          password: config.services.security.config.adminUser.password
+          protocol: 'http',
         }
       };
 
