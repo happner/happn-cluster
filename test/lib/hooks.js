@@ -55,7 +55,7 @@ module.exports.stopCluster = function () {
           // stopping all at once causes replicator client happn logouts to timeout
           // because happn logout attempts unsubscribe on server, and all servers
           // are gone
-          return Promise.delay(1000); // ...so pause between stops (long for travis)
+          return Promise.delay(500); // ...so pause between stops (long for travis)
         })
     }, {concurrency: 1}) // ...and do them one at a time
       .then(function () {
