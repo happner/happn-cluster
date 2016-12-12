@@ -11,7 +11,7 @@ var happnSecure = true;
 var proxySecure = true;
 var duration = 2000;
 
-describe.only(filename, function () {
+xdescribe(filename, function () {
 
   this.timeout(30000);
   benchmarket.start();
