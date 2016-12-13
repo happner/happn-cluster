@@ -60,7 +60,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, ha
           config: {
             clusterName: 'cluster1',
             seed: i == 1,
-            seedWait: 1000,
+            seedWait: 2000,
             joinType: 'static',
             host: ipAddress,
             port: 56000 + i,
