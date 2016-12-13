@@ -4,6 +4,7 @@ var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var hooks = require('./lib/hooks');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 10;
 var happnSecure = true;
 
@@ -19,6 +20,7 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure
   });

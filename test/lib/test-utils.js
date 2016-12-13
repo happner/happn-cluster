@@ -16,12 +16,18 @@ module.exports.clearMongoCollection = function (callback) {
   Mongo.clearCollection(mongoUrl, mongoCollection, callback);
 };
 
-module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, happnSecure, proxySecure, services, callback) {
+module.exports.createMemberConfigs = Promise.promisify(function (testSequence, clusterSize, happnSecure, proxySecure, services, callback) {
 
   var ipAddress = getAddress();
   var fs = require('fs');
   var transport = null;
   var certPath, keyPath;
+
+  var happnPortBase = testSequence * 200 * 1 + 1025;
+  var swimPortBase = testSequence * 200 * 2 + 1025;
+  var proxyPortBase = testSequence * 200 * 3 + 1025;
+
+  console.log('\n\n\n', happnPortBase, swimPortBase, proxyPortBase, '\n\n\n');
 
   if (happnSecure) {
     transport = {
@@ -39,7 +45,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, ha
     i++;
 
     var config = {
-      port: 57000 + i,
+      port: happnPortBase + i,
       transport: transport,
       services: {
         data: {
@@ -63,8 +69,12 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, ha
             seedWait: 1000,
             joinType: 'static',
             host: ipAddress,
-            port: 56000 + i,
-            hosts: [ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003'],
+            port: swimPortBase + i,
+            hosts: [
+              ipAddress + ':' + (swimPortBase + 1),
+              ipAddress + ':' + (swimPortBase + 2),
+              ipAddress + ':' + (swimPortBase + 3)
+            ],
             joinTimeout: 1000,
             pingInterval: 200,
             pingTimeout: 20,
@@ -75,7 +85,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, ha
         proxy: {
           config: {
             host: '0.0.0.0',
-            port: 55000 + i,
+            port: proxyPortBase + i,
             allowSelfSignedCerts: true
           }
         }

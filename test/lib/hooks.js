@@ -9,6 +9,7 @@ var testUtils = require('./test-utils');
 
 module.exports.startCluster = function (clusterOpts) {
 
+  var testSequence = clusterOpts.testSequence || 1;
   var clusterSize = clusterOpts.size || 5;
   var happnSecure = typeof clusterOpts.happnSecure == 'boolean' ? clusterOpts.happnSecure : false;
   var proxySecure = typeof clusterOpts.proxySecure == 'boolean' ? clusterOpts.proxySecure : false;
@@ -22,7 +23,7 @@ module.exports.startCluster = function (clusterOpts) {
 
     var self = this;
 
-    testUtils.createMemberConfigs(clusterSize, happnSecure, proxySecure, services, function (err, result) {
+    testUtils.createMemberConfigs(testSequence, clusterSize, happnSecure, proxySecure, services, function (err, result) {
 
       if (err) return done(err);
 
@@ -77,6 +78,7 @@ module.exports.startMultiProcessCluster = function (clusterOpts) {
     testUtils.clearMongoCollection(done);
   });
 
+  var testSequence = clusterOpts.testSequence || 1;
   var clusterSize = clusterOpts.size || 5;
   var happnSecure = typeof clusterOpts.happnSecure == 'boolean' ? clusterOpts.happnSecure : false;
   var proxySecure = typeof clusterOpts.proxySecure == 'boolean' ? clusterOpts.proxySecure : false;
@@ -88,7 +90,7 @@ module.exports.startMultiProcessCluster = function (clusterOpts) {
 
     var self = this;
 
-    testUtils.createMemberConfigs(clusterSize, happnSecure, proxySecure, services, function (err, result) {
+    testUtils.createMemberConfigs(testSequence, clusterSize, happnSecure, proxySecure, services, function (err, result) {
 
       if (err) return done(err);
 

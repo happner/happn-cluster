@@ -7,6 +7,7 @@ var HappnCluster = require('../');
 var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 10;
 var happnSecure = false;
 
@@ -22,6 +23,7 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure
   });
@@ -32,7 +34,7 @@ describe(filename, function () {
 
   before('create extra config', function (done) {
     var _this = this;
-    testUtils.createMemberConfigs(clusterSize + 1, false, false, {}, function (e, configs) {
+    testUtils.createMemberConfigs(testSequence, clusterSize + 1, false, false, {}, function (e, configs) {
       if (e) return done(e);
       _this.extraConfig = configs.pop();
       done();
