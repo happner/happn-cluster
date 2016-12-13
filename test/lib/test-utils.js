@@ -23,12 +23,10 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
   var transport = null;
   var certPath, keyPath;
 
-  var happnPortBase = testSequence * 200 * 1 + 1025;
-  var swimPortBase = testSequence * 200 * 2 + 1025;
-  var proxyPortBase = testSequence * 200 * 3 + 1025;
-
-  console.log('\n\n\n', happnPortBase, swimPortBase, proxyPortBase, '\n\n\n');
-
+  var happnPortBase = (testSequence * 200) + 1025;
+  var swimPortBase = happnPortBase + (clusterSize * 2);
+  var proxyPortBase = swimPortBase + (clusterSize * 2);
+  
   if (happnSecure) {
     transport = {
       mode: 'https',
