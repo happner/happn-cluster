@@ -7,7 +7,7 @@ var hooks = require('./lib/hooks');
 var clusterSize = 10;
 var happnSecure = true;
 
-describe.only(filename, function () {
+describe(filename, function () {
 
   this.timeout(30000);
 

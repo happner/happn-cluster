@@ -13,7 +13,7 @@ var MockMembership = require('./mocks/mock-membership');
 var mockOpts = require('./mocks/mock-opts');
 var address = require('../lib/utils/get-address')();
 
-describe.only(filename, function () {
+describe(filename, function () {
 
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;

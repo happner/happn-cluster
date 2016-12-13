@@ -10,7 +10,7 @@ var Proxy = require('../lib/services/proxy');
 var MockHappn = require('./mocks/mock-happn');
 var mockOpts = require('./mocks/mock-opts');
 
-describe.only(filename, function () {
+describe(filename, function () {
 
   this.timeout(20000);
 

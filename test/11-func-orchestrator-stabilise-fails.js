@@ -12,7 +12,7 @@ var testUtils = require('./lib/test-utils');
 var clusterSize = 3;
 var happnSecure = false;
 
-describe.only(filename, function () {
+describe(filename, function () {
 
   this.timeout(30000);
 
@@ -57,7 +57,7 @@ describe.only(filename, function () {
     HappnCluster.create(this.extraConfig)
 
       .then(function (server) {
-        return server.stop();
+        return server.stop({reconnect: false});
       })
 
       .then(function () {

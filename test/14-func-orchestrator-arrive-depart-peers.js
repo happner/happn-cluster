@@ -10,7 +10,7 @@ var testUtils = require('./lib/test-utils');
 var clusterSize = 10;
 var happnSecure = false;
 
-describe.only(filename, function () {
+describe(filename, function () {
 
   this.timeout(30000);
 
@@ -67,7 +67,7 @@ describe.only(filename, function () {
 
       .then(function () {
         var server = _this.servers.pop(); // remove and stop new server
-        return server.stop();
+        return server.stop({reconnect: false});
       })
 
       .then(function () {

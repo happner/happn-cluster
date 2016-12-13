@@ -13,7 +13,7 @@ var clusterSize = 3;
 
 var happnSecure = false;
 
-describe.only(filename, function () {
+describe(filename, function () {
 
   this.timeout(30000);
 
