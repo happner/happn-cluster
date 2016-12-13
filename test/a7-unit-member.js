@@ -7,7 +7,7 @@ var MockOrchestrator = require('./mocks/mock-orchestrator');
 var mockOpts = require('./mocks/mock-opts');
 var MockHappnClient = require('./mocks/mock-happn-client');
 
-describe(filename, function () {
+describe.only(filename, function () {
 
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
