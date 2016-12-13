@@ -4,21 +4,23 @@ var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var hooks = require('./lib/hooks');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 10;
-var happnSecure = true;
+var happnSecure = false;
 
 describe(filename, function () {
 
   this.timeout(30000);
-
-  benchmarket.start();
 
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
     process.env.LOG_LEVEL = 'off';
   });
 
+  benchmarket.start();
+
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure
   });

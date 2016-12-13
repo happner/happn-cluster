@@ -7,6 +7,7 @@ var Happn = require('happn-3');
 
 var hooks = require('./lib/hooks');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 3;
 var happnSecure = true;
 
@@ -22,6 +23,7 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure,
     services: {

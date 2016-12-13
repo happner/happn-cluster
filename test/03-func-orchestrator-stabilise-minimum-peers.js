@@ -9,8 +9,8 @@ var Orchestrator = require('../lib/services/orchestrator');
 var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 3;
-
 var happnSecure = false;
 
 describe(filename, function () {
@@ -81,7 +81,7 @@ describe(filename, function () {
     Promise.resolve()
 
       .then(function () {
-        return testUtils.createMemberConfigs(clusterSize, false, false, {});
+        return testUtils.createMemberConfigs(testSequence, clusterSize, false, false, {});
       })
 
       .then(function (_configs) {

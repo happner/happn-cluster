@@ -7,8 +7,9 @@ var Happn = require('happn-3');
 
 var hooks = require('./lib/hooks');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 3;
-var happnSecure = true;
+var happnSecure = false;
 
 describe(filename, function () {
 
@@ -22,6 +23,7 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure
   });
@@ -31,12 +33,12 @@ describe(filename, function () {
     Promise.resolve(this.__configs).map(function (config) {
       var loginConfig = {
         config: {
-          secure: happnSecure,
+          // secure: happnSecure,
           host: config.services.proxy.config.host,
           port: config.services.proxy.config.port,
           protocol: 'http',
-          username: config.services.security.config.adminUser.username,
-          password: config.services.security.config.adminUser.password
+          // username: config.services.security.config.adminUser.username,
+          // password: config.services.security.config.adminUser.password
         }
       };
 

@@ -6,6 +6,7 @@ var benchmarket = require('benchmarket');
 var hooks = require('./lib/hooks');
 var MultiRandomActivity = require('./lib/multi-random-activity');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 10;
 var happnSecure = false;
 var proxySecure = false;
@@ -22,6 +23,7 @@ xdescribe(filename, function () {
   });
 
   hooks.startMultiProcessCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure,
     proxySecure: proxySecure

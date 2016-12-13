@@ -9,6 +9,7 @@ var Member = require('../lib/services/orchestrator/member');
 var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 3;
 var happnSecure = false;
 
@@ -24,13 +25,14 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure
   });
 
   before('create extra config', function (done) {
     var _this = this;
-    testUtils.createMemberConfigs(clusterSize + 1, false, false, {}, function (e, configs) {
+    testUtils.createMemberConfigs(testSequence, clusterSize + 1, false, false, {}, function (e, configs) {
       if (e) return done(e);
       _this.extraConfig = configs.pop();
       done();
@@ -57,7 +59,7 @@ describe(filename, function () {
     HappnCluster.create(this.extraConfig)
 
       .then(function (server) {
-        return server.stop();
+        return server.stop({reconnect: false});
       })
 
       .then(function () {

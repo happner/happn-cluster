@@ -7,6 +7,7 @@ var HappnCluster = require('../');
 var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 3;
 var happnSecure = false;
 
@@ -22,6 +23,7 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure,
     services: {
@@ -47,7 +49,7 @@ describe(filename, function () {
     Promise.resolve()
 
       .then(function () {
-        return testUtils.createMemberConfigs(clusterSize + 1, happnSecure, false, {
+        return testUtils.createMemberConfigs(testSequence, clusterSize, happnSecure, false, {
           membership: {
             pingInterval: 2000
           }
@@ -59,9 +61,15 @@ describe(filename, function () {
       })
 
       .then(function (config) {
+
+        // increment ports to one beyond last existing peer
+        config.port++;
+        config.services.membership.config.port++;
+        config.services.proxy.config.port++;
+
         var stopServer = _this.servers.pop();
         setTimeout(function () {
-          stopServer.stop().then(function () {
+          stopServer.stop({reconnect: false}).then(function () {
           }).catch(done);
         }, config.services.membership.config.joinTimeout - 20);
 
