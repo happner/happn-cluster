@@ -50,7 +50,7 @@ module.exports.stopCluster = function () {
 
     if (!this.servers) return done();
     Promise.resolve(this.servers).map(function (server) {
-      return server.stop()
+      return server.stop({reconnect: false})
         .then(function () {
           // stopping all at once causes replicator client happn logouts to timeout
           // because happn logout attempts unsubscribe on server, and all servers
