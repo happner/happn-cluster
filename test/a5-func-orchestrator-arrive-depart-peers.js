@@ -10,7 +10,7 @@ var testUtils = require('./lib/test-utils');
 var clusterSize = 10;
 var happnSecure = false;
 
-describe(filename, function () {
+describe.only(filename, function () {
 
   this.timeout(30000);
 
