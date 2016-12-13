@@ -7,6 +7,7 @@ var HappnCluster = require('../');
 var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 10;
 var happnSecure = false;
 
@@ -22,20 +23,25 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure
   });
 
+  before('wait for lagging swim membership from initial bootstrap', function (done) {
+    testUtils.awaitExactMembershipCount(this.servers, done);
+  });
+
   before('create extra config', function (done) {
     var _this = this;
-    testUtils.createMemberConfigs(clusterSize + 1, false, false, {}, function (e, configs) {
+    testUtils.createMemberConfigs(testSequence, clusterSize + 1, false, false, {}, function (e, configs) {
       if (e) return done(e);
       _this.extraConfig = configs.pop();
       done();
     })
   });
 
-  it('arriving and departing peers become known to all nodes', function (done) {
+  it('arriving and departing members become known to all nodes', function (done) {
 
     var _this = this;
 
@@ -44,12 +50,12 @@ describe(filename, function () {
 
     this.servers.forEach(function (server, i) {
 
-      server.services.orchestrator.on('peer/add', function (name, member) {
-        emittedAdd[i] = member;
+      server.services.membership.on('add', function (info) {
+        emittedAdd[i] = info;
       });
 
-      server.services.orchestrator.on('peer/remove', function (name, member) {
-        emittedRemove[i] = member;
+      server.services.membership.on('remove', function (info) {
+        emittedRemove[i] = info;
       });
 
     });
@@ -62,16 +68,16 @@ describe(filename, function () {
       })
 
       .then(function () {
-        return testUtils.awaitExactPeerCount(_this.servers);
+        return testUtils.awaitExactMembershipCount(_this.servers);
       })
 
       .then(function () {
         var server = _this.servers.pop(); // remove and stop new server
-        return server.stop();
+        return server.stop({reconnect: false});
       })
 
       .then(function () {
-        return testUtils.awaitExactPeerCount(_this.servers);
+        return testUtils.awaitExactMembershipCount(_this.servers);
       })
 
       .then(function () {
