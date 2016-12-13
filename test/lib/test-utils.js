@@ -26,7 +26,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
   var happnPortBase = (testSequence * 200) + 1025;
   var swimPortBase = happnPortBase + (clusterSize * 2);
   var proxyPortBase = swimPortBase + (clusterSize * 2);
-  
+
   if (happnSecure) {
     transport = {
       mode: 'https',

@@ -49,7 +49,7 @@ describe(filename, function () {
     Promise.resolve()
 
       .then(function () {
-        return testUtils.createMemberConfigs(testSequence, clusterSize + 1, happnSecure, false, {
+        return testUtils.createMemberConfigs(testSequence, clusterSize, happnSecure, false, {
           membership: {
             pingInterval: 2000
           }
@@ -61,6 +61,12 @@ describe(filename, function () {
       })
 
       .then(function (config) {
+
+        // increment ports to one beyond last existing peer
+        config.port++;
+        config.services.membership.config.port++;
+        config.services.proxy.config.port++;
+
         var stopServer = _this.servers.pop();
         setTimeout(function () {
           stopServer.stop({reconnect: false}).then(function () {
