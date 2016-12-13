@@ -11,6 +11,8 @@ var testUtils = require('./lib/test-utils');
 
 var clusterSize = 3;
 
+var happnSecure = false;
+
 describe(filename, function () {
 
   this.timeout(30000);
@@ -25,7 +27,7 @@ describe(filename, function () {
   // hooks.startCluster({
   //   size: clusterSize,
   //   happnSecure: happnSecure
-  // });;
+  // });
 
   before('backup functions being mocked', function () {
     this.original__stateUpdate = Orchestrator.prototype.__stateUpdate;

@@ -3,7 +3,7 @@ var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var Promise = require('bluebird');
-var Happn = require('happn');
+var Happn = require('happn-3');
 
 var hooks = require('./lib/hooks');
 
@@ -59,13 +59,12 @@ describe(filename, function () {
 
   after('disconnect all clients', function (done) {
     if (!this.clients) return done();
-    Promise.resolve(this.clients).map(function (client) {
-      return client.disconnect();
-    })
-      .then(function () {
-        done();
-      })
-      .catch(done);
+
+    var async = require('async');
+
+    async.eachSeries(this.clients, function (client, clientCB) {
+      return client.disconnect(clientCB);
+    }, done);
   });
 
 
@@ -158,7 +157,9 @@ describe(filename, function () {
         }
       })
 
-      .then(done).catch(done);
+      .then(function(){
+        done();
+      }).catch(done);
 
   });
 
@@ -190,7 +191,9 @@ describe(filename, function () {
         expect(receivedCount).to.eql(1);
       })
 
-      .then(done).catch(done);
+      .then(function(){
+        done();
+      }).catch(done);
 
   });
 

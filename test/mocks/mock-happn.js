@@ -5,15 +5,21 @@
 var path = require('path');
 
 var MockPubsub = require('./mock-pubsub');
+var MockTransport = require('./mock-transport');
+var MockSession = require('./mock-session');
 var MockMembership = require('./mock-membership');
 
 var MockHappn = function (mode, targetPort) {
+
   this.__mode = mode;
   this.__targetPort = targetPort;
 
   this.name = 'local-happn-instance';
+  
   this.services = {
     pubsub: new MockPubsub(),
+    transport: new MockTransport(),
+    session: new MockSession(),
     proxy: {
       config: {
         host: '0.0.0.0',

@@ -3,7 +3,7 @@ var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var Promise = require('bluebird');
-var Happn = require('happn');
+var Happn = require('happn-3');
 
 var hooks = require('./lib/hooks');
 

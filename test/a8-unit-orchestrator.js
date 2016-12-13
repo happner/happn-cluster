@@ -2,12 +2,13 @@ var path = require('path');
 var filename = path.basename(__filename);
 var expect = require('expect.js');
 var Promise = require('bluebird');
-var Happn = require('happn');
+var Happn = require('happn-3');
 
 var Orchestrator = require('../lib/services/orchestrator');
 var MockHappn = require('./mocks/mock-happn');
 var MockHappnClient = require('./mocks/mock-happn-client');
 var MockPubsub = require('./mocks/mock-pubsub');
+var MockSession = require('./mocks/mock-session');
 var MockMembership = require('./mocks/mock-membership');
 var mockOpts = require('./mocks/mock-opts');
 var address = require('../lib/utils/get-address')();
@@ -30,10 +31,10 @@ describe(filename, function () {
       o.initialize({}, function (e) {
         if (e) return done(e);
 
-        expect(MockPubsub.instance._events.authentic).to.eql(
+        expect(MockSession.instance._events.authentic).to.eql(
           o.__onConnectionFromHandler
         );
-        expect(MockPubsub.instance._events.disconnect).to.eql(
+        expect(MockSession.instance._events.disconnect).to.eql(
           o.__onDisconnectionFromHandler
         );
 
@@ -286,7 +287,6 @@ describe(filename, function () {
           .then(function () {
 
             expect(o.loginConfig).to.eql({
-              config: {},
               info: {
                 clusterName: 'cluster-name',
                 memberId: 'MEMBER_ID',
@@ -323,12 +323,17 @@ describe(filename, function () {
     it('connects intra-process client to self', function (done) {
 
       o.prepare()
+
         .then(function () {
 
           expect(MockHappnClient.getLastLoginConfig()).to.eql({
-            config: {},
-            context: o.happn,
-            plugin: Happn.client_plugins.intra_process
+            context: {},
+            info: {
+              name: 'local-happn-instance',
+              clusterName: 'cluster-name',
+              memberId: 'MEMBER_ID',
+              url: 'http://' + address + ':9000'
+            }
           });
 
           done();
@@ -375,6 +380,7 @@ describe(filename, function () {
       });
 
       it('pends stabilise if minimumPeers is set', function (done) {
+
         var stable = false;
 
         o.config.minimumPeers = 2;
@@ -416,7 +422,7 @@ describe(filename, function () {
             expect(o.members['10.0.0.1:56001'].subscribedFrom).to.equal(true);
 
             // THEN... peer logs back into us
-            MockPubsub.instance.emit('authentic', {
+            MockSession.instance.emit('authentic', {
               info: {
                 name: '10-0-0-1_55001',
                 clusterName: 'cluster-name',
@@ -434,7 +440,7 @@ describe(filename, function () {
             expect(stable).to.equal(true);
             done();
 
-          }, 20);
+          }, 1000);
 
         }, 20);
       });
@@ -487,7 +493,7 @@ describe(filename, function () {
             expect(stable).to.equal(false);
 
             // remotes log back into us
-            MockPubsub.instance.emit('authentic', {
+            MockSession.instance.emit('authentic', {
               info: {
                 name: '10-0-0-1_55001',
                 clusterName: 'cluster-name',
@@ -498,7 +504,7 @@ describe(filename, function () {
 
             expect(stable).to.equal(false);
 
-            MockPubsub.instance.emit('authentic', {
+            MockSession.instance.emit('authentic', {
               info: {
                 name: '10-0-0-2_55001',
                 clusterName: 'cluster-name',
@@ -509,7 +515,7 @@ describe(filename, function () {
 
             expect(stable).to.equal(false);
 
-            MockPubsub.instance.emit('authentic', {
+            MockSession.instance.emit('authentic', {
               info: {
                 name: '10-0-0-3_55001',
                 clusterName: 'cluster-name',
@@ -538,7 +544,7 @@ describe(filename, function () {
 
         // discover members from their login to us
 
-        MockPubsub.instance.emit('authentic', {
+        MockSession.instance.emit('authentic', {
           info: {
             name: '10-0-0-1_55001',
             clusterName: 'cluster-name',
@@ -547,7 +553,7 @@ describe(filename, function () {
           }
         });
 
-        MockPubsub.instance.emit('authentic', {
+        MockSession.instance.emit('authentic', {
           info: {
             name: '10-0-0-2_55001',
             clusterName: 'cluster-name',
@@ -556,7 +562,7 @@ describe(filename, function () {
           }
         });
 
-        MockPubsub.instance.emit('authentic', {
+        MockSession.instance.emit('authentic', {
           info: {
             name: '10-0-0-3_55001',
             clusterName: 'cluster-name',
@@ -660,7 +666,7 @@ describe(filename, function () {
           expect(Object.keys(o.peers)).to.eql(['local-happn-instance']);
 
           // but is emitted once new member fully connected (per login back)
-          MockPubsub.instance.emit('authentic', {
+          MockSession.instance.emit('authentic', {
             info: {
               name: '10-0-0-1_55001',
               clusterName: 'cluster-name',
@@ -689,7 +695,7 @@ describe(filename, function () {
           url: 'http://10.0.0.1:55001'
         });
 
-        MockPubsub.instance.emit('authentic', {
+        MockSession.instance.emit('authentic', {
           info: {
             name: '10-0-0-1_55001',
             clusterName: 'cluster-name',
@@ -723,13 +729,12 @@ describe(filename, function () {
 
             setTimeout(function () {
               expect(o.members['10.0.0.1:56001']).to.be(undefined);
-              expect(happnClient.destroyed).to.equal(true);
               done();
             }, 20);
 
           });
 
-          MockPubsub.instance.emit('disconnect', {
+          MockSession.instance.emit('disconnect', {
             info: {
               name: '10-0-0-1_55001',
               clusterName: 'cluster-name',
@@ -749,7 +754,7 @@ describe(filename, function () {
           url: 'http://10.0.0.1:55001'
         });
 
-        MockPubsub.instance.emit('authentic', {
+        MockSession.instance.emit('authentic', {
           info: {
             name: '10-0-0-1_55001',
             clusterName: 'cluster-name',
@@ -785,7 +790,7 @@ describe(filename, function () {
           url: 'http://10.0.0.1:55001'
         });
 
-        MockPubsub.instance.emit('authentic', {
+        MockSession.instance.emit('authentic', {
           info: {
             name: '10-0-0-1_55001',
             clusterName: 'cluster-name',

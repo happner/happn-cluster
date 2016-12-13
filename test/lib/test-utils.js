@@ -43,7 +43,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (clusterSize, ha
       transport: transport,
       services: {
         data: {
-          path: 'happn-service-mongo',
+          path: 'happn-service-mongo-2',
           config: {
             collection: mongoCollection,
             url: mongoUrl
@@ -175,7 +175,7 @@ module.exports.awaitExactPeerCount = Promise.promisify(function (servers, count,
 
 module.exports.createClientInstance = function (host, port, callback) {
 
-  (require('happn')).client.create({
+  (require('happn-3')).client.create({
     config: {
       secure: true,
       host: host,
