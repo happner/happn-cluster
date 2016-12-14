@@ -4,10 +4,11 @@ var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
-var HappnClient = require('happn').client;
+var HappnClient = require('happn-3').client;
 
 var hooks = require('./lib/hooks');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 1;
 var happnSecure = false;
 var proxySecure = true;
@@ -24,6 +25,7 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure,
     proxySecure: proxySecure

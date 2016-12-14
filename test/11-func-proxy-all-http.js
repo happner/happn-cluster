@@ -8,8 +8,11 @@ var benchmarket = require('benchmarket');
 var hooks = require('./lib/hooks');
 var testUtils = require('./lib/test-utils');
 
+var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 3;
 var happnSecure = false;
+
+var async = require('async');
 
 describe(filename, function () {
 
@@ -23,6 +26,7 @@ describe(filename, function () {
   });
 
   hooks.startCluster({
+    testSequence: testSequence,
     size: clusterSize,
     happnSecure: happnSecure
   });
@@ -32,7 +36,7 @@ describe(filename, function () {
     var self = this;
     var currentConfig = 0;
 
-    self.__configs.forEach(function (config) {
+    async.eachSeries(self.__configs, function(config, configCB){
 
       var port = config.services.proxy.config.port;
       var host = config.services.proxy.config.host;
@@ -40,22 +44,20 @@ describe(filename, function () {
       // create happn client instance and log in
       testUtils.createClientInstance(host, port, function (err, instance) {
 
-        if (err) return done(err);
+        if (err) return configCB(err);
 
         // send get request for wildcard resources in root
-        instance.get('/*', null, function (e, results) {
+        instance.get('/*', null, function (e) {
 
-          if (e) return done(e);
+          if (e) return configCB(e);
 
           currentConfig++;
-          instance.disconnect();
+          instance.disconnect(configCB);
 
-          if (currentConfig == self.__configs.length)
-            // we have iterated through all proxy instances without error
-            return done();
         });
       });
-    });
+
+    }, done);
   });
 
   hooks.stopCluster();
