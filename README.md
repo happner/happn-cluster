@@ -377,11 +377,11 @@ other techniques.
       * where each entry is a Docker host
       * SSH credentials to each is provided alongside the host IP
 
-* Process:
-  * Build server pulls the latest version of happn-cluster from Github when changes detected
-  * Runs the Ansible playbook to build a Docker image
-  * Connects to the Docker host fleet and deploys the image to each member
-  * Executes the Docker command remotely on each Docker host to start a container (including environment variables to set things such as ports, cluster info etc.)
+* Orchestration and build process:
+  * Build server (running Ansible) detects when changes are made on a Github repo
+  * An Ansible playbook is started
+  * Connects to the Docker host fleet and executes the build steps in the playbook to build a Docker image  
+  * Starts a Docker container remotely (including environment variables to set things such as ports, cluster info etc.)
 
 * Commands run on the build server
  * Executing a playbook uses the following pattern:
