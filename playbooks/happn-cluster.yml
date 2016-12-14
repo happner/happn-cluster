@@ -7,7 +7,7 @@
 ---
 - name: Build happn-cluster app image
   hosts: all
-  sudo: yes
+  sudo: no
   vars_prompt:
     - name: happn_cluster_version
       prompt: "happn_cluster_version"

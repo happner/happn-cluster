@@ -1,5 +1,10 @@
-[localhost]
-0.0.0.0
+# Examples:
 
-[local]
-0.0.0.0
+#[localhost]
+#0.0.0.0
+
+#[local]
+#0.0.0.0
+
+#[group1]
+#server2.example.com ansible_ssh_user=bob ansible_ssh_private_key_file=/Users/bob/happn-cluster/id_rsa

@@ -335,12 +335,14 @@ sudo apt-get update
 sudo apt-get install ansible
 ```
 
-See also:
+### Installing Ansible (OSX)
 
-* [http://docs.ansible.com/ansible/intro_getting_started.html](http://docs.ansible.com/ansible/intro_getting_started.html)
-* [https://github.com/ansible/ansible](https://github.com/ansible/ansible)
-* [https://github.com/ansible/ansible-examples](https://github.com/ansible/ansible-examples)
-* [https://galaxy.ansible.com/list#/roles](https://galaxy.ansible.com/list#/roles?page=1&page_size=10)
+If you have __Homebrew__ installed, then its just:
+
+`> brew install ansible`
+
+Otherwise, see [https://valdhaus.co/writings/ansible-mac-osx/](https://valdhaus.co/writings/ansible-mac-osx/) for 
+other techniques.
 
 ### Using Ansible to build Docker images and deploy to Docker hosts
 
@@ -349,6 +351,31 @@ See also:
 * Prerequisites: 
   * A "fleet" of Docker hosts (eg: AWS instances with Docker engine installed on each)
   * A build server with Ansible installed
+  * Set up SSH access to the remote hosts using the following process (assuming you are "Bob"):
+    * On each host, ensure that the SSH server is running, and that you can access the host via SSH from the build server
+    * On your deployment/build server, generate a new SSH key pair (this will be used by Ansible) using:
+    ```
+    ssh-keygen -t rsa
+    ...
+    ```
+    * Assuming that you saved the keys in the ~/.ssh directory, copy the newly generated PUBLIC key to each Docker host 
+    as follows:
+    ```
+    cat ~/.ssh/id_rsa.pub | ssh bob@dockerhost 'cat >> .ssh/authorized_keys'
+    ``` 
+    * The above command will login to the Docker host as "__bob__", and then copy the newly generated public key to the 
+    authorised_keys file
+    * Open your Ansible __hosts__ file in the project root, and ensure that the Docker host IP's and SSH credentials 
+    are correct, eg:
+    ```
+    [my_docker_host_group]
+    192.168.1.36 ansible_ssh_user=bob ansible_ssh_private_key_file=~/.ssh/id_rsa
+    192.168.1.37 ansible_ssh_user=bob ansible_ssh_private_key_file=~/.ssh/id_rsa
+    192.168.1.40 ansible_ssh_user=bob ansible_ssh_private_key_file=~/.ssh/id_rsa
+    ....
+    ```
+      * where each entry is a Docker host
+      * SSH credentials to each is provided alongside the host IP
 
 * Process:
   * Build server pulls the latest version of happn-cluster from Github when changes detected
@@ -357,14 +384,24 @@ See also:
   * Executes the Docker command remotely on each Docker host to start a container (including environment variables to set things such as ports, cluster info etc.)
 
 * Commands run on the build server
- * Execute a playbook:
+ * Executing a playbook uses the following pattern:
  
   ```
-  > sudo ansible-playbook -i [file containing host list] -vvvv -c [connection type] playbooks/happn-cluster.yml
+  > ansible-playbook -i [file containing host list] -vvvv -c [connection type] playbooks/happn-cluster.yml
   ```
+  * where the -vvvv switch is the level of verbosity
   
  * Based on the playbook found in the `/playbooks` directory:
  
   ```
-  > sudo ansible-playbook -i hosts -vvvv -c local playbooks/happn-cluster.yml
+  > ansible-playbook -i hosts -vvvv playbooks/happn-cluster.yml
   ```
+
+### Resources
+
+* Great intro: [https://thornelabs.net/2014/03/08/install-ansible-create-your-inventory-file-and-run-an-ansible-playbook-and-some-ansible-commands.html](https://thornelabs.net/2014/03/08/install-ansible-create-your-inventory-file-and-run-an-ansible-playbook-and-some-ansible-commands.html)
+* [http://docs.ansible.com/ansible/intro_getting_started.html](http://docs.ansible.com/ansible/intro_getting_started.html)
+* [https://github.com/ansible/ansible](https://github.com/ansible/ansible)
+* [https://github.com/ansible/ansible-examples](https://github.com/ansible/ansible-examples)
+* [https://galaxy.ansible.com/list#/roles](https://galaxy.ansible.com/list#/roles?page=1&page_size=10)
+* [http://www.hashbangcode.com/blog/ansible-ssh-setup-playbook](http://www.hashbangcode.com/blog/ansible-ssh-setup-playbook)
