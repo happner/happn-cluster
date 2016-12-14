@@ -383,7 +383,7 @@ other techniques.
   * Connects to the Docker host fleet and executes the build steps in the playbook to build a Docker image  
   * Starts a Docker container remotely (including environment variables to set things such as ports, cluster info etc.)
 
-* Commands run on the build server
+* Commands run on the build server when a repo change is detected:
  * Executing a playbook uses the following pattern:
  
   ```
