@@ -17,5 +17,19 @@
       prompt: "happn_cluster_iteration"
       default: 1
       private: no
+    - name: mongo_url
+      prompt: "mongo_url"
+      default: "mongodb://127.0.0.1:27017/happn-cluster-test"
+      private: no
+    - name: mongo_collection
+      prompt: "mongo_collection"
+      default: "happn_cluster_test"
+      private: no
+  vars:
+    - cluster_members:
+      - {id: 1, port: "60000:60000"}
+      - {id: 2, port: "60001:60001"}
+      - {id: 3, port: "60002:60002"}
   roles:
     - image_build
+

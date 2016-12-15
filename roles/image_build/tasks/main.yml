@@ -55,5 +55,13 @@
     {{ happn_cluster_image_name }}:{{ happn_cluster_extra_tag }}
   when: happn_cluster_extra_tag != ''
 
+# create a container for each member in happn_cluster_members
 - name: run happn-cluster
-  docker: image={{ happn_cluster_image_name }}:{{ happn_cluster_extra_tag }}
+  docker_container:
+    name: "node_{{item.id}}"
+    image: "{{ happn_cluster_image_name }}:{{ happn_cluster_extra_tag }}"
+    env:
+      MONGO_URL: "{{ happn_cluster_mongo_url }}"
+      MONGO_COLLECTION: "{{ happn_cluster_mongo_collection }}"
+    published_ports: "{{ item.port }}"
+  with_items: "{{happn_cluster_members}}"

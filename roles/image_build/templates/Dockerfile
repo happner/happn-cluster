@@ -46,9 +46,10 @@ RUN mkdir -p /data/db
 ### Set up working directory
 WORKDIR /home/happn-cluster
 
-EXPOSE 8005
+### This doesn't need exposing as the Ansible playbook will set up the ports
+#EXPOSE 8005
 
-CMD mongod --fork --logpath mongodb.log && /bin/bash
+CMD mongod --fork --logpath mongodb.log && node server
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
