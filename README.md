@@ -75,6 +75,7 @@ var defaultConfig = {
         clusterName: 'happn-cluster',
         seed: false,
         seedWait: 0,
+        randomWait: 0,
         // host: undefined, // defaults to first public IPv4 address
         port: 56000,
         // hosts: [],
@@ -226,6 +227,12 @@ list of hosts to join when starting.
 
 Members that are not the seed member pause this long before starting. This allows for a booting host that
 contains multiple cluster member instances all starting concurrently where one is the seed member. By waiting, the seed member will be up and running before the others attempt to join it in the cluster.
+
+#### config.randomWait
+
+Members that are not the seed member pause a random amount of milliseconds from this range before starting. This is to alleviate the problem of SWIM not handling large numbers of concurrent cluster joins.
+
+Be sure to set this value to less than the stabiliseTimeout.
 
 #### config.[host, port]
 
