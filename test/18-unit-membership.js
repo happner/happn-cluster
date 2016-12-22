@@ -8,7 +8,7 @@ var MockHappn = require('./mocks/mock-happn');
 var mockOpts = require('./mocks/mock-opts');
 var address = require('../lib/utils/get-address')();
 
-describe(filename, function () {
+describe.only(filename, function () {
 
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
@@ -17,10 +17,10 @@ describe(filename, function () {
 
   context('initialize', function () {
 
-
     it('defaults all but config.hosts', function (done) {
 
       var m = new Membership(mockOpts);
+      m.happn = new MockHappn('http', 9000);
 
       m.initialize({
         hosts: ['10.10.10.10:11111']
@@ -53,6 +53,7 @@ describe(filename, function () {
     it('can assign all config', function (done) {
 
       var m = new Membership(mockOpts);
+      m.happn = new MockHappn('http', 9000);
 
       m.initialize({
         clusterName: 'seven-sisters',
@@ -101,6 +102,7 @@ describe(filename, function () {
 
     beforeEach(function (done) {
       this.membership = new Membership(mockOpts);
+      this.membership.happn = new MockHappn('http', 9000);
       this.membership.Swim = MockSwim;
       this.membership.initialize({
         hosts: ['10.10.10.10:11111']
@@ -213,6 +215,7 @@ describe(filename, function () {
     beforeEach(function (done) {
       this.membership = new Membership(mockOpts);
       this.membership.Swim = MockSwim;
+      this.membership.happn = new MockHappn('http', 9000);
       this.membership.initialize({
         hosts: ['10.10.10.10:11111']
       }, done);
@@ -424,6 +427,7 @@ describe(filename, function () {
     beforeEach(function (done) {
       this.membership = new Membership(mockOpts);
       this.membership.Swim = MockSwim;
+      this.membership.happn = new MockHappn('http', 9000);
       this.membership.initialize({
         hosts: ['10.10.10.10:11111']
       }, done);
