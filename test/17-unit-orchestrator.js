@@ -22,7 +22,6 @@ describe(filename, function () {
 
   context('initialise', function () {
 
-
     it('subscribes to happn server connection events', function (done) {
 
       var o = new Orchestrator(mockOpts);
@@ -298,6 +297,31 @@ describe(filename, function () {
             done();
           })
           .catch(done)
+      }
+    );
+
+
+    it('uses alternative host in url if announceHost is defined',
+      function(done) {
+
+        o.announceHost = 'alternate-host-or-ip';
+
+        o.prepare()
+          .then(function () {
+
+            expect(o.loginConfig).to.eql({
+              info: {
+                clusterName: 'cluster-name',
+                memberId: 'MEMBER_ID',
+                name: 'local-happn-instance',
+                url: 'http://alternate-host-or-ip:9000'
+              }
+            });
+
+            done();
+          })
+          .catch(done)
+
       }
     );
 

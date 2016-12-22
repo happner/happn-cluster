@@ -27,6 +27,7 @@ var defaultConfig = {
   // host: '0.0.0.0', // happn service ip
   // port: 57000,    // happn service port
   // secure: true,  // to enable security
+  // announceHost: 'externally-visible-ip-or-hostname', // eg. when docker
   services: {
     
     // // security sub-config (to enable security)
@@ -125,7 +126,9 @@ Set true to enable security.
 
 **If one cluster node is secure, they all need to be secure.**
 
+#### announceHost
 
+When using docker the internal container ip is announced into the cluster for remote members to connect to. But that ip is not accessible, use this config to specify the ip or hostname of the accessible external interface. Note that a similar issue occurs with the ports so all ports require a **same-to-same mapping when using docker**.
 
 ### Security Sub-Config
 
