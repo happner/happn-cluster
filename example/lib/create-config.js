@@ -34,7 +34,7 @@ module.exports = function (seq, name) {
           join: 'static',
           seed: seq == 0,
           port: 56000 + seq,
-          hosts: [ipAddress + ':56000' /*, ipAddress + ':56001', ipAddress + ':56002'*/]
+          hosts: [ipAddress + ':56000' , ipAddress + ':56001', ipAddress + ':56002']
         }
       },
       proxy: {
