@@ -3,6 +3,7 @@ var ipAddress = require('../../lib/utils/get-address')();
 module.exports = function (seq, name) {
   var config = {
     name: name,
+    announceHost: '192.168.0.101',
     secure: true,
     services: {
       security: {
@@ -33,7 +34,7 @@ module.exports = function (seq, name) {
           join: 'static',
           seed: seq == 0,
           port: 56000 + seq,
-          hosts: [ipAddress + ':56000', ipAddress + ':56001', ipAddress + ':56002', ipAddress + ':56003']
+          hosts: [ipAddress + ':56000' /*, ipAddress + ':56001', ipAddress + ':56002'*/]
         }
       },
       proxy: {
