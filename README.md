@@ -12,7 +12,7 @@ See also [happn cluster aws example](https://github.com/happner/happn-cluster-aw
 
 ## Install
 
-`npm install happn-cluster happn-service-mongo --save`
+`npm install happn-cluster happn-service-mongo-2 --save`
 
 Note data service installed separately.
 
