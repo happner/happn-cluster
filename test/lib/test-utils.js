@@ -9,7 +9,7 @@ var Promise = require('bluebird');
 var getAddress = require('../../lib/utils/get-address');
 var Mongo = require('./mongo');
 
-var mongoUrl = 'mongodb://127.0.0.1:27017/happn-cluster-test';
+var mongoUrl = 'mongodb://127.0.0.1:27017';
 var mongoCollection = 'happn-cluster-test';
 
 module.exports.clearMongoCollection = function (callback) {
@@ -46,11 +46,27 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
       port: happnPortBase + i,
       transport: transport,
       services: {
+        // data: {
+        //   path: 'happn-service-mongo-2',
+        //   config: {
+        //     collection: mongoCollection,
+        //     url: mongoUrl
+        //   }
+        // }
         data: {
-          path: 'happn-service-mongo-2',
           config: {
-            collection: mongoCollection,
-            url: mongoUrl
+            datastores: [
+              {
+                name: 'mongo',
+                provider: 'happn-service-mongo-2',
+                isDefault: true,
+                settings: {
+                  collection: mongoCollection,
+                  database: mongoCollection,
+                  url: mongoUrl
+                }
+              }
+            ]
           }
         }
         ,

@@ -42,10 +42,19 @@ var defaultConfig = {
   
     // shared data plugin sub-config (defaults displayed)
     data: {
-      path: 'happn-service-mongo-2',
       config: {
-        collection: 'happn-cluster',
-        url: 'mongodb://127.0.0.1:27017/happn-cluster'
+        datastores: [
+          {
+            name: 'mongo',
+            provider: 'happn-service-mongo-2',
+            isDefault: true,
+            settings: {
+              collection: 'happn-cluster',
+              database: 'happn-cluster',
+              url: 'mongodb://127.0.0.1:27017'
+            }
+          }
+        ]
       }
     },
     
