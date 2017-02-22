@@ -354,7 +354,7 @@ describe(filename, function () {
             context: {},
             info: {
               name: 'local-happn-instance',
-              clusterName: 'cluster-name',
+              // clusterName: 'cluster-name',
               memberId: 'MEMBER_ID',
               url: 'http://' + address + ':9000'
             }
