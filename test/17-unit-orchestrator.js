@@ -52,7 +52,7 @@ describe(filename, function () {
 
         expect(o.config).to.eql({
           minimumPeers: 1,
-          replicate: ['/*'],
+          replicate: ['*'],
           stableReportInterval: 5000,
           stabiliseTimeout: 120000
         });
