@@ -73,7 +73,7 @@ var defaultConfig = {
     orchestrator: {
       config: {
         minimumPeers: 1,
-        replicate: ['/*'],
+        replicate: ['*'],
         stableReportInterval: 5000,
         stabiliseTimeout: 120 * 1000 // 0 disables
       }
