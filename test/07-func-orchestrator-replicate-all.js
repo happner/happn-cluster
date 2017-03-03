@@ -149,7 +149,7 @@ describe(filename, function () {
               if (controlEvent && replicatedEvents.length == clusterSize - 1) {
                 setTimeout(function () {
                   unpause();
-                }, 100);
+                }, 400);
               }
             });
           });
@@ -167,6 +167,8 @@ describe(filename, function () {
         })
 
         .then(function () {
+          expect(replicatedEvents.length).to.be(2);
+
           for (var i = 0; i < replicatedEvents.length; i++) {
             expect(replicatedEvents[i]).to.eql(controlEvent);
           }
