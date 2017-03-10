@@ -121,7 +121,7 @@ describe(filename, function () {
             if (controlEvent2 && replicatedEvents2.length == clusterSize - 1) {
               setTimeout(function () {
                 unpause2();
-              }, 100);
+              }, 200);
             }
           });
         });
