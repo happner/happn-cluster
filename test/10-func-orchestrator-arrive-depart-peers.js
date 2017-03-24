@@ -56,7 +56,6 @@ describe(filename, function () {
 
     });
 
-
     HappnCluster.create(this.extraConfig)
 
       .then(function (server) {

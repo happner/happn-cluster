@@ -9,7 +9,7 @@ function MockOrchestrator(opts) {
   this.HappnClient = MockHappnClient;
 
   this.config = {
-    replicate: ['/*']
+    replicate: ['*']
   };
 
   this.loginConfig = {
