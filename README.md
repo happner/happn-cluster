@@ -52,6 +52,7 @@ var defaultConfig = {
               collection: 'happn-cluster',
               database: 'happn-cluster',
               url: 'mongodb://127.0.0.1:27017'
+              // url: 'mongodb://username:password@127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/happn?replicaSet=test-set&ssl=true&authSource=admin'
             }
           }
         ]
