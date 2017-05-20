@@ -2,6 +2,7 @@ var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var expect = require('expect.js');
+var net = require('net');
 
 var hooks = require('../lib/hooks');
 
@@ -26,12 +27,46 @@ describe(filename, function () {
   hooks.startCluster({
     testSequence: testSequence,
     size: clusterSize,
-    happnSecure: happnSecure
+    happnSecure: happnSecure,
+    services: {
+      proxy: {
+        defer: true
+      }
+    }
   });
 
-  it('does the start the proxy', function (done) {
+  it('deferred proxy does not start the proxy until start is called', function (done) {
 
-    done();
+    var _this = this;
+
+    var port = this.__configs[0].services.proxy.config.port;
+
+    var connection = net.connect(port);
+
+    connection.on('connect', function () {
+      connection.destroy();
+      done(new Error('should not be listening'));
+    });
+
+    connection.on('error', function (e) {
+      expect(e.code).to.be('ECONNREFUSED');
+
+      _this.servers[0].services.proxy.start()
+
+        .then(function () {
+
+          var connection = net.connect(port);
+
+          connection.on('connect', function () {
+            connection.destroy();
+            done();
+          });
+
+        })
+
+        .catch(done);
+
+    });
 
   });
 
