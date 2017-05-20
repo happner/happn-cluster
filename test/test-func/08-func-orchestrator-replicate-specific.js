@@ -5,7 +5,7 @@ var expect = require('expect.js');
 var Promise = require('bluebird');
 var Happn = require('happn-3');
 
-var hooks = require('./lib/hooks');
+var hooks = require('../lib/hooks');
 
 var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 3;

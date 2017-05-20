@@ -6,11 +6,12 @@ var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 var HappnClient = require('happn-3').client;
 
-var hooks = require('./lib/hooks');
+var hooks = require('../lib/hooks');
 
 var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 1;
-var happnSecure = false;
+var happnSecure = true;
+var proxySecure = true;
 
 describe(filename, function () {
 
@@ -26,7 +27,8 @@ describe(filename, function () {
   hooks.startCluster({
     testSequence: testSequence,
     size: clusterSize,
-    happnSecure: happnSecure
+    happnSecure: happnSecure,
+    proxySecure: proxySecure
   });
 
   var port;
@@ -36,33 +38,38 @@ describe(filename, function () {
     port = address.port;
   });
 
-  it('can do web', function (done) {
-    request('http://127.0.0.1:' + port + '/browser_client')
-      .then(function (result) {
-        expect(result.body).to.match(/HappnClient/);
-        done();
-      })
-      .catch(done);
-  });
-
-
-  it('can do client', function (done) {
-    var client;
+  it('does not replicate to self in infinite loop', function (done) {
+    var client, count = 0;
     HappnClient.create({
       config: {
-        url: 'http://127.0.0.1:' + port
+        url: 'https://127.0.0.1:' + port,
+        username: '_ADMIN',
+        password: 'secret'
       }
     })
       .then(function (_client) {
         client = _client;
-        return client.set('/this/' + filename, {x: 1});
       })
       .then(function () {
-        return client.get('/this/' + filename);
+        return new Promise(function (resolve, reject) {
+          client.on('/test/path', function (data, meta) {
+            count++;
+          }, function (e) {
+            if (e) return reject(e);
+            resolve();
+          })
+        })
       })
-      .then(function (result) {
-        delete result._meta;
-        expect(result).to.eql({x: 1});
+      .then(function () {
+        return client.set('/test/path', {some: 'data'})
+      })
+      .then(function () {
+        return Promise.delay(100);
+      })
+      .then(function () {
+        expect(count).to.be(1);
+      })
+      .then(function () {
         done();
       })
       .catch(done);

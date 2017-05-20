@@ -1,13 +1,12 @@
 {
   "name": "happn-cluster",
-  "version": "2.6.1",
+  "version": "2.7.0",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test --benchmarket-off",
-    "unit": "mocha test/unit-* --benchmarket-off",
-    "test-cover": "istanbul cover _mocha -- test --benchmarket-off",
-    "XXX-test-cover": "istanbul cover _mocha -- silence.js test --benchmarket-off",
+    "test": "mocha test/test-func test/test-unit --benchmarket-off",
+    "unit": "mocha test/test-unit --benchmarket-off",
+    "test-cover": "istanbul cover _mocha -- test/test-func test/test-unit --benchmarket-off",
     "test-benchmarket": "node --expose-gc test/lib/serial-run"
   },
   "repository": {
@@ -47,7 +46,7 @@
     "bluebird": "3.4.6",
     "clone": "1.0.2",
     "dface": "1.0.1",
-    "happn-3": "^1.11.1",
+    "happn-3": "^1.12.1",
     "happn-swim": "^1.0.3",
     "http-proxy": "1.15.2",
     "sillyname": "0.1.0"

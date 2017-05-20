@@ -1,16 +1,14 @@
 var path = require('path');
 var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
-var Promise = require('bluebird');
 var expect = require('expect.js');
 
-var HappnCluster = require('../');
-var Member = require('../lib/services/orchestrator/member');
-var hooks = require('./lib/hooks');
-var testUtils = require('./lib/test-utils');
+var HappnCluster = require('../..');
+var hooks = require('../lib/hooks');
+var testUtils = require('../lib/test-utils');
 
 var testSequence = parseInt(filename.split('-')[0]);
-var clusterSize = 3;
+var clusterSize = 10;
 var happnSecure = false;
 
 describe(filename, function () {
@@ -39,39 +37,51 @@ describe(filename, function () {
     })
   });
 
-  before('backup functions being stubbed', function () {
-    this.originalSubscribe = Member.prototype.__subscribe;
-  });
+  it('arriving and departing peers become known to all nodes', function (done) {
 
-  after('restore functions being stubbed', function () {
-    Member.prototype.__subscribe = this.originalSubscribe;
-  });
+    var _this = this;
 
+    var emittedAdd = {};
+    var emittedRemove = {};
 
-  it('stops the server on failure to stabilise', function (done) {
+    this.servers.forEach(function (server, i) {
 
-    Member.prototype.__subscribe = function (path) {
-      return new Promise(function (resolve, reject) {
-        reject(new Error('Fake failure to subscribe'));
+      server.services.orchestrator.on('peer/add', function (name, member) {
+        emittedAdd[i] = member;
       });
-    };
+
+      server.services.orchestrator.on('peer/remove', function (name, member) {
+        emittedRemove[i] = member;
+      });
+
+    });
 
     HappnCluster.create(this.extraConfig)
 
       .then(function (server) {
+        _this.servers.push(server); // add new server at end
+      })
+
+      .then(function () {
+        return testUtils.awaitExactPeerCount(_this.servers);
+      })
+
+      .then(function () {
+        var server = _this.servers.pop(); // remove and stop new server
         return server.stop({reconnect: false});
       })
 
       .then(function () {
-        throw new Error('should not have started');
+        return testUtils.awaitExactPeerCount(_this.servers);
       })
 
-      .catch(function (error) {
-        expect(error.message).to.equal('Fake failure to subscribe');
-        done();
+      .then(function () {
+        // console.log(emittedAdd);
+        expect(Object.keys(emittedAdd).length).to.equal(clusterSize);
+        expect(Object.keys(emittedRemove).length).to.equal(clusterSize);
       })
 
-      .catch(done);
+      .then(done).catch(done);
 
   });
 

@@ -3,6 +3,12 @@ var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 
+var hooks = require('../lib/hooks');
+
+var testSequence = parseInt(filename.split('-')[0]);
+var clusterSize = 1;
+var happnSecure = false;
+
 describe(filename, function () {
 
   before(function () {

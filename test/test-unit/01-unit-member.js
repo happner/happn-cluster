@@ -2,10 +2,10 @@ var path = require('path');
 var filename = path.basename(__filename);
 var expect = require('expect.js');
 
-var Member = require('../lib/services/orchestrator/member');
-var MockOrchestrator = require('./mocks/mock-orchestrator');
-var mockOpts = require('./mocks/mock-opts');
-var MockHappnClient = require('./mocks/mock-happn-client');
+var Member = require('../../lib/services/orchestrator/member');
+var MockOrchestrator = require('../mocks/mock-orchestrator');
+var mockOpts = require('../mocks/mock-opts');
+var MockHappnClient = require('../mocks/mock-happn-client');
 
 describe(filename, function () {
 

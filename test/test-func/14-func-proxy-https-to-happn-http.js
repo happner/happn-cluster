@@ -6,11 +6,11 @@ var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 var HappnClient = require('happn-3').client;
 
-var hooks = require('./lib/hooks');
+var hooks = require('../lib/hooks');
 
 var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 1;
-var happnSecure = true;
+var happnSecure = false;
 var proxySecure = true;
 
 describe(filename, function () {
@@ -38,8 +38,18 @@ describe(filename, function () {
     port = address.port;
   });
 
-  it('does not replicate to self in infinite loop', function (done) {
-    var client, count = 0;
+  it('can do web', function (done) {
+    request('https://127.0.0.1:' + port + '/browser_client')
+      .then(function (result) {
+        expect(result.body).to.match(/HappnClient/);
+        done();
+      })
+      .catch(done);
+  });
+
+
+  it('can do client', function (done) {
+    var client;
     HappnClient.create({
       config: {
         url: 'https://127.0.0.1:' + port,
@@ -49,27 +59,14 @@ describe(filename, function () {
     })
       .then(function (_client) {
         client = _client;
+        return client.set('/this/' + filename, {x: 1});
       })
       .then(function () {
-        return new Promise(function (resolve, reject) {
-          client.on('/test/path', function (data, meta) {
-            count++;
-          }, function (e) {
-            if (e) return reject(e);
-            resolve();
-          })
-        })
+        return client.get('/this/' + filename);
       })
-      .then(function () {
-        return client.set('/test/path', {some: 'data'})
-      })
-      .then(function () {
-        return Promise.delay(100);
-      })
-      .then(function () {
-        expect(count).to.be(1);
-      })
-      .then(function () {
+      .then(function (result) {
+        delete result._meta;
+        expect(result).to.eql({x: 1});
         done();
       })
       .catch(done);

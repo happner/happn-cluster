@@ -6,12 +6,11 @@ var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 var HappnClient = require('happn-3').client;
 
-var hooks = require('./lib/hooks');
+var hooks = require('../lib/hooks');
 
 var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 1;
-var happnSecure = true;
-var proxySecure = true;
+var happnSecure = false;
 
 describe(filename, function () {
 
@@ -27,8 +26,7 @@ describe(filename, function () {
   hooks.startCluster({
     testSequence: testSequence,
     size: clusterSize,
-    happnSecure: happnSecure,
-    proxySecure: proxySecure
+    happnSecure: happnSecure
   });
 
   var port;
@@ -39,7 +37,7 @@ describe(filename, function () {
   });
 
   it('can do web', function (done) {
-    request('https://127.0.0.1:' + port + '/browser_client')
+    request('http://127.0.0.1:' + port + '/browser_client')
       .then(function (result) {
         expect(result.body).to.match(/HappnClient/);
         done();
@@ -52,9 +50,7 @@ describe(filename, function () {
     var client;
     HappnClient.create({
       config: {
-        url: 'https://127.0.0.1:' + port,
-        username: '_ADMIN',
-        password: 'secret'
+        url: 'http://127.0.0.1:' + port
       }
     })
       .then(function (_client) {

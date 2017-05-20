@@ -17,3 +17,7 @@
 2.6.1 2017-04-18
 ----------------
   - onward release of happn-3
+
+2.7.0 2017-05-20
+----------------
+  - added `config.services.proxy.config.defer` to not start proxy for use with happner-cluster
