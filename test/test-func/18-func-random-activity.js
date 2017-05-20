@@ -3,8 +3,8 @@ var filename = path.basename(__filename);
 var Promise = require('bluebird');
 var Happn = require('happn-3');
 var benchmarket = require('benchmarket');
-var hooks = require('./lib/hooks');
-var MultiRandomActivity = require('./lib/multi-random-activity');
+var hooks = require('../lib/hooks');
+var MultiRandomActivity = require('../lib/multi-random-activity');
 
 var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 10;

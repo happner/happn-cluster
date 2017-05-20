@@ -5,14 +5,24 @@ var sm = require("happner-serial-mocha")
 
 var testDir = path.resolve(__dirname, '../');
 
+var testDirs = [
+  testDir + path.sep + 'test-func',
+  testDir + path.sep + 'test-unit'
+];
+
 var files = [];
 
-fs.readdirSync(testDir).forEach(function (filename) {
+testDirs.forEach(function (testDir) {
 
-  var filePath = testDir + path.sep + filename;
-  var file = fs.statSync(filePath);
+  fs.readdirSync(testDir).forEach(function (filename) {
 
-  if (!file.isDirectory()) files.push(filePath);
+    var filePath = testDir + path.sep + filename;
+    var file = fs.statSync(filePath);
+
+    if (!file.isDirectory()) files.push(filePath);
+
+  });
+
 });
 
 var reportDir = path.resolve(__dirname, '../reports');

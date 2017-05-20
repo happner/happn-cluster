@@ -4,14 +4,14 @@ var expect = require('expect.js');
 var Promise = require('bluebird');
 var Happn = require('happn-3');
 
-var Orchestrator = require('../lib/services/orchestrator');
-var MockHappn = require('./mocks/mock-happn');
-var MockHappnClient = require('./mocks/mock-happn-client');
-var MockPubsub = require('./mocks/mock-pubsub');
-var MockSession = require('./mocks/mock-session');
-var MockMembership = require('./mocks/mock-membership');
-var mockOpts = require('./mocks/mock-opts');
-var address = require('../lib/utils/get-address')();
+var Orchestrator = require('../../lib/services/orchestrator');
+var MockHappn = require('../mocks/mock-happn');
+var MockHappnClient = require('../mocks/mock-happn-client');
+var MockPubsub = require('../mocks/mock-pubsub');
+var MockSession = require('../mocks/mock-session');
+var MockMembership = require('../mocks/mock-membership');
+var mockOpts = require('../mocks/mock-opts');
+var address = require('../../lib/utils/get-address')();
 
 describe(filename, function () {
 

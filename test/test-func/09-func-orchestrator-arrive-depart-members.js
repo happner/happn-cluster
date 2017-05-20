@@ -3,9 +3,9 @@ var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 
-var HappnCluster = require('../');
-var hooks = require('./lib/hooks');
-var testUtils = require('./lib/test-utils');
+var HappnCluster = require('../..');
+var hooks = require('../lib/hooks');
+var testUtils = require('../lib/test-utils');
 
 var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 10;
@@ -28,6 +28,10 @@ describe(filename, function () {
     happnSecure: happnSecure
   });
 
+  before('wait for lagging swim membership from initial bootstrap', function (done) {
+    testUtils.awaitExactMembershipCount(this.servers, done);
+  });
+
   before('create extra config', function (done) {
     var _this = this;
     testUtils.createMemberConfigs(testSequence, clusterSize + 1, false, false, {}, function (e, configs) {
@@ -37,7 +41,7 @@ describe(filename, function () {
     })
   });
 
-  it('arriving and departing peers become known to all nodes', function (done) {
+  it('arriving and departing members become known to all nodes', function (done) {
 
     var _this = this;
 
@@ -46,15 +50,16 @@ describe(filename, function () {
 
     this.servers.forEach(function (server, i) {
 
-      server.services.orchestrator.on('peer/add', function (name, member) {
-        emittedAdd[i] = member;
+      server.services.membership.on('add', function (info) {
+        emittedAdd[i] = info;
       });
 
-      server.services.orchestrator.on('peer/remove', function (name, member) {
-        emittedRemove[i] = member;
+      server.services.membership.on('remove', function (info) {
+        emittedRemove[i] = info;
       });
 
     });
+
 
     HappnCluster.create(this.extraConfig)
 
@@ -63,7 +68,7 @@ describe(filename, function () {
       })
 
       .then(function () {
-        return testUtils.awaitExactPeerCount(_this.servers);
+        return testUtils.awaitExactMembershipCount(_this.servers);
       })
 
       .then(function () {
@@ -72,7 +77,7 @@ describe(filename, function () {
       })
 
       .then(function () {
-        return testUtils.awaitExactPeerCount(_this.servers);
+        return testUtils.awaitExactMembershipCount(_this.servers);
       })
 
       .then(function () {

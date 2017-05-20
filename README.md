@@ -65,6 +65,7 @@ var defaultConfig = {
         port: 55000,
         host: '0.0.0.0',
         allowSelfSignedCerts: false,
+        // defer: false,
         // keyPath: 'path/to/key',
         // certPath: 'path/to/cert'
       }
@@ -192,7 +193,9 @@ Specify key and cert filenames to switch switch on https
 
 Allow connecting to local happn which is listening with https and self signed cert.
 
+#### config.defer
 
+Set to true to not start the proxy service. If set the `services.proxy.start()` will need to be called externally.
 
 ### Orchestrator Sub-Config
 

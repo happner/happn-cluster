@@ -6,9 +6,9 @@ var path = require('path');
 var filename = path.basename(__filename);
 var expect = require('expect.js');
 var assert = require('assert');
-var Proxy = require('../lib/services/proxy');
-var MockHappn = require('./mocks/mock-happn');
-var mockOpts = require('./mocks/mock-opts');
+var Proxy = require('../../lib/services/proxy');
+var MockHappn = require('../mocks/mock-happn');
+var mockOpts = require('../mocks/mock-opts');
 
 describe(filename, function () {
 

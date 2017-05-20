@@ -3,9 +3,9 @@ var filename = path.basename(__filename);
 var benchmarket = require('benchmarket');
 var Promise = require('bluebird');
 
-var HappnCluster = require('../');
-var hooks = require('./lib/hooks');
-var testUtils = require('./lib/test-utils');
+var HappnCluster = require('../..');
+var hooks = require('../lib/hooks');
+var testUtils = require('../lib/test-utils');
 
 var testSequence = parseInt(filename.split('-')[0]);
 var clusterSize = 3;
