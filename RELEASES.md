@@ -21,3 +21,8 @@
 2.7.0 2017-05-20
 ----------------
   - added `config.services.proxy.config.defer` to not start proxy for use with happner-cluster
+
+3.0.0 2017-08-19
+----------------
+  - update to happn-3 ^3.0.0
+  - test node version 8

@@ -92,14 +92,26 @@ describe(filename, function () {
       })
 
       .then(function () {
-        return Promise.resolve(configs).map(function (config) {
-          return HappnCluster.create(config)
+        return Promise.resolve(configs).map(function (config, sequence) {
+          if (sequence == 0) {
+            return HappnCluster.create(config)
+              .then(function (server) {
+                self.servers.push(server);
+              })
+              // can't reject the entire set on one failure,
+              // because we need to accumulate those that did start
+              // for hooks.stopCluster();
+              .catch(function (error) {
+                console.error('ERROR IN ' + filename, error);
+              });
+          }
+          return Promise.delay(500)
+            .then(function () {
+              return HappnCluster.create(config);
+            })
             .then(function (server) {
               self.servers.push(server);
             })
-            // can't reject the entire set on one failure,
-            // because we need to accumulate those that did start
-            // for hooks.stopCluster();
             .catch(function (error) {
               console.error('ERROR IN ' + filename, error);
             });

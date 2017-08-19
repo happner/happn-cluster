@@ -29,18 +29,27 @@ module.exports.startCluster = function (clusterOpts) {
 
       self.__configs = result;
 
-      Promise.resolve(self.__configs).map(function (config) {
-        return HappnCluster.create(clone(config))
+
+      Promise.resolve(self.__configs).map(function (config, sequence) {
+        // start first peer immediately and other a moment
+        // later so they don't all fight over creating the
+        // admin user in the shared database
+        if (sequence == 0) {
+          return HappnCluster.create(clone(config));
+        }
+
+        return Promise.delay(1000)
+          .then(function () {
+            return HappnCluster.create(clone(config));
+          })
       })
         .then(function (servers) {
           self.servers = servers;
         })
-        .then(function(e){
-          done(e);
+        .then(function(){
+          done();
         })
-        .catch(function(e){
-          done(e);
-        })
+        .catch(done);
     });
   });
 };
@@ -56,7 +65,7 @@ module.exports.stopCluster = function () {
           // stopping all at once causes replicator client happn logouts to timeout
           // because happn logout attempts unsubscribe on server, and all servers
           // are gone
-          return Promise.delay(200); // ...so pause between stops (long for travis)
+          return Promise.delay(1000); // ...so pause between stops (long for travis)
         })
     }, {concurrency: 1}) // ...and do them one at a time
       .then(function () {
@@ -137,5 +146,3 @@ module.exports.stopMultiProcessCluster = function () {
   });
 
 };
-
-
