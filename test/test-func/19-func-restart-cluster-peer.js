@@ -26,7 +26,7 @@ describe(filename, function () {
     var _this = this;
     var server = this.servers.pop();
     var config = this.__configs[this.__configs.length -1];
-    return server.stop()
+    server.stop()
       .then(function () {
         return HappnCluster.create(config)
       })
