@@ -6,7 +6,7 @@
   "scripts": {
     "test": "LOG_LEVEL=warn mocha test/test-func test/test-unit --benchmarket-off",
     "unit": "mocha test/test-unit --benchmarket-off",
-    "test-cover": "istanbul cover _mocha -- test/test-func test/test-unit --benchmarket-off",
+    "test-cover": "LOG_LEVEL=warn istanbul cover _mocha -- test/test-func test/test-unit --benchmarket-off",
     "test-benchmarket": "node --expose-gc test/lib/serial-run"
   },
   "repository": {
