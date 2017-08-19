@@ -37,7 +37,8 @@ module.exports.startCluster = function (clusterOpts) {
         if (sequence == 0) {
           return HappnCluster.create(clone(config));
         }
-        return Promise.delay(500)
+
+        return Promise.delay(1000)
           .then(function () {
             return HappnCluster.create(clone(config));
           })

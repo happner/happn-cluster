@@ -12,6 +12,8 @@ var happnSecure = false;
 
 describe(filename, function () {
 
+  this.timeout(30000);
+
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
     process.env.LOG_LEVEL = 'off';
