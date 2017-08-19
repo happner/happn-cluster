@@ -90,9 +90,9 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
               ipAddress + ':' + (swimPortBase + 3)
             ],
             joinTimeout: 2000,
-            pingInterval: 200,
-            pingTimeout: 20,
-            pingReqTimeout: 60
+            pingInterval: 1000,
+            pingTimeout: 200,
+            pingReqTimeout: 600
           }
         }
         ,
