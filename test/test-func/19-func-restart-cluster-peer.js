@@ -24,7 +24,6 @@ describe(filename, function () {
 
   it('can restart a cluster peer', function (done) {
     var _this = this;
-    console.log('\n\n\nSTOP\n\n\n');
     var server = this.servers.pop();
     var config = this.__configs[this.__configs.length -1];
     return server.stop()
