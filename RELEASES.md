@@ -26,3 +26,7 @@
 ----------------
   - update to happn-3 ^3.0.0
   - test node version 8
+
+4.0.0 2017-11-08
+----------------
+  update to happn-3 ^5.0.0
