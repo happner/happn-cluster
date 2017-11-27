@@ -29,4 +29,11 @@
 
 4.0.0 2017-11-08
 ----------------
-  update to happn-3 ^5.0.0
+  - update to happn-3 ^5.0.0
+
+4.1.0 2017-11-25
+----------------
+  - update to happn-3 ^5.1.1
+  - add happn-stats
+
+
