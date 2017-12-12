@@ -36,4 +36,7 @@
   - update to happn-3 ^5.1.1
   - add happn-stats
 
-
+5.0.0 2017-12-12
+----------------
+  - added configurable http-proxy request socket idle timeout
+  - added tests for security replication

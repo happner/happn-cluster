@@ -29,7 +29,7 @@ var defaultConfig = {
   // secure: true,  // to enable security
   // announceHost: 'externally-visible-ip-or-hostname', // eg. when docker
   services: {
-    
+
     // // security sub-config (to enable security)
     // security: {
     //   config: {
@@ -39,7 +39,7 @@ var defaultConfig = {
     //     }
     //   }
     // },
-  
+
     // shared data plugin sub-config (defaults displayed)
     data: {
       config: {
@@ -58,19 +58,20 @@ var defaultConfig = {
         ]
       }
     },
-    
+
     // proxy sub-config (defaults displayed)
     proxy: {
       config: {
         port: 55000,
         host: '0.0.0.0',
         allowSelfSignedCerts: false,
+        // timeout: 20 * 60 * 1000, // request socket idle timeout
         // defer: false,
         // keyPath: 'path/to/key',
         // certPath: 'path/to/cert'
       }
     },
-    
+
     // orchestrator sub-config (defaults displayed)
     orchestrator: {
       config: {
@@ -80,7 +81,7 @@ var defaultConfig = {
         stabiliseTimeout: 120 * 1000 // 0 disables
       }
     },
-    
+
     // membership sub-config (defaults displayed)
     membership: {
       config: {
@@ -112,7 +113,7 @@ HappnCluster.create(defaultConfig)
   .catch(function(error) {
     process.exit(0);
   });
-  
+
 ```
 
 
@@ -218,7 +219,7 @@ the frequency with which the outstanding connection states are reported into the
 
 Defines how long to wait for this starting node to become fully connected (stabilised) before giving up and stopping the node. In all known cases a starting node will either reach stability or fail explicitly with an error. This is a failsafe (for unknown cases) to prevent endlessly awaiting stability where it would be better to stop and try joining the cluster again.
 
-**Note that this acts in opposition to `minimumPeers` - A starting node awaiting minimum peers will still time out.** 
+**Note that this acts in opposition to `minimumPeers` - A starting node awaiting minimum peers will still time out.**
 
 
 
@@ -267,7 +268,7 @@ and **config.port** above.
 
 Example: `['10.0.0.1:56000', '10.0.0.2:56000', '10.0.0.3:56000']`
 
-It is **strongly recommended** that all nodes in the cluster use the same **config.hosts** list to avoid 
+It is **strongly recommended** that all nodes in the cluster use the same **config.hosts** list to avoid
 the posibility of orphaned subclusters arising. It must therefore also be ensured that at least one of
 the hosts in the list is online at all times. They can be upgraded one at a time but not all together.
 
