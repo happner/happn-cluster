@@ -1,6 +1,5 @@
 var path = require('path');
 var filename = path.basename(__filename);
-var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var Promise = require('bluebird');
 
@@ -16,8 +15,6 @@ var happnSecure = false;
 describe(filename, function () {
 
   this.timeout(30000);
-
-  benchmarket.start();
 
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
@@ -140,8 +137,5 @@ describe(filename, function () {
   after(function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
-  after(benchmarket.store());
-  benchmarket.stop();
 
 });

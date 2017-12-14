@@ -1,6 +1,5 @@
 var path = require('path');
 var filename = path.basename(__filename);
-var benchmarket = require('benchmarket');
 var HappnCluster = require('../../');
 
 var hooks = require('../lib/hooks');
@@ -10,9 +9,7 @@ var happnSecure = true;
 
 describe(filename, function () {
 
-  this.timeout(30000);
-
-  benchmarket.start();
+  this.timeout(60000);
 
   hooks.startCluster({
     testSequence: testSequence,
@@ -24,19 +21,39 @@ describe(filename, function () {
 
   it('can restart a cluster peer', function (done) {
     var _this = this;
-    var server = this.servers.pop();
     var config = this.__configs[this.__configs.length -1];
-    server.stop()
+
+    function restart() {
+      var server = _this.servers.pop();
+      return server.stop()
+        .then(function () {
+          return HappnCluster.create(config)
+        })
+        .then(function (server) {
+          _this.servers.push(server);
+        })
+    }
+
+    restart()
       .then(function () {
-        return HappnCluster.create(config)
+        return restart();
       })
-      .then(function (server) {
-        _this.servers.push(server);
+      .then(function () {
+        return restart();
+      })
+      .then(function () {
+        return restart();
+      })
+      .then(function () {
+        return restart();
+      })
+      .then(function () {
+        return restart();
+      })
+      .then(function () {
+        return restart();
       })
       .then(done).catch(done);
   });
-
-  after(benchmarket.store());
-  benchmarket.stop();
 
 });

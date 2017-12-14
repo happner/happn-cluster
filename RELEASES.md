@@ -36,4 +36,6 @@
   - update to happn-3 ^5.1.1
   - add happn-stats
 
-
+non-release 2017-11-25
+----------------------
+  - expanded 19-restart-peer test to more aggressively test stabilize

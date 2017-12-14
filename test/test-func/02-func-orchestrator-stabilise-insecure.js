@@ -1,6 +1,5 @@
 var path = require('path');
 var filename = path.basename(__filename);
-var benchmarket = require('benchmarket');
 var expect = require('expect.js');
 var hooks = require('../lib/hooks');
 
@@ -16,8 +15,6 @@ describe(filename, function () {
     this.logLevel = process.env.LOG_LEVEL;
     process.env.LOG_LEVEL = 'off';
   });
-
-  benchmarket.start();
 
   hooks.startCluster({
     testSequence: testSequence,
@@ -45,8 +42,5 @@ describe(filename, function () {
   after(function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
-  after(benchmarket.store());
-  benchmarket.stop();
 
 });
