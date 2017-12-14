@@ -2,7 +2,6 @@ var path = require('path');
 var filename = path.basename(__filename);
 var Promise = require('bluebird');
 var Happn = require('happn-3');
-var benchmarket = require('benchmarket');
 var hooks = require('../lib/hooks');
 var MultiRandomActivity = require('../lib/multi-random-activity');
 
@@ -15,7 +14,6 @@ var duration = 2000;
 xdescribe(filename, function () {
 
   this.timeout(30000);
-  benchmarket.start();
 
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
@@ -90,8 +88,5 @@ xdescribe(filename, function () {
   after(function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
-  after(benchmarket.store());
-  benchmarket.stop();
 
 });

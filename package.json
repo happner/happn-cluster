@@ -30,7 +30,6 @@
   "homepage": "https://github.com/happner/happn-cluster#readme",
   "devDependencies": {
     "async": "^2.1.4",
-    "benchmarket": "^0.2.0",
     "coveralls": "^2.11.13",
     "expect.js": "^0.3.1",
     "gulp": "^3.9.1",

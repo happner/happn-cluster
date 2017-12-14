@@ -4,7 +4,6 @@
 
 var path = require('path');
 var filename = path.basename(__filename);
-var benchmarket = require('benchmarket');
 var hooks = require('../lib/hooks');
 var testUtils = require('../lib/test-utils');
 
@@ -17,8 +16,6 @@ var async = require('async');
 describe(filename, function () {
 
   this.timeout(20000);
-
-  benchmarket.start();
 
   before(function () {
     this.logLevel = process.env.LOG_LEVEL;
@@ -65,8 +62,5 @@ describe(filename, function () {
   after(function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
-  after(benchmarket.store());
-  benchmarket.stop();
 
 });
