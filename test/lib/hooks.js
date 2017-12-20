@@ -36,13 +36,11 @@ module.exports.startCluster = function (clusterOpts) {
         // admin user in the shared database
 
         if (sequence == 0) {
-          console.log('start 0');
           return HappnCluster.create(clone(config));
         }
 
         return Promise.delay(2000)
           .then(function () {
-            console.log('start n');
             return HappnCluster.create(clone(config));
           })
       })
