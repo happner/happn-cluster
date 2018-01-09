@@ -40,3 +40,8 @@ non-release 2017-12-14
 ----------------------
   - expanded 19-restart-peer test to more aggressively test stabilize
   - removed benchmarket
+
+4.2.0 2018-01-09
+----------------
+  - added configurable cluster proxy socket idle timeout
+  
