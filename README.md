@@ -65,6 +65,7 @@ var defaultConfig = {
         port: 55000,
         host: '0.0.0.0',
         allowSelfSignedCerts: false,
+        // timeout: 20 * 60 * 1000, // request socket idle timeout
         // defer: false,
         // keyPath: 'path/to/key',
         // certPath: 'path/to/cert'
@@ -196,6 +197,10 @@ Allow connecting to local happn which is listening with https and self signed ce
 #### config.defer
 
 Set to true to not start the proxy service. If set the `services.proxy.start()` will need to be called externally.
+
+#### config.timeout
+
+Configure proxy's request-side socket's idle timeout. Default 20 minutes.
 
 ### Orchestrator Sub-Config
 
