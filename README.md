@@ -198,6 +198,10 @@ Allow connecting to local happn which is listening with https and self signed ce
 
 Set to true to not start the proxy service. If set the `services.proxy.start()` will need to be called externally.
 
+#### config.timeout
+
+Configure proxy's request-side socket's idle timeout. Default 20 minutes.
+
 ### Orchestrator Sub-Config
 
 #### config.minimumPeers
