@@ -1,6 +1,6 @@
 {
   "name": "happn-cluster",
-  "version": "4.2.0",
+  "version": "4.2.1-restart-on-timeout",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
@@ -45,7 +45,7 @@
     "bluebird": "3.4.6",
     "clone": "1.0.2",
     "dface": "1.0.1",
-    "happn-3": "^5.1.1",
+    "happn-3": "restart-on-timeout",
     "happn-stats": "^1.0.6",
     "happn-swim": "^1.0.3",
     "http-proxy": "1.15.2",
