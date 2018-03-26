@@ -1,5 +1,6 @@
 var path = require('path');
 var filename = path.basename(__filename);
+var expect = require('expect.js');
 var HappnCluster = require('../../');
 
 var hooks = require('../lib/hooks');
@@ -18,6 +19,54 @@ describe(filename, function () {
   });
 
   hooks.stopCluster();
+
+  it.only('includes isLocal and origin in replication events', function (done) {
+
+    var server1 = this.servers[0];
+    var server2 = this.servers[1];
+
+    var received1;
+    server1.services.replicator.on('topic/name', function (payload, isLocal, origin) {
+      received1 = {
+        payload: payload,
+        isLocal: isLocal,
+        origin: origin
+      }
+    });
+
+    var received2;
+    server2.services.replicator.on('topic/name', function (payload, isLocal, origin) {
+      received2 = {
+        payload: payload,
+        isLocal: isLocal,
+        origin: origin
+      }
+    });
+
+    server1.services.replicator.replicate('topic/name', 'PAYLOAD', function (err) {
+      if (err) return done(err);
+    });
+
+    setTimeout(function () {
+
+      expect(received1).to.eql({
+        payload: 'PAYLOAD',
+        isLocal: true,
+        origin: server1.name
+      });
+
+
+      expect(received2).to.eql({
+        payload: 'PAYLOAD',
+        isLocal: false,
+        origin: server1.name
+      });
+
+      done();
+
+    }, 500);
+
+  });
 
   it('can replicate an event throughout the cluster', function (done) {
 
@@ -53,8 +102,6 @@ describe(filename, function () {
       testReplicate(servers[i], 'event' + i);
 
     }
-
-    // done();
 
   });
 
