@@ -1,11 +1,12 @@
 var path = require('path');
 var filename = path.basename(__filename);
 var expect = require('expect.js');
+var Promise = require('bluebird');
 var HappnCluster = require('../../');
 
 var hooks = require('../lib/hooks');
 var testSequence = parseInt(filename.split('-')[0]);
-var clusterSize = 2;
+var clusterSize = 5;
 var happnSecure = false;
 
 describe(filename, function () {
@@ -20,7 +21,7 @@ describe(filename, function () {
 
   hooks.stopCluster();
 
-  it.only('includes isLocal and origin in replication events', function (done) {
+  it('includes isLocal and origin in replication events', function (done) {
 
     var server1 = this.servers[0];
     var server2 = this.servers[1];
@@ -64,44 +65,72 @@ describe(filename, function () {
 
       done();
 
-    }, 500);
+    }, 700);
 
   });
 
-  it('can replicate an event throughout the cluster', function (done) {
+  it('can replicate an event throughout the cluster from any to all', function (done) {
 
     this.timeout(3000);
 
     var servers = this.servers;
 
     function testReplicate(server, eventName) {
+      return new Promise(function (resolve, reject) {
 
-      var replicatedEvents = {};
+        var replicatedEvents = {};
 
-      function generateEventHandler(i) {
-        return function eventHandler(payload) {
-          console.log('received event', i, payload);
+        function generateHandler(receivingServer) {
+          return function handler(payload, isLocal, origin) {
+            replicatedEvents[receivingServer.name] = {
+              payload: payload,
+              isLocal: isLocal,
+              origin: origin
+            }
+          }
         }
-      }
 
-      for (var i = 0; i < servers.length; i++) {
-        var receivingServer = servers[i];
-        servers[i].services.replicator.on(eventName, generateEventHandler(i));
-      }
+        for (var i = 0; i < servers.length; i++) {
+          var receivingServer = servers[i];
+          receivingServer.services.replicator.on(eventName, generateHandler(receivingServer));
+        }
 
-      server.services.replicator.replicate(eventName, {pay: 'load'}, function (e) {
+        server.services.replicator.replicate(eventName, 'PAYLOAD', function (e) {
+          if (e) return reject(e);
+        });
 
-        if (e) throw e;
+        setTimeout(function () {
+          var expectedEvents = {};
+
+          for (var i = 0; i < servers.length; i++) {
+            expectedEvents[servers[i].name] = {
+              payload: 'PAYLOAD',
+              isLocal: servers[i].name == server.name,
+              origin: server.name
+            }
+          }
+
+          try {
+            expect(replicatedEvents).to.eql(expectedEvents);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        }, 700);
 
       });
-
     }
 
-    for (var i = 0; i < servers.length; i++) {
+    Promise.resolve(this.servers).map(function (server, i) {
+      return testReplicate(server, 'event ' + i);
+    })
 
-      testReplicate(servers[i], 'event' + i);
+      .then(function () {
+        done();
+      })
 
-    }
+      .catch(done);
+
 
   });
 
