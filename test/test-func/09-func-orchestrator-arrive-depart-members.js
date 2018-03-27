@@ -35,7 +35,7 @@ describe(filename, function () {
       if (e) return done(e);
       _this.extraConfig = configs.pop();
       done();
-    })
+    });
   });
 
   it('arriving and departing members become known to all nodes', function (done) {

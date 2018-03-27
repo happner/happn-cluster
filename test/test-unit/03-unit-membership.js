@@ -204,7 +204,7 @@ describe(filename, function () {
 
           done();
         })
-        .catch(done)
+        .catch(done);
 
     });
 
@@ -447,7 +447,7 @@ describe(filename, function () {
 
       this.membership.swim.leave = function () {
         left = true;
-      }
+      };
 
       this.membership.stop(function () {
         expect(left).to.equal(true);

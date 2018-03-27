@@ -54,11 +54,11 @@ describe(filename, function () {
           }, function (e) {
             if (e) return reject(e);
             resolve();
-          })
-        })
+          });
+        });
       })
       .then(function () {
-        return client.set('/test/path', {some: 'data'})
+        return client.set('/test/path', {some: 'data'});
       })
       .then(function () {
         return Promise.delay(100);

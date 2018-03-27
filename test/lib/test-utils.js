@@ -68,14 +68,12 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
               }
             ]
           }
-        }
-        ,
+        },
         orchestrator: {
           config: {
             minimumPeers: clusterSize
           }
-        }
-        ,
+        },
         membership: {
           config: {
             clusterName: 'cluster1',
@@ -94,8 +92,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
             pingTimeout: 200,
             pingReqTimeout: 600
           }
-        }
-        ,
+        },
         proxy: {
           config: {
             host: '0.0.0.0',
@@ -115,7 +112,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
             password: 'secret'
           }
         }
-      }
+      };
     }
 
     if (proxySecure) {
@@ -123,7 +120,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
       config.services.proxy.config.keyPath = 'test/keys/proxy.com.key';
     }
 
-    Object.keys(services).forEach(function (serviceName) {
+    Object.keys(services).forEach(function (serviceName) { // jshint ignore:line
       var ammendDefaultService = services[serviceName];
       Object.keys(ammendDefaultService).forEach(function (keyName) {
         config.services[serviceName].config[keyName] = ammendDefaultService[keyName];
@@ -214,5 +211,5 @@ module.exports.createClientInstance = function (host, port, callback) {
       return callback(err);
 
     callback(null, response);
-  })
+  });
 };

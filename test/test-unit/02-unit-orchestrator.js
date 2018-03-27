@@ -76,7 +76,9 @@ describe(filename, function () {
 
         expect(o.config).to.eql({
           minimumPeers: 3,
-          replicate: [],
+          replicate: [
+            '/__REPLICATE'
+          ],
           stableReportInterval: 10000,
           stabiliseTimeout: 120000
         });
@@ -104,7 +106,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          expect(o.config.replicate).to.eql(['/same/path']);
+          expect(o.config.replicate).to.eql(['/same/path', '/__REPLICATE']);
           done();
 
         });
@@ -119,7 +121,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          expect(o.config.replicate).to.eql(['/same/*']);
+          expect(o.config.replicate).to.eql(['/same/*', '/__REPLICATE']);
           done();
 
         });
@@ -134,7 +136,7 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          expect(o.config.replicate).to.eql(['/same/*']);
+          expect(o.config.replicate).to.eql(['/same/*', '/__REPLICATE']);
           done();
 
         });
@@ -152,7 +154,8 @@ describe(filename, function () {
 
           expect(o.config.replicate).to.eql([
             '/same/*/with/*/more',
-            '/same/path'
+            '/same/path',
+            '/__REPLICATE'
           ]);
           done();
 
@@ -171,7 +174,8 @@ describe(filename, function () {
 
           expect(o.config.replicate).to.eql([
             '/same/*/with/*/more',
-            '/same/path/*'
+            '/same/path/*',
+            '/__REPLICATE'
           ]);
           done();
 
@@ -258,8 +262,8 @@ describe(filename, function () {
         o.stop(function (e) {
           if (e) return done(e);
           expect(stopped).to.equal(3);
-          done()
-        })
+          done();
+        });
 
       });
     });
@@ -296,7 +300,7 @@ describe(filename, function () {
 
             done();
           })
-          .catch(done)
+          .catch(done);
       }
     );
 
@@ -320,7 +324,7 @@ describe(filename, function () {
 
             done();
           })
-          .catch(done)
+          .catch(done);
 
       }
     );
@@ -902,7 +906,7 @@ describe(filename, function () {
         o.stabilised()
           .then(function () {
             // stabilises, unaffected by ECONNREFUSED (member is gone)
-            done()
+            done();
           })
           .catch(done);
       });
