@@ -1,6 +1,6 @@
 ## Replication Service
 
-Happn cluster provides a native replication interface for announcing events/data into the cluster.
+Happn cluster provides a replication interface for announcing events/data into the cluster.
 
 ### To replicate event/data
 
