@@ -38,6 +38,15 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
   var configs = [];
   var i = 0;
 
+  function ammendConfig(config) {
+    Object.keys(services).forEach(function (serviceName) {
+      var ammendDefaultService = services[serviceName];
+      Object.keys(ammendDefaultService).forEach(function (keyName) {
+        config.services[serviceName].config[keyName] = ammendDefaultService[keyName];
+      });
+    });
+  }
+
   while (i < clusterSize) {
 
     i++;
@@ -120,12 +129,7 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
       config.services.proxy.config.keyPath = 'test/keys/proxy.com.key';
     }
 
-    Object.keys(services).forEach(function (serviceName) { // jshint ignore:line
-      var ammendDefaultService = services[serviceName];
-      Object.keys(ammendDefaultService).forEach(function (keyName) {
-        config.services[serviceName].config[keyName] = ammendDefaultService[keyName];
-      });
-    });
+    ammendConfig(config);
 
     // console.log(JSON.stringify(config, null, 2));
 
