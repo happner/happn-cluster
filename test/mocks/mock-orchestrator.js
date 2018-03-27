@@ -29,7 +29,7 @@ function MockOrchestrator(opts) {
     services: {
       pubsub: {}
     }
-  }
+  };
 }
 
 MockOrchestrator.prototype.getLoginConfig = function(){
@@ -44,7 +44,7 @@ MockOrchestrator.prototype.getLoginConfig = function(){
     info:clonedConfig.info,
     username:clonedConfig.username,
     password:clonedConfig.password
-  }
+  };
 
 };
 

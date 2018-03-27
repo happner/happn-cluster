@@ -15,7 +15,7 @@ var MockHappn = function (mode, targetPort) {
   this.__targetPort = targetPort;
 
   this.name = 'local-happn-instance';
-  
+
   this.services = {
     pubsub: new MockPubsub(),
     transport: new MockTransport(),
@@ -27,7 +27,7 @@ var MockHappn = function (mode, targetPort) {
       }
     },
     membership: new MockMembership()
-  }
+  };
 };
 
 Object.defineProperty(MockHappn.prototype, "log", {
@@ -40,7 +40,7 @@ Object.defineProperty(MockHappn.prototype, "log", {
       info: function (message) {
         console.log(message);
       }
-    }
+    };
   }
 });
 
@@ -57,7 +57,7 @@ Object.defineProperty(MockHappn.prototype, "config", {
       transport: {
         mode: this.__mode
       }
-    }
+    };
   }
 });
 
@@ -68,9 +68,9 @@ Object.defineProperty(MockHappn.prototype, "server", {
         return {
           address: '0.0.0.0',
           port: 9000
-        }
+        };
       }
-    }
+    };
   }
 });
 

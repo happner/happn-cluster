@@ -1,7 +1,6 @@
-var util = require('util')
-  , EventEmitter = require('events').EventEmitter
-  , Promise = require('bluebird')
-  ;
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
+var Promise = require('bluebird');
 
 function LocalClient(){
   this._local = true;

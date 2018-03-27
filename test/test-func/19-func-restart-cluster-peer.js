@@ -27,11 +27,11 @@ describe(filename, function () {
       var server = _this.servers.pop();
       return server.stop()
         .then(function () {
-          return HappnCluster.create(config)
+          return HappnCluster.create(config);
         })
         .then(function (server) {
           _this.servers.push(server);
-        })
+        });
     }
 
     restart()

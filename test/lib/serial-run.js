@@ -1,7 +1,6 @@
-var sm = require("happner-serial-mocha")
-  , path = require("path")
-  , fs = require("fs")
-;
+var sm = require("happner-serial-mocha");
+var path = require("path");
+var fs = require("fs");
 
 var testDir = path.resolve(__dirname, '../');
 

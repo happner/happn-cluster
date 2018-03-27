@@ -112,7 +112,7 @@ describe(filename, function () {
             .catch(function (error) {
               console.error('ERROR IN ' + filename, error);
             });
-        })
+        });
       })
 
       .then(function () {

@@ -32,7 +32,7 @@ describe(filename, function () {
         payload: payload,
         isLocal: isLocal,
         origin: origin
-      }
+      };
     });
 
     var received2;
@@ -41,7 +41,7 @@ describe(filename, function () {
         payload: payload,
         isLocal: isLocal,
         origin: origin
-      }
+      };
     });
 
     server1.services.replicator.send('topic/name', 'PAYLOAD', function (err) {
@@ -55,7 +55,6 @@ describe(filename, function () {
         isLocal: true,
         origin: server1.name
       });
-
 
       expect(received2).to.eql({
         payload: 'PAYLOAD',
@@ -86,8 +85,8 @@ describe(filename, function () {
               payload: payload,
               isLocal: isLocal,
               origin: origin
-            }
-          }
+            };
+          };
         }
 
         for (var i = 0; i < servers.length; i++) {
@@ -107,7 +106,7 @@ describe(filename, function () {
               payload: 'PAYLOAD',
               isLocal: servers[i].name == server.name,
               origin: server.name
-            }
+            };
           }
 
           try {

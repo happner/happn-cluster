@@ -54,11 +54,11 @@ describe(filename, function () {
           proxy.stop(function (err) {
             if (err) done(err);
             done();
-          })
+          });
         })
         .catch(function (err) {
           return done(err);
-        })
+        });
     });
   });
 
@@ -81,7 +81,7 @@ describe(filename, function () {
           proxy.stop(function () {
             return done(err);
           });
-        })
+        });
     });
   });
 
@@ -116,7 +116,7 @@ describe(filename, function () {
     var targetHost = proxy.happn.server.address().host;
     var targetPort = proxy.happn.config.port;
 
-    const EXPECTED = 'request successfully proxied!';
+    var EXPECTED = 'request successfully proxied!';
 
     // set up independent http server
     var proxiedServer = http.createServer(function (req, res) {
@@ -154,7 +154,7 @@ describe(filename, function () {
                   return done(err);
 
                 return done();
-              })
+              });
             });
 
           })
@@ -162,7 +162,7 @@ describe(filename, function () {
         })
         .catch(function (err) {
           return done(err);
-        })
+        });
     });
   });
 
@@ -171,4 +171,3 @@ describe(filename, function () {
   });
 
 });
-

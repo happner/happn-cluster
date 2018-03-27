@@ -262,8 +262,8 @@ describe(filename, function () {
         o.stop(function (e) {
           if (e) return done(e);
           expect(stopped).to.equal(3);
-          done()
-        })
+          done();
+        });
 
       });
     });
@@ -300,7 +300,7 @@ describe(filename, function () {
 
             done();
           })
-          .catch(done)
+          .catch(done);
       }
     );
 
@@ -324,7 +324,7 @@ describe(filename, function () {
 
             done();
           })
-          .catch(done)
+          .catch(done);
 
       }
     );
@@ -906,7 +906,7 @@ describe(filename, function () {
         o.stabilised()
           .then(function () {
             // stabilises, unaffected by ECONNREFUSED (member is gone)
-            done()
+            done();
           })
           .catch(done);
       });

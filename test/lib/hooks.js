@@ -42,7 +42,7 @@ module.exports.startCluster = function (clusterOpts) {
         return Promise.delay(2000)
           .then(function () {
             return HappnCluster.create(clone(config));
-          })
+          });
       })
         .then(function (servers) {
           self.servers = servers;
@@ -67,10 +67,10 @@ module.exports.stopCluster = function () {
           // because happn logout attempts unsubscribe on server, and all servers
           // are gone
           return Promise.delay(1000); // ...so pause between stops (long for travis)
-        })
+        });
     }, {concurrency: 1}) // ...and do them one at a time
       .then(function () {
-        done()
+        done();
       })
       .catch(done);
 

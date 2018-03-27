@@ -33,7 +33,7 @@ describe(filename, function () {
       if (e) return done(e);
       _this.extraConfig = configs.pop();
       done();
-    })
+    });
   });
 
   before('backup functions being stubbed', function () {
