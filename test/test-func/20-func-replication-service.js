@@ -44,7 +44,7 @@ describe(filename, function () {
       }
     });
 
-    server1.services.replicator.replicate('topic/name', 'PAYLOAD', function (err) {
+    server1.services.replicator.send('topic/name', 'PAYLOAD', function (err) {
       if (err) return done(err);
     });
 
@@ -95,7 +95,7 @@ describe(filename, function () {
           receivingServer.services.replicator.on(eventName, generateHandler(receivingServer));
         }
 
-        server.services.replicator.replicate(eventName, 'PAYLOAD', function (e) {
+        server.services.replicator.send(eventName, 'PAYLOAD', function (e) {
           if (e) return reject(e);
         });
 
