@@ -48,3 +48,7 @@ non-release 2017-12-14
 4.3.0 2018-03-27
 ----------------
   - add replication service
+
+5.0.0 2018-04-12
+----------------
+  - onward release happn-3
