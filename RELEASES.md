@@ -56,3 +56,7 @@ non-release 2017-12-14
 6.0.0 2018-05-24
 ----------------
   - onward release happn-3
+
+6.0.1 2018-05-29
+----------------
+  - updated package-lock
