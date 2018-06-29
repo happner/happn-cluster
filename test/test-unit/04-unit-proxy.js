@@ -72,7 +72,7 @@ describe(filename, function () {
 
       proxy.start()
         .then(function () {
-          var address = proxy.__proxyServer.address();
+          var address = proxy.__proxyServer._server.address();
           expect(address.port).to.equal(8015);
           expect(address.address).to.equal('127.0.0.1');
           proxy.stop(done);

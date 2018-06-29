@@ -53,6 +53,10 @@ non-release 2017-12-14
 ----------------
   - onward release happn-3
 
-5.0.1 2018-06-29
-----------------
+5.0.1 2018-06-29 - unpublished
+------------------------------
   - issue #36 - BACKPORT - replace http-proxy with bouncy. Enables handling non-standard binary payloads.
+  
+5.0.2 2018-06-29
+------------------------------
+  - revert back to http-proxy
