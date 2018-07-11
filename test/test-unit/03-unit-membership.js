@@ -8,23 +8,23 @@ var MockHappn = require('../mocks/mock-happn');
 var mockOpts = require('../mocks/mock-opts');
 var address = require('../../lib/utils/get-address')();
 
-describe(filename, function () {
+describe(filename, function() {
 
-  before(function () {
+  before(function() {
     this.logLevel = process.env.LOG_LEVEL;
     process.env.LOG_LEVEL = 'off';
   });
 
-  context('initialize', function () {
+  context('initialize', function() {
 
-    it('defaults all but config.hosts', function (done) {
+    it('defaults all but config.hosts', function(done) {
 
       var m = new Membership(mockOpts);
       m.happn = new MockHappn('http', 9000);
 
       m.initialize({
         hosts: ['10.10.10.10:11111']
-      }, function (e) {
+      }, function(e) {
         if (e) return done(e);
 
         expect(m.config).to.eql({
@@ -50,7 +50,7 @@ describe(filename, function () {
     });
 
 
-    it('can assign all config', function (done) {
+    it('can assign all config', function(done) {
 
       var m = new Membership(mockOpts);
       m.happn = new MockHappn('http', 9000);
@@ -72,7 +72,7 @@ describe(filename, function () {
           maxDgramSize: 768
         },
         disseminationFactor: 13
-      }, function (e) {
+      }, function(e) {
         if (e) return done(e);
 
         expect(m.config).to.eql({
@@ -98,9 +98,9 @@ describe(filename, function () {
     });
   });
 
-  context('bootstrap', function () {
+  context('bootstrap', function() {
 
-    beforeEach(function (done) {
+    beforeEach(function(done) {
       this.membership = new Membership(mockOpts);
       this.membership.happn = new MockHappn('http', 9000);
       this.membership.Swim = MockSwim;
@@ -109,17 +109,17 @@ describe(filename, function () {
       }, done);
     });
 
-    beforeEach(function () {
+    beforeEach(function() {
       this.membership.happn = new MockHappn('http', 9000);
     });
 
 
     it('assigns host (memberId) and populates meta for remote peers to connect to us',
-      function (done) {
+      function(done) {
 
         m = this.membership;
         m.bootstrap()
-          .then(function () {
+          .then(function() {
             expect(m.swim.__config.local).to.eql({
               host: address + ':56000',
               meta: {
@@ -133,15 +133,15 @@ describe(filename, function () {
       }
     );
 
-    it('rejects the promise on error', function (done) {
+    it('rejects the promise on error', function(done) {
 
       m = this.membership;
       MockSwim.__queueError(new Error('JoinFailedError'));
       m.bootstrap()
-        .then(function () {
+        .then(function() {
           throw new Error('not this');
         })
-        .catch(function (error) {
+        .catch(function(error) {
           expect(error.message).to.equal('JoinFailedError');
           done();
         })
@@ -149,10 +149,9 @@ describe(filename, function () {
     });
 
 
-    it('adds and emits all discovered members', function (done) {
+    it('adds and emits all discovered members', function(done) {
 
-      MockSwim.__discoveredMembers = [
-        {
+      MockSwim.__discoveredMembers = [{
           meta: {
             cluster: 'happn-cluster',
             url: 'http://10.0.0.1:55000'
@@ -176,14 +175,13 @@ describe(filename, function () {
 
       var added = [];
 
-      this.membership.on('add', function (member) {
+      this.membership.on('add', function(member) {
         added.push(member);
       });
 
       this.membership.bootstrap()
-        .then(function () {
-          expect(added).to.eql([
-            {
+        .then(function() {
+          expect(added).to.eql([{
               memberId: '10.0.0.1:56000',
               url: 'http://10.0.0.1:55000'
             },
@@ -210,9 +208,9 @@ describe(filename, function () {
 
   });
 
-  context('ongoing discovery', function () {
+  context('ongoing discovery', function() {
 
-    beforeEach(function (done) {
+    beforeEach(function(done) {
       this.membership = new Membership(mockOpts);
       this.membership.Swim = MockSwim;
       this.membership.happn = new MockHappn('http', 9000);
@@ -221,9 +219,8 @@ describe(filename, function () {
       }, done);
     });
 
-    beforeEach(function (done) {
-      MockSwim.__discoveredMembers = [
-        {
+    beforeEach(function(done) {
+      MockSwim.__discoveredMembers = [{
           meta: {
             cluster: 'happn-cluster',
             url: 'http://10.0.0.1:55000'
@@ -250,11 +247,11 @@ describe(filename, function () {
     });
 
 
-    it('removes and emits as members depart', function (done) {
+    it('removes and emits as members depart', function(done) {
 
       var m = this.membership;
 
-      this.membership.on('remove', function (member) {
+      this.membership.on('remove', function(member) {
         expect(member).to.eql({
           memberId: '10.0.0.1:56000'
         });
@@ -280,11 +277,11 @@ describe(filename, function () {
     });
 
 
-    it('adds and emits as members arrive', function (done) {
+    it('adds and emits as members arrive', function(done) {
 
       var m = this.membership;
 
-      this.membership.on('add', function (member) {
+      this.membership.on('add', function(member) {
         expect(member).to.eql({
           memberId: '10.0.0.3:56000',
           url: 'http://10.0.0.3:55000'
@@ -317,11 +314,12 @@ describe(filename, function () {
     });
 
 
-    it('ignores self', function (done) {
+    it('ignores self', function(done) {
 
-      var added = false, m = this.membership;
+      var added = false,
+        m = this.membership;
 
-      this.membership.on('add', function () {
+      this.membership.on('add', function() {
         added = true;
       });
 
@@ -335,7 +333,7 @@ describe(filename, function () {
         incarnation: 0
       });
 
-      setTimeout(function () {
+      setTimeout(function() {
         expect(Object.keys(m.members).length).to.equal(2);
         expect(added).to.equal(false);
         done();
@@ -343,11 +341,12 @@ describe(filename, function () {
     });
 
 
-    it('ignore wrong cluster', function (done) {
+    it('ignore wrong cluster', function(done) {
 
-      var added = false, m = this.membership;
+      var added = false,
+        m = this.membership;
 
-      this.membership.on('add', function () {
+      this.membership.on('add', function() {
         added = true;
       });
 
@@ -361,7 +360,7 @@ describe(filename, function () {
         incarnation: 0
       });
 
-      setTimeout(function () {
+      setTimeout(function() {
         expect(Object.keys(m.members).length).to.equal(2);
         expect(added).to.equal(false);
         done();
@@ -369,10 +368,11 @@ describe(filename, function () {
     });
 
 
-    it('ignores already removed members', function (done) {
+    it('ignores already removed members', function(done) {
 
-      var removed = false, m = this.membership;
-      this.membership.on('remove', function () {
+      var removed = false,
+        m = this.membership;
+      this.membership.on('remove', function() {
         removed = true;
       });
 
@@ -386,7 +386,7 @@ describe(filename, function () {
         incarnation: 0
       });
 
-      setTimeout(function () {
+      setTimeout(function() {
         expect(Object.keys(m.members).length).to.equal(2);
         expect(removed).to.equal(false);
         done();
@@ -394,11 +394,12 @@ describe(filename, function () {
     });
 
 
-    it('ignores already added members', function (done) {
+    it('ignores already added members', function(done) {
 
-      var added = false, m = this.membership;
+      var added = false,
+        m = this.membership;
 
-      this.membership.on('add', function () {
+      this.membership.on('add', function() {
         added = true;
       });
 
@@ -412,7 +413,7 @@ describe(filename, function () {
         incarnation: 0
       });
 
-      setTimeout(function () {
+      setTimeout(function() {
         expect(Object.keys(m.members).length).to.equal(2);
         expect(added).to.equal(false);
         done();
@@ -422,9 +423,9 @@ describe(filename, function () {
   });
 
 
-  context('stop', function () {
+  context('stop', function() {
 
-    beforeEach(function (done) {
+    beforeEach(function(done) {
       this.membership = new Membership(mockOpts);
       this.membership.Swim = MockSwim;
       this.membership.happn = new MockHappn('http', 9000);
@@ -433,7 +434,7 @@ describe(filename, function () {
       }, done);
     });
 
-    beforeEach(function (done) {
+    beforeEach(function(done) {
       MockSwim.__discoveredMembers = [];
       this.membership.happn = new MockHappn('http', 9000);
       this.membership.bootstrap()
@@ -441,15 +442,15 @@ describe(filename, function () {
         .catch(done);
     });
 
-    it('stops swim', function (done) {
+    it('stops swim', function(done) {
 
       var left = false;
 
-      this.membership.swim.leave = function () {
+      this.membership.swim.leave = function() {
         left = true;
       };
 
-      this.membership.stop(function () {
+      this.membership.stop(function() {
         expect(left).to.equal(true);
         done();
       });
@@ -457,7 +458,51 @@ describe(filename, function () {
 
   });
 
-  after(function () {
+  context('persist hosts', function() {
+
+    it('intializes with persistHosts:true, persists a member, then fetches members', function(done) {
+
+      var membership = new Membership(mockOpts);
+      var persistedMember = null;
+
+      membership.happn = new MockHappn('http', 9000, {
+        upsert: function(path, data, callback) {
+          if (path.indexOf('/_SYSTEM/_CLUSTER/MEMBERS') == 0) {
+            persistedMember = data;
+          }
+          callback(null);
+        },
+        get: function(path, callback) {
+          return callback(null, [{
+            data: persistedMember
+          }]);
+        }
+      });
+
+      membership.initialize({
+        persistMembers: true
+      }, function(e) {
+
+        membership.persistMember({
+          host: '127.0.0.1:12000'
+        });
+
+        setTimeout(function() {
+          membership.fetchPersistedMembers(function(e, members) {
+            expect(e).to.be(null);
+            expect(members).to.eql([{
+              data: {
+                host: '127.0.0.1:12000'
+              }
+            }]);
+            done();
+          });
+        }, 1000);
+      });
+    });
+  });
+
+  after(function() {
     process.env.LOG_LEVEL = this.logLevel;
   });
 

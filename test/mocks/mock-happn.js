@@ -9,7 +9,7 @@ var MockTransport = require('./mock-transport');
 var MockSession = require('./mock-session');
 var MockMembership = require('./mock-membership');
 
-var MockHappn = function (mode, targetPort) {
+var MockHappn = function (mode, targetPort, mockDataService) {
 
   this.__mode = mode;
   this.__targetPort = targetPort;
@@ -20,6 +20,7 @@ var MockHappn = function (mode, targetPort) {
     pubsub: new MockPubsub(),
     transport: new MockTransport(),
     session: new MockSession(),
+    data: mockDataService,
     proxy: {
       config: {
         host: '0.0.0.0',
