@@ -500,6 +500,84 @@ describe(filename, function() {
         }, 1000);
       });
     });
+
+    it('intializes with persistHosts:true, persists a member, then concats members', function(done) {
+
+      var membership = new Membership(mockOpts);
+      var persistedMember = null;
+
+      membership.happn = new MockHappn('http', 9000, {
+        upsert: function(path, data, callback) {
+          if (path.indexOf('/_SYSTEM/_CLUSTER/MEMBERS') == 0) {
+            persistedMember = data;
+          }
+          callback(null);
+        },
+        get: function(path, callback) {
+          return callback(null, [{
+            data: persistedMember
+          }]);
+        }
+      });
+
+      membership.initialize({
+        persistMembers: true,
+        hosts: ['127.0.0.1:12001']
+      }, function(e) {
+
+        membership.persistMember({
+          host: '127.0.0.1:12000'
+        });
+
+        setTimeout(function() {
+          membership.concatPersistedHosts(function(e, hosts) {
+            expect(e).to.be(null);
+            expect(hosts.sort()).to.eql(['127.0.0.1:12000', '127.0.0.1:12001']);
+            done();
+          });
+        }, 1000);
+      });
+    });
+
+    it('intializes with persistHosts:true, persists a member, then concats members, checks we dedup already configured hosts', function(done) {
+
+      var membership = new Membership(mockOpts);
+      var persistedMembers = [];
+
+      membership.happn = new MockHappn('http', 9000, {
+        upsert: function(path, data, callback) {
+          if (path.indexOf('/_SYSTEM/_CLUSTER/MEMBERS') == 0) {
+            persistedMembers.push({data:data});
+          }
+          callback(null);
+        },
+        get: function(path, callback) {
+          return callback(null, persistedMembers);
+        }
+      });
+
+      membership.initialize({
+        persistMembers: true,
+        hosts: ['127.0.0.1:12001', '127.0.0.1:12002']
+      }, function(e) {
+
+        membership.persistMember({
+          host: '127.0.0.1:12000'
+        });
+
+        membership.persistMember({
+          host: '127.0.0.1:12002'
+        });
+
+        setTimeout(function() {
+          membership.concatPersistedHosts(function(e, hosts) {
+            expect(e).to.be(null);
+            expect(hosts.sort()).to.eql(['127.0.0.1:12000', '127.0.0.1:12001', '127.0.0.1:12002']);
+            done();
+          });
+        }, 1000);
+      });
+    });
   });
 
   after(function() {
