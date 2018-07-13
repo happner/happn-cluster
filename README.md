@@ -29,7 +29,7 @@ var defaultConfig = {
   // secure: true,  // to enable security
   // announceHost: 'externally-visible-ip-or-hostname', // eg. when docker
   services: {
-    
+
     // // security sub-config (to enable security)
     // security: {
     //   config: {
@@ -39,7 +39,7 @@ var defaultConfig = {
     //     }
     //   }
     // },
-  
+
     // shared data plugin sub-config (defaults displayed)
     data: {
       config: {
@@ -58,7 +58,7 @@ var defaultConfig = {
         ]
       }
     },
-    
+
     // proxy sub-config (defaults displayed)
     proxy: {
       config: {
@@ -71,7 +71,7 @@ var defaultConfig = {
         // certPath: 'path/to/cert'
       }
     },
-    
+
     // orchestrator sub-config (defaults displayed)
     orchestrator: {
       config: {
@@ -81,7 +81,7 @@ var defaultConfig = {
         stabiliseTimeout: 120 * 1000 // 0 disables
       }
     },
-    
+
     // membership sub-config (defaults displayed)
     membership: {
       config: {
@@ -100,7 +100,9 @@ var defaultConfig = {
         udp: {
           maxDgramSize: 512
         }
-        disseminationFactor: 15
+        disseminationFactor: 15,
+        persistMembers:false //if you want to remember members updated by swim and
+                             //concatenate them to the hosts on startup
       }
     }
   }
@@ -113,7 +115,7 @@ HappnCluster.create(defaultConfig)
   .catch(function(error) {
     process.exit(0);
   });
-  
+
 ```
 
 
@@ -153,7 +155,8 @@ To change the admin password.
 
 * Stop all cluster nodes.
 * Put the new password into all cluster node configs.
-* Delete the old _ADMIN user and _ADMIN group membership from the shared database.
+* Delete the old \_ADMIN user and \_ADMIN group membership from the shared database.
+
 ```bash
 mongo mongodb://127.0.0.1:27017/happn-cluster
 > use happn-cluster
@@ -163,15 +166,11 @@ mongo mongodb://127.0.0.1:27017/happn-cluster
 
 **The above also applies after starting a cluster with security unconfigured. The admin user is still created with the default password 'happn'. Upon turning on security later the password will then need to be changed as described above.**
 
-
-
 ### Shared Data Sub-Config
 
 By configuring a shared data service all nodes in the cluster can serve the same data to clients. The
 default uses the [happn mongo plugin](https://github.com/happner/happn-service-mongo). The localhost
 url is porbably not what you want.
-
-
 
 ### Proxy Sub-Config
 
@@ -223,16 +222,14 @@ the frequency with which the outstanding connection states are reported into the
 
 Defines how long to wait for this starting node to become fully connected (stabilised) before giving up and stopping the node. In all known cases a starting node will either reach stability or fail explicitly with an error. This is a failsafe (for unknown cases) to prevent endlessly awaiting stability where it would be better to stop and try joining the cluster again.
 
-**Note that this acts in opposition to `minimumPeers` - A starting node awaiting minimum peers will still time out.** 
-
-
+**Note that this acts in opposition to `minimumPeers` - A starting node awaiting minimum peers will still time out.**
 
 ### Membership Sub-Config
 
 #### config.clusterName
 
 Every member of the cluster should have the same configured `clusterName`.
-The name is limited to characters acceptable in happn paths, namely '_*-', numbers and letters.
+The name is limited to characters acceptable in happn paths, namely '\_*-', numbers and letters.
 Joining members with a different clusterName will be ignored by the orchestrator.
 
 #### config.seed
@@ -272,12 +269,17 @@ and **config.port** above.
 
 Example: `['10.0.0.1:56000', '10.0.0.2:56000', '10.0.0.3:56000']`
 
-It is **strongly recommended** that all nodes in the cluster use the same **config.hosts** list to avoid 
+It is **strongly recommended** that all nodes in the cluster use the same **config.hosts** list to avoid
 the posibility of orphaned subclusters arising. It must therefore also be ensured that at least one of
 the hosts in the list is online at all times. They can be upgraded one at a time but not all together.
 
 In the event of all nodes in the **config.hosts** going down simultaneously the remaining nodes in the
 cluster will be orphaned and require a restart.
+
+#### config.persistMembers
+
+if you want to remember members updated by swim and concatenate them to the hosts on startup.
+This is useful if your seed node(s) don't know about your additional cluster nodes via the hosts config setting (above). This will use happn to persist all members that are updated via SWIM, and will concatenate them to the hosts config on startup so the cluster does not split.
 
 #### config.joinTimeout
 

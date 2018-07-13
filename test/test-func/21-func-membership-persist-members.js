@@ -35,7 +35,7 @@ describe(filename, function () {
 
         startedProcess.stdout.on('data', function(data){
           //if (memberName == 'seedNode')
-          console.log(memberName + ' out: ', data.toString());
+          //console.log(memberName + ' out: ', data.toString());
         });
 
         //console.log('forked: ' + forkPath + ' ' + processParams);
@@ -55,7 +55,7 @@ describe(filename, function () {
     });
   }
 
-  it.only('test persistMembers', function (done) {
+  it('test persistMembers', function (done) {
 
     //node run/cluster-node hosts=127.0.0.1:56001 host=127.0.0.1
     startProcess('hosts=127.0.0.1:58000 persistMembers=true membername=seedNode')
@@ -89,8 +89,6 @@ describe(filename, function () {
 
       setTimeout(function(){
 
-        console.log('MESSAGES:::', JSON.stringify(messages, null, 2));
-
         messages.seedNode = [];
         messages.member1 = [];
         messages.member2 = [];
@@ -100,9 +98,6 @@ describe(filename, function () {
           .then(function(node){
             seedNode = node;
             setTimeout(function(){
-
-              console.log('MESSAGES:::', JSON.stringify(messages, null, 2));
-
               expect(messages.member1[0]).to.eql(
                 {operation:'update', data:{memberId: '127.0.0.1:56000'}}
               );
@@ -120,8 +115,9 @@ describe(filename, function () {
   });
 
   it('test persistMembers, negative', function (done) {
+
     //node run/cluster-node hosts=127.0.0.1:56001 host=127.0.0.1
-    startProcess('hosts=127.0.0.1:58000 persistMembers=false  membername=seedNode')
+    startProcess('hosts=127.0.0.1:58000 membername=seedNode')
     .then(function(node){
       seedNode = node;
       return startProcess('hosts=127.0.0.1:56000 port=55001 proxyport=57001 membershipport=56001 seed=false membername=member1');
@@ -136,20 +132,44 @@ describe(filename, function () {
     })
     .then(function(node){
       clientNodes.push(node);
-      messages.member1 = [];
-      messages.member2 = [];
-      messages.member3 = [];
+
+      expect(messages.seedNode
+        .filter(function(logMessage){
+          return logMessage.operation == 'add';
+        })
+        .sort()
+      ).to.eql([
+        {operation:'add', data:{memberId: '127.0.0.1:56001'}},
+        {operation:'add', data:{memberId: '127.0.0.1:56002'}},
+        {operation:'add', data:{memberId: '127.0.0.1:56003'}}
+      ]);
+
       seedNode.kill();
-      startProcess('hosts=127.0.0.1:58000 persistMembers=true membername=seedNode')
-        .then(function(node){
-          seedNode = node;
+
+      setTimeout(function(){
+
+        messages.seedNode = [];
+        messages.member1 = [];
+        messages.member2 = [];
+        messages.member3 = [];
+
+        startProcess('hosts=127.0.0.1:58000 membername=seedNode')
+          .then(function(node){
+            seedNode = node;
             setTimeout(function(){
-              expect(messages.member1).to.eql([]);
-              expect(messages.member2).to.eql([]);
-              expect(messages.member3).to.eql([]);
+              expect(messages.member1[0]).to.eql(
+                undefined
+              );
+              expect(messages.member2[0]).to.eql(
+                undefined
+              );
+              expect(messages.member3[0]).to.eql(
+                undefined
+              );
               done();
-          }, 2000);
-        });
+            }, 5000);
+          });
+      }, 5000);
     });
   });
 });
