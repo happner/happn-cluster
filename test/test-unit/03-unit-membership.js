@@ -726,7 +726,7 @@ describe(filename, function() {
       }, function(e) {
         if (e) return done(e);
         membership.bootstrap(function(e){
-          expect(e.toString()).to.be('Error: test error: /_SYSTEM/_CLUSTER/MEMBERS/192.168.1.163:9000/*');
+          expect(e.toString()).to.be('Error: test error: /_SYSTEM/_CLUSTER/MEMBERS/*');
           done();
         });
       });
