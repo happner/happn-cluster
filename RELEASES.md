@@ -56,7 +56,7 @@ non-release 2017-12-14
 6.0.0 2018-05-24
 ----------------
   - onward release happn-3
-  
+
 6.0.1 2018-06-28 - unpublished
 ------------------------------
   - issue #36 - replace http-proxy with bouncy. Enables handling non-standard binary payloads.
@@ -64,3 +64,7 @@ non-release 2017-12-14
 6.0.2 2018-06-29
 ----------------
   - rolling back bouncy update
+
+6.1.0 2018-06-29
+----------------
+  - persistMembers membership service change
