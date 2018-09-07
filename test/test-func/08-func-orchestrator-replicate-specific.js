@@ -25,7 +25,7 @@ describe(filename, function () {
     happnSecure: happnSecure,
     services: {
       orchestrator: {
-        replicate: ['/*/this', '/and/that'] // <---------------
+        replicate: ['/*/*/this', '/and/that'] // <---------------
       }
     }
   });
