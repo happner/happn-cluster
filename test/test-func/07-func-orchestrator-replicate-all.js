@@ -77,7 +77,9 @@ describe(filename, function () {
 
         .then(function () {
           return Promise.resolve(_this.clients).map(function (client, i) {
+
             return client.onAsync('/some/*/*/set', function (data, meta) {
+
               delete meta.sessionId; // not the same across events
               if (i == 0) {
                 controlEvent = {
@@ -345,9 +347,7 @@ describe(filename, function () {
         })
 
         .then(done).catch(done);
-
     });
-
   });
 
   context('on merge events', function () {
