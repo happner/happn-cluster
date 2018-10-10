@@ -172,10 +172,10 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          expect(o.config.replicate).to.eql([
+          expect(o.config.replicate.sort()).to.eql([
+            '/__REPLICATE',
             '/same/*/with/*/more',
-            '/same/path/*',
-            '/__REPLICATE'
+            '/same/path/*'
           ]);
           done();
 
@@ -193,9 +193,9 @@ describe(filename, function () {
         }, function (e) {
           if (e) return done(e);
 
-          expect(o.config.replicate).to.eql([
-            '/*'
-          ]);
+          expect(o.config.replicate.sort()).to.eql([
+            '/same/path', '/same/*/with/some/more', '/same/path/with/*/more', '/*'
+          ].sort());
           done();
 
         });
@@ -218,6 +218,14 @@ describe(filename, function () {
           if (e) return done(e);
 
           expect(o.config.replicate).to.eql([
+            '/*/*/*/*/*/*/*/*/*',
+            '/*/*/*/*/*/*/*/*',
+            '/*/*/*/*/*/*/*',
+            '/*/*/*/*/*/*',
+            '/*/*/*/*/*',
+            '/*/*/*/*',
+            '/*/*/*',
+            '/*/*',
             '/*'
           ]);
           done();
@@ -267,7 +275,6 @@ describe(filename, function () {
 
       });
     });
-
   });
 
 
@@ -711,7 +718,6 @@ describe(filename, function () {
 
         }, 20);
       });
-
     });
 
     context('event peer/remove', function () {
@@ -866,7 +872,7 @@ describe(filename, function () {
           })
           .catch(function (error) {
             expect(error.message).to.equal('oh no login');
-            done();
+            o.stop(done);
           })
           .catch(done);
       });

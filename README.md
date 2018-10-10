@@ -118,7 +118,7 @@ HappnCluster.create(defaultConfig)
 
 ```
 
-
+## NB: by default replicate will replicate all events across the cluster (see above config.replcate is ['\*']) - because we are now using happn-3 version 8.0.0 the / and \* characters have stricter rules, ie: to replicate all events for a set or remove with path /my/test/event you need to set replicate to ['/my/\*/\*'], /my/\* and /my\* or /my/te\*/event will no longer work.
 
 ### Happn Config
 
