@@ -13,6 +13,6 @@ node_js:
 
 script:
   - npm run-script lint
-  - travis-retry npm run-script test-cover
+  - npm run-script test-cover
 
 after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
