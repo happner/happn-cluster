@@ -69,6 +69,10 @@ non-release 2017-12-14
 ----------------
   - persistMembers membership service change
 
-7.0.0 2018-10-10
+7.0.0 2018-19-10
 ----------------
   - happn-3 version 8.0.0
+
+7.0.1 2018-09-16
+----------------
+  - happn-3 version 8.0.1
