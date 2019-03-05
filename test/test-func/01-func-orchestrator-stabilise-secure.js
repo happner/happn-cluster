@@ -22,7 +22,6 @@ describe(filename, function () {
     happnSecure: happnSecure
   });
 
-
   it('each server stabilised with all 10 peers', function (done) {
     var self = this;
 
