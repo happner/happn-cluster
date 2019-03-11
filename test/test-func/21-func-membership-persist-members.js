@@ -41,6 +41,8 @@ describe(filename, function () {
         //console.log('forked: ' + forkPath + ' ' + processParams);
 
         startedProcess.on('message', function(message){
+
+          //console.log('MESSAGE:::', JSON.stringify(message, null, 2), memberName);
           if (this.memberName == 'seedNode') return messages[this.memberName].push(message);
           if (message.operation == 'update') messages[this.memberName].push(message);
         }.bind({memberName:memberName}));
@@ -108,9 +110,9 @@ describe(filename, function () {
                 {operation:'update', data:{memberId: '127.0.0.1:56000'}}
               );
               done();
-            }, 5000);
+            }, 2000);
           });
-      }, 5000);
+      }, 2000);
     });
   });
 

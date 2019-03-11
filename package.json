@@ -1,6 +1,6 @@
 {
   "name": "happn-cluster",
-  "version": "7.2.1",
+  "version": "8.0.0",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "lint": "gulp lint",
     "unit": "mocha test/test-unit --benchmarket-off",
     "test-cover": "LOG_LEVEL=warn istanbul cover _mocha -- test/test-func test/test-unit --benchmarket-off",
-    "test-benchmarket": "node --expose-gc test/lib/serial-run"
+    "test-benchmarket": "node --expose-gc test/lib/serial-run",
+    "release": "rm -rf node_modules && rm -f package-lock.json && npm install && npm run test-cover"
   },
   "repository": {
     "type": "git",
@@ -48,7 +49,7 @@
     "bluebird": "3.4.6",
     "clone": "1.0.2",
     "dface": "1.0.1",
-    "happn-3": "^8.2.7",
+    "happn-3": "^9.0.0",
     "happn-stats": "^1.0.6",
     "happn-swim": "^1.0.3",
     "http-proxy": "1.15.2",
