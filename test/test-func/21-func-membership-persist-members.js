@@ -3,6 +3,7 @@ var filename = path.basename(__filename);
 var expect = require('expect.js');
 var Promise = require('bluebird');
 var HappnCluster = require('../../');
+var testUtils = require('../lib/test-utils');
 
 describe(filename, function () {
 
@@ -16,6 +17,11 @@ describe(filename, function () {
     clientNodes.forEach(function(node){
       node.kill();
     });
+    clientNodes = [];
+  });
+
+  beforeEach(function(done){
+    testUtils.clearMongoCollection(done);
   });
 
   function startProcess(params){
@@ -34,8 +40,7 @@ describe(filename, function () {
         var startedProcess = cp.fork(forkPath, processParams.split(' '), { silent: true });
 
         startedProcess.stdout.on('data', function(data){
-          //if (memberName == 'seedNode')
-          //console.log(memberName + ' out: ', data.toString());
+          console.log(memberName + ' out: ', data.toString());
         });
 
         //console.log('forked: ' + forkPath + ' ' + processParams);
@@ -56,6 +61,23 @@ describe(filename, function () {
       }
     });
   }
+
+  it('tests bad bootstrap', function (done) {
+
+    //node run/cluster-node hosts=127.0.0.1:56001 host=127.0.0.1
+    startProcess('hosts=127.0.0.1:58000 persistMembers=true membername=seedNode')
+    .then(function(node){
+      seedNode = node;
+      return startProcess('hosts=127.0.0.1:56000,127.0.0.1:66666 port=55001 proxyport=57001 membershipport=56001 seed=false persistMembers=true membername=member1');
+    })
+    .then(function(node){
+      clientNodes.push(node);
+      done();
+    })
+    .catch(function(e){
+      done();
+    });
+  });
 
   it('test persistMembers', function (done) {
 
@@ -110,7 +132,127 @@ describe(filename, function () {
                 {operation:'update', data:{memberId: '127.0.0.1:56000'}}
               );
               done();
-            }, 2000);
+            }, 3000);
+          });
+      }, 2000);
+    });
+  });
+
+  it('test persistMembers, restart member', function (done) {
+
+    //node run/cluster-node hosts=127.0.0.1:56001 host=127.0.0.1
+    startProcess('hosts=127.0.0.1:58000 persistMembers=true membername=seedNode')
+    .then(function(node){
+      seedNode = node;
+      return startProcess('hosts=127.0.0.1:56000 port=55001 proxyport=57001 membershipport=56001 seed=false persistMembers=true membername=member1');
+    })
+    .then(function(node){
+      node.__cmd = 'hosts=127.0.0.1:56000 port=55001 proxyport=57001 membershipport=56001 seed=false persistMembers=true membername=member1';
+      clientNodes.push(node);
+      return startProcess('hosts=127.0.0.1:56000 port=55002 proxyport=57002 membershipport=56002 seed=false persistMembers=true membername=member2');
+    })
+    .then(function(node){
+      node.__cmd = 'hosts=127.0.0.1:56000 port=55002 proxyport=57002 membershipport=56002 seed=false persistMembers=true membername=member2';
+      clientNodes.push(node);
+      return startProcess('hosts=127.0.0.1:56000 port=55003 proxyport=57003 membershipport=56003 seed=false persistMembers=true membername=member3');
+    })
+    .then(function(node){
+      node.__cmd = 'hosts=127.0.0.1:56000 port=55003 proxyport=57003 membershipport=56003 seed=false persistMembers=true membername=member3';
+      clientNodes.push(node);
+
+      expect(messages.seedNode
+        .filter(function(logMessage){
+          return logMessage.operation == 'add';
+        })
+        .sort()
+      ).to.eql([
+        {operation:'add', data:{memberId: '127.0.0.1:56001'}},
+        {operation:'add', data:{memberId: '127.0.0.1:56002'}},
+        {operation:'add', data:{memberId: '127.0.0.1:56003'}}
+      ]);
+
+      var memberNode = clientNodes.shift();
+
+      memberNode.kill();
+
+      setTimeout(function(){
+
+        messages.seedNode = [];
+        messages.member1 = [];
+        messages.member2 = [];
+        messages.member3 = [];
+
+        startProcess('hosts=127.0.0.1:56000 port=55001 proxyport=57001 membershipport=56001 seed=false persistMembers=true membername=member1')
+          .then(function(node){
+            clientNodes.push(node);
+            setTimeout(function(){
+              expect(messages.member1[0]).to.eql(undefined);
+              expect(messages.member2[0]).to.eql(
+                {operation:'update', data:{memberId: '127.0.0.1:56001'}}
+              );
+              expect(messages.member3[0]).to.eql(
+                {operation:'update', data:{memberId: '127.0.0.1:56001'}}
+              );
+              done();
+            }, 3000);
+          });
+      }, 2000);
+    });
+  });
+
+  it('test persistMembers, restart member and seed', function (done) {
+
+    //node run/cluster-node hosts=127.0.0.1:56001 host=127.0.0.1
+    startProcess('hosts=127.0.0.1:58000 persistMembers=true membername=seedNode')
+    .then(function(node){
+      seedNode = node;
+      return startProcess('hosts=127.0.0.1:56000 port=55001 proxyport=57001 membershipport=56001 seed=false persistMembers=true membername=member1');
+    })
+    .then(function(node){
+      clientNodes.push(node);
+      return startProcess('hosts=127.0.0.1:56000 port=55002 proxyport=57002 membershipport=56002 seed=false persistMembers=true membername=member2');
+    })
+    .then(function(node){
+      clientNodes.push(node);
+      return startProcess('hosts=127.0.0.1:56000 port=55003 proxyport=57003 membershipport=56003 seed=false persistMembers=true membername=member3');
+    })
+    .then(function(node){
+      clientNodes.push(node);
+
+      expect(messages.seedNode
+        .filter(function(logMessage){
+          return logMessage.operation == 'add';
+        })
+        .sort()
+      ).to.eql([
+        {operation:'add', data:{memberId: '127.0.0.1:56001'}},
+        {operation:'add', data:{memberId: '127.0.0.1:56002'}},
+        {operation:'add', data:{memberId: '127.0.0.1:56003'}}
+      ]);
+
+      seedNode.kill();
+      clientNodes.pop().kill();
+
+      setTimeout(function(){
+
+        messages.seedNode = [];
+        messages.member1 = [];
+        messages.member2 = [];
+        messages.member3 = [];
+
+        startProcess('hosts=127.0.0.1:56000 port=55003 proxyport=57003 membershipport=56003 seed=false persistMembers=true membername=member3')
+          .then(function(node){
+            clientNodes.push(node);
+            setTimeout(function(){
+              expect(messages.member1[0]).to.eql(
+                {operation:'update', data:{memberId: '127.0.0.1:56003'}}
+              );
+              expect(messages.member2[0]).to.eql(
+                {operation:'update', data:{memberId: '127.0.0.1:56003'}}
+              );
+              expect(messages.member3[0]).to.be(undefined);
+              done();
+            }, 3000);
           });
       }, 2000);
     });

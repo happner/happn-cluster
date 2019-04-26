@@ -1,4 +1,6 @@
 var HappnCluster = require('../..');
+var mongoUrl = 'mongodb://127.0.0.1:27017';
+var mongoCollection = 'happn-cluster-test';
 
 var processarguments = {};
 
@@ -49,9 +51,19 @@ var config = { // was "datalayer"
   port: processarguments.port,
   services: {
     data: {
-      // see data sub-config in happn-cluster docs
       config: {
-        datastores: []
+        datastores: [
+          {
+            name: 'mongo',
+            provider: 'happn-service-mongo-2',
+            isDefault: true,
+            settings: {
+              collection: mongoCollection,
+              database: mongoCollection,
+              url: mongoUrl
+            }
+          }
+        ]
       }
     },
     membership: {

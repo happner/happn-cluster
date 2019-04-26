@@ -12,8 +12,8 @@ var Mongo = require('./mongo');
 var mongoUrl = 'mongodb://127.0.0.1:27017';
 var mongoCollection = 'happn-cluster-test';
 
-module.exports.clearMongoCollection = function (callback) {
-  Mongo.clearCollection(mongoUrl, mongoCollection, callback);
+module.exports.clearMongoCollection = function (callback, mongoCollectionArg, mongoUrlArg) {
+  Mongo.clearCollection(mongoUrlArg || mongoUrl, mongoCollectionArg || mongoCollection, callback);
 };
 
 module.exports.createMemberConfigs = Promise.promisify(function (testSequence, clusterSize, happnSecure, proxySecure, services, callback) {

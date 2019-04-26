@@ -100,3 +100,12 @@ non-release 2017-12-14
 8.0.1 2019-03-01
 ----------------
   - happn-3 version 9.0.1
+
+8.0.2 2019-03-01
+----------------
+  - happn-3 version 9.0.2
+
+8.0.3 2019-04-26
+----------------
+  - happn-3 version 9.0.4
+  - extended tests around cluster member persistence
