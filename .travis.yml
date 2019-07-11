@@ -9,7 +9,8 @@ branches:
 
 node_js:
   - "10"
-  - "8"
+  - "11"
+  - "12"
 
 script:
   - npm run-script lint
