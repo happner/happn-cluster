@@ -109,3 +109,16 @@ non-release 2017-12-14
 ----------------
   - happn-3 version 9.0.4
   - extended tests around cluster member persistence
+
+8.1.0 2019-04-26
+----------------
+  - happn-3 version 10.0.0
+
+8.1.1 2019-04-26
+----------------
+  - ws 7 fix
+
+8.1.2 2019-04-26
+----------------
+  - ws error bubble fix
+  - happner and happn upgrades
