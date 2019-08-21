@@ -122,3 +122,7 @@ non-release 2017-12-14
 ----------------
   - ws error bubble fix
   - happner and happn upgrades
+
+8.1.3 2019-08-21
+----------------
+  - issue with stable timeout not being cleared on stop
