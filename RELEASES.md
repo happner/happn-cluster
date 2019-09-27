@@ -126,3 +126,7 @@ non-release 2017-12-14
 8.1.3 2019-08-21
 ----------------
   - issue with stable timeout not being cleared on stop
+
+8.1.4 2019-09-27
+----------------
+  - updated happn-3 dependency
