@@ -130,3 +130,7 @@ non-release 2017-12-14
 8.1.4 2019-09-27
 ----------------
   - updated happn-3 dependency
+
+9.0.0 2019-11-28
+----------------
+  - happn-3 version 11.0.0, breaking: client disconnection on token revocation
