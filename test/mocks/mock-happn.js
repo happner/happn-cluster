@@ -2,19 +2,16 @@
  * Created by grant on 2016/09/27.
  */
 
-var path = require('path');
+var MockPubsub = require("./mock-pubsub");
+var MockTransport = require("./mock-transport");
+var MockSession = require("./mock-session");
+var MockMembership = require("./mock-membership");
 
-var MockPubsub = require('./mock-pubsub');
-var MockTransport = require('./mock-transport');
-var MockSession = require('./mock-session');
-var MockMembership = require('./mock-membership');
-
-var MockHappn = function (mode, targetPort, mockDataService) {
-
+var MockHappn = function(mode, targetPort, mockDataService) {
   this.__mode = mode;
   this.__targetPort = targetPort;
 
-  this.name = 'local-happn-instance';
+  this.name = "local-happn-instance";
 
   this.services = {
     pubsub: new MockPubsub(),
@@ -23,7 +20,7 @@ var MockHappn = function (mode, targetPort, mockDataService) {
     data: mockDataService,
     proxy: {
       config: {
-        host: '0.0.0.0',
+        host: "0.0.0.0",
         port: 8015
       }
     },
@@ -32,15 +29,12 @@ var MockHappn = function (mode, targetPort, mockDataService) {
 };
 
 Object.defineProperty(MockHappn.prototype, "log", {
-  get: function () {
+  get: function() {
     return {
-      error: function (message, err) {
-        console.log(message);
-        throw(err);
+      error: function(err) {
+        throw err;
       },
-      info: function (message) {
-        console.log(message);
-      }
+      info: function() {}
     };
   }
 });
@@ -52,7 +46,7 @@ Object.defineProperty(MockHappn.prototype, "log", {
 //});
 
 Object.defineProperty(MockHappn.prototype, "config", {
-  get: function () {
+  get: function() {
     return {
       port: this.__targetPort,
       transport: {
@@ -63,11 +57,11 @@ Object.defineProperty(MockHappn.prototype, "config", {
 });
 
 Object.defineProperty(MockHappn.prototype, "server", {
-  get: function () {
+  get: function() {
     return {
-      address: function () {
+      address: function() {
         return {
-          address: '0.0.0.0',
+          address: "0.0.0.0",
           port: 9000
         };
       }

@@ -1,24 +1,22 @@
-var path = require('path');
+var path = require("path");
 var filename = path.basename(__filename);
-var expect = require('expect.js');
-var Promise = require('bluebird');
-var request = Promise.promisify(require('request'));
-var HappnClient = require('happn-3').client;
+var expect = require("expect.js");
+var Promise = require("bluebird");
+var HappnClient = require("happn-3").client;
 
-var hooks = require('../lib/hooks');
+var hooks = require("../lib/hooks");
 
-var testSequence = parseInt(filename.split('-')[0]);
+var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 1;
 var happnSecure = true;
 var proxySecure = true;
 
-describe(filename, function () {
-
+describe(filename, function() {
   this.timeout(30000);
 
-  before(function () {
+  before(function() {
     this.logLevel = process.env.LOG_LEVEL;
-    process.env.LOG_LEVEL = 'off';
+    process.env.LOG_LEVEL = "off";
   });
 
   hooks.startCluster({
@@ -30,53 +28,56 @@ describe(filename, function () {
 
   var port;
 
-  before(function () {
+  before(function() {
     var address = this.servers[0].services.proxy.__proxyServer._server.address();
     port = address.port;
   });
 
-  it('does not replicate to self in infinite loop', function (done) {
-    var client, count = 0;
+  it("does not replicate to self in infinite loop", function(done) {
+    var client,
+      count = 0;
     HappnClient.create({
       config: {
-        url: 'https://127.0.0.1:' + port,
-        username: '_ADMIN',
-        password: 'secret'
+        url: "https://127.0.0.1:" + port,
+        username: "_ADMIN",
+        password: "secret"
       }
     })
-      .then(function (_client) {
+      .then(function(_client) {
         client = _client;
       })
-      .then(function () {
-        return new Promise(function (resolve, reject) {
-          client.on('/test/path', function (data, meta) {
-            count++;
-          }, function (e) {
-            if (e) return reject(e);
-            resolve();
-          });
+      .then(function() {
+        return new Promise(function(resolve, reject) {
+          client.on(
+            "/test/path",
+            function() {
+              count++;
+            },
+            function(e) {
+              if (e) return reject(e);
+              resolve();
+            }
+          );
         });
       })
-      .then(function () {
-        return client.set('/test/path', {some: 'data'});
+      .then(function() {
+        return client.set("/test/path", { some: "data" });
       })
-      .then(function () {
+      .then(function() {
         return Promise.delay(100);
       })
-      .then(function () {
+      .then(function() {
         expect(count).to.be(1);
       })
-      .then(function () {
+      .then(function() {
         done();
       })
       .catch(done);
   });
 
-
   hooks.stopCluster();
 
-  after(function () {
+  after(function() {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
 });

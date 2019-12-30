@@ -1,12 +1,12 @@
 module.exports = MockMembership;
 
-var EventEmitter = require('events').EventEmitter;
-var util = require('util');
+var EventEmitter = require("events").EventEmitter;
+var util = require("util");
 
 function MockMembership() {
-  this.memberId = 'MEMBER_ID';
+  this.memberId = "MEMBER_ID";
   this.config = {
-    clusterName: 'cluster-name'
+    clusterName: "cluster-name"
   };
   MockMembership.instance = this;
 }

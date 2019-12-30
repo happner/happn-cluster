@@ -1,19 +1,18 @@
-var path = require('path');
+var path = require("path");
 var filename = path.basename(__filename);
-var expect = require('expect.js');
-var hooks = require('../lib/hooks');
+var expect = require("expect.js");
+var hooks = require("../lib/hooks");
 
-var testSequence = parseInt(filename.split('-')[0]);
+var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 10;
 var happnSecure = true;
 
-describe(filename, function () {
-
+describe(filename, function() {
   this.timeout(30000);
 
-  before(function () {
+  before(function() {
     this.logLevel = process.env.LOG_LEVEL;
-    process.env.LOG_LEVEL = 'off';
+    process.env.LOG_LEVEL = "off";
   });
 
   hooks.startCluster({
@@ -22,11 +21,11 @@ describe(filename, function () {
     happnSecure: happnSecure
   });
 
-  it('each server stabilised with all 10 peers', function (done) {
+  it("each server stabilised with all 10 peers", function(done) {
     var self = this;
 
     var peerCounts = [];
-    self.servers.forEach(function (server) {
+    self.servers.forEach(function(server) {
       var count = Object.keys(server.services.orchestrator.peers).length;
       peerCounts.push(count);
     });
@@ -35,11 +34,9 @@ describe(filename, function () {
     done();
   });
 
-
   hooks.stopCluster();
 
-  after(function () {
+  after(function() {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
 });

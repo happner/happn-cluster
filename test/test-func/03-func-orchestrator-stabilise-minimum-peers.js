@@ -1,24 +1,22 @@
-var path = require('path');
+var path = require("path");
 var filename = path.basename(__filename);
-var expect = require('expect.js');
-var Promise = require('bluebird');
+var expect = require("expect.js");
+var Promise = require("bluebird");
 
-var HappnCluster = require('../..');
-var Orchestrator = require('../../lib/services/orchestrator');
-var hooks = require('../lib/hooks');
-var testUtils = require('../lib/test-utils');
+var HappnCluster = require("../..");
+var Orchestrator = require("../../lib/services/orchestrator");
+var hooks = require("../lib/hooks");
+var testUtils = require("../lib/test-utils");
 
-var testSequence = parseInt(filename.split('-')[0]);
+var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 3;
-var happnSecure = false;
 
-describe(filename, function () {
-
+describe(filename, function() {
   this.timeout(30000);
 
-  before(function () {
+  before(function() {
     this.logLevel = process.env.LOG_LEVEL;
-    process.env.LOG_LEVEL = 'off';
+    process.env.LOG_LEVEL = "off";
   });
 
   // hooks.startCluster({
@@ -26,16 +24,15 @@ describe(filename, function () {
   //   happnSecure: happnSecure
   // });
 
-  before('backup functions being mocked', function () {
+  before("backup functions being mocked", function() {
     this.original__stateUpdate = Orchestrator.prototype.__stateUpdate;
   });
 
-  after('restore functions being mocked', function () {
+  after("restore functions being mocked", function() {
     Orchestrator.prototype.__stateUpdate = this.original__stateUpdate;
   });
 
-
-  it('pends the stabilise callback till after minimumPeers are fully connected', function (done) {
+  it("pends the stabilise callback till after minimumPeers are fully connected", function(done) {
     var self = this;
     var configs;
     var lastConfig;
@@ -47,13 +44,12 @@ describe(filename, function () {
     // to know when to start the last server such that we're actually testing for minimumPeers
 
     var readyNames = {};
-    Orchestrator.prototype.__stateUpdate = function () {
-
+    Orchestrator.prototype.__stateUpdate = function() {
       // call original so that nothing is out of the ordinary,
       // `this` refers to the orchestrator instance for the necessary context
       self.original__stateUpdate.call(this);
 
-      if (Object.keys(this.peers).length == clusterSize - 1) {
+      if (Object.keys(this.peers).length === clusterSize - 1) {
         // got all the peers we should have in order to trigger starting the last one
         readyNames[this.happn.name] = 1;
       }
@@ -61,81 +57,84 @@ describe(filename, function () {
 
     // set waiting interval to start last peer
 
-    interval = setInterval(function () {
-      if (Object.keys(readyNames).length != clusterSize - 1) return;
+    interval = setInterval(function() {
+      if (Object.keys(readyNames).length !== clusterSize - 1) return;
       clearInterval(interval);
 
       HappnCluster.create(lastConfig)
-        .then(function (server) {
+        .then(function(server) {
           self.servers.push(server);
         })
         .catch(done);
     }, 10);
 
-
     // start the first clusterSize - 1 peers
 
     Promise.resolve()
 
-      .then(function () {
-        return testUtils.createMemberConfigs(testSequence, clusterSize, false, false, {});
+      .then(function() {
+        return testUtils.createMemberConfigs(
+          testSequence,
+          clusterSize,
+          false,
+          false,
+          {}
+        );
       })
 
-      .then(function (_configs) {
+      .then(function(_configs) {
         configs = _configs;
         // relying on minimumPeers being configured in createMemberConfigs
-        expect(configs[0].services.orchestrator.config.minimumPeers).to.equal(clusterSize);
+        expect(configs[0].services.orchestrator.config.minimumPeers).to.equal(
+          clusterSize
+        );
         lastConfig = configs.pop();
       })
 
-      .then(function () {
-        return Promise.resolve(configs).map(function (config, sequence) {
-          if (sequence == 0) {
-            return HappnCluster.create(config)
-              .then(function (server) {
-                self.servers.push(server);
-              })
-              // can't reject the entire set on one failure,
-              // because we need to accumulate those that did start
-              // for hooks.stopCluster();
-              .catch(function (error) {
-                console.error('ERROR IN ' + filename, error);
-              });
+      .then(function() {
+        return Promise.resolve(configs).map(function(config, sequence) {
+          if (sequence === 0) {
+            return (
+              HappnCluster.create(config)
+                .then(function(server) {
+                  self.servers.push(server);
+                })
+                // can't reject the entire set on one failure,
+                // because we need to accumulate those that did start
+                // for hooks.stopCluster();
+                .catch(function() {})
+            );
           }
           return Promise.delay(500)
-            .then(function () {
+            .then(function() {
               return HappnCluster.create(config);
             })
-            .then(function (server) {
+            .then(function(server) {
               self.servers.push(server);
             })
-            .catch(function (error) {
-              console.error('ERROR IN ' + filename, error);
-            });
+            .catch(function() {});
         });
       })
 
-      .then(function () {
+      .then(function() {
         return testUtils.awaitExactMembershipCount(self.servers, clusterSize);
       })
 
-      .then(function () {
+      .then(function() {
         return testUtils.awaitExactPeerCount(self.servers, clusterSize);
       })
 
-      .then(done).catch(done)
+      .then(done)
+      .catch(done)
 
-      .finally(function () {
+      .finally(function() {
         clearInterval(interval);
       });
-
   });
-
 
   hooks.stopCluster();
 
-  after(function () {
+  after(function() {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
 });
