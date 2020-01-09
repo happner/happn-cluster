@@ -31,10 +31,9 @@ module.exports.create = function(config, callback) {
 
   var name = "remote-happn-instance";
 
-  // console.log('CONFIG', JSON.stringify(config.info, null, 2));
-
   if (config.url) {
-    name = config.url.split("//")[1].replace(/\./g, "-");
+    //eslint-disable-next-line
+    name = config.url.split('//')[1].replace(/\./g, '-').replace(/\:/g, '_');
   }
 
   lastLoginConfig = config;
