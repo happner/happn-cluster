@@ -1,8 +1,6 @@
-var ipAddress = require('../../lib/utils/get-address')();
+var ipAddress = require("../../lib/utils/get-address")();
 
-
-
-module.exports = function (seq, name) {
+module.exports = function(seq, name) {
   var config = {
     name: name,
     // announceHost: '192.168.0.101',
@@ -11,8 +9,8 @@ module.exports = function (seq, name) {
       security: {
         config: {
           adminUser: {
-            username: '_ADMIN',
-            password: 'happn'
+            username: "_ADMIN",
+            password: "happn"
           }
         }
       },
@@ -27,13 +25,13 @@ module.exports = function (seq, name) {
         config: {
           datastores: [
             {
-              name: 'mongo',
-              provider: 'happn-service-mongo-2',
+              name: "mongo",
+              provider: "happn-service-mongo-2",
               isDefault: true,
               settings: {
-                collection: 'happn-cluster',
-                database: 'happn-cluster',
-                url: 'mongodb://127.0.0.1:27017'
+                collection: "happn-cluster",
+                database: "happn-cluster",
+                url: "mongodb://127.0.0.1:27017"
               }
             }
           ]
@@ -49,10 +47,14 @@ module.exports = function (seq, name) {
       },
       membership: {
         config: {
-          join: 'static',
-          seed: seq == 0,
+          join: "static",
+          seed: seq === 0,
           port: 56000 + seq,
-          hosts: [ipAddress + ':56000' , ipAddress + ':56001', ipAddress + ':56002'],
+          hosts: [
+            ipAddress + ":56000",
+            ipAddress + ":56001",
+            ipAddress + ":56002"
+          ]
           // hosts: ['192.168.0.101' + ':56000' , '192.168.0.101' + ':56001', '192.168.0.101' + ':56002']
         }
       },

@@ -1,26 +1,25 @@
-var path = require('path');
+var path = require("path");
 var filename = path.basename(__filename);
-var expect = require('expect.js');
-var net = require('net');
+var expect = require("expect.js");
+var net = require("net");
 
-var hooks = require('../lib/hooks');
+var hooks = require("../lib/hooks");
 
-var testSequence = parseInt(filename.split('-')[0]);
+var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 1;
 var happnSecure = false;
 
-describe(filename, function () {
-
+describe(filename, function() {
   this.timeout(30000);
 
-  before(function () {
+  before(function() {
     this.logLevel = process.env.LOG_LEVEL;
-    process.env.LOG_LEVEL = 'off';
+    process.env.LOG_LEVEL = "off";
   });
 
-  before(function () {
+  before(function() {
     this.logLevel = process.env.LOG_LEVEL;
-    process.env.LOG_LEVEL = 'off';
+    process.env.LOG_LEVEL = "off";
   });
 
   hooks.startCluster({
@@ -34,45 +33,40 @@ describe(filename, function () {
     }
   });
 
-  it('deferred proxy does not start the proxy until start is called', function (done) {
-
+  it("deferred proxy does not start the proxy until start is called", function(done) {
     var _this = this;
 
     var port = this.__configs[0].services.proxy.config.port;
 
     var connection = net.connect(port);
 
-    connection.on('connect', function () {
+    connection.on("connect", function() {
       connection.destroy();
-      done(new Error('should not be listening'));
+      done(new Error("should not be listening"));
     });
 
-    connection.on('error', function (e) {
-      expect(e.code).to.be('ECONNREFUSED');
+    connection.on("error", function(e) {
+      expect(e.code).to.be("ECONNREFUSED");
 
-      _this.servers[0].services.proxy.start()
+      _this.servers[0].services.proxy
+        .start()
 
-        .then(function () {
-
+        .then(function() {
           var connection = net.connect(port);
 
-          connection.on('connect', function () {
+          connection.on("connect", function() {
             connection.destroy();
             done();
           });
-
         })
 
         .catch(done);
-
     });
-
   });
 
   hooks.stopCluster();
 
-  after(function () {
+  after(function() {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
 });

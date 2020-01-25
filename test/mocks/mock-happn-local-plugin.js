@@ -1,23 +1,18 @@
-var util = require('util');
-var EventEmitter = require('events').EventEmitter;
-var Promise = require('bluebird');
+var util = require("util");
+var EventEmitter = require("events").EventEmitter;
 
-function LocalClient(){
+function LocalClient() {
   this._local = true;
 }
 
 util.inherits(LocalClient, EventEmitter);
 
-LocalClient.prototype.write = function(message){
-  console.log('did write:>', message);
-};
+LocalClient.prototype.write = function() {};
 
 //needs to be here
-LocalClient.prototype.removeAllListeners = function(instruction){
+LocalClient.prototype.removeAllListeners = function() {};
 
-};
-
-LocalClient.prototype.__disconnect = function(event, data){
+LocalClient.prototype.__disconnect = function() {
   // var _this = this;
   //
   // _this.context.services.session.clientDisconnect(_this, function(e){
@@ -33,26 +28,22 @@ LocalClient.prototype.__disconnect = function(event, data){
   //
   //   _this.emit(event, data);
   // })
-
-  console.log('did __disconnect:>', message);
 };
 
-LocalClient.prototype.end = function(data){
-  return this.__disconnect('end', data);
+LocalClient.prototype.end = function(data) {
+  return this.__disconnect("end", data);
 };
 
-LocalClient.prototype.destroy = function(data){
-  return this.__disconnect('destroy', data);
+LocalClient.prototype.destroy = function(data) {
+  return this.__disconnect("destroy", data);
 };
 
 //events open, error, data, reconnected, reconnect timeout, reconnect scheduled
 
-function LocalClientWrapper(){
+function LocalClientWrapper() {
+  this.clientType = "eventemitter";
 
-  this.clientType = 'eventemitter';
-
-  this.__getConnection = function (callback) {
-
+  this.__getConnection = function(callback) {
     var client = new LocalClient();
 
     // Object.defineProperty(client, 'context', {value:this.context});
@@ -67,7 +58,6 @@ function LocalClientWrapper(){
 
     return callback(null, client);
   };
-
 }
 
 module.exports = new LocalClientWrapper();
