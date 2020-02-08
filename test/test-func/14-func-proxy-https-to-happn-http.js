@@ -31,7 +31,7 @@ describe(filename, function () {
   var port;
 
   before(function () {
-    var address = this.servers[0].services.proxy.__proxyServer._server.address();
+    var address = this.servers[0].services.proxy.__httpServer.address();
     port = address.port;
   });
 

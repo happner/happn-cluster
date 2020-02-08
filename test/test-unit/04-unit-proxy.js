@@ -72,7 +72,7 @@ describe(filename, function () {
 
       proxy.start()
         .then(function () {
-          var address = proxy.__proxyServer._server.address();
+          var address = proxy.__httpServer.address();
           expect(address.port).to.equal(8015);
           expect(address.address).to.equal('127.0.0.1');
           proxy.stop(done);
@@ -106,14 +106,11 @@ describe(filename, function () {
 
 
   it('can proxy an http server', function (done) {
-
     var proxy = new Proxy(mockOpts);
 
     var http = require('http');
-
     var proxyHost = proxy.happn.services.proxy.config.host;
     var proxyPort = proxy.happn.services.proxy.config.port;
-    var targetHost = proxy.happn.server.address().host;
     var targetPort = proxy.happn.config.port;
 
     var EXPECTED = 'request successfully proxied!';
@@ -129,13 +126,11 @@ describe(filename, function () {
     // console.log('Target port: ' + targetPort);
     proxiedServer.listen(targetPort);
 
-
-    proxy.initialize(this.__config, function (err, result) {
+    proxy.initialize(this.__config, function (err) {
       if (err) return done(err);
 
       proxy.start()
         .then(function () {
-
           // send GET request to proxy - this should pass the request to the target
           http.request({port: proxyPort, host: proxyHost}, function (res) {
 
@@ -149,6 +144,8 @@ describe(filename, function () {
               // console.log(result);
               assert.equal(result, EXPECTED);
 
+              proxiedServer.close();
+
               proxy.stop(function (err) {
                 if (err)
                   return done(err);
@@ -156,9 +153,7 @@ describe(filename, function () {
                 return done();
               });
             });
-
-          })
-            .end();
+          }).end();
         })
         .catch(function (err) {
           return done(err);
@@ -169,5 +164,4 @@ describe(filename, function () {
   after(function () {
     process.env.LOG_LEVEL = this.logLevel;
   });
-
 });

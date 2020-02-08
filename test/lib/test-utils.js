@@ -12,20 +12,28 @@ var Mongo = require('./mongo');
 var mongoUrl = 'mongodb://127.0.0.1:27017';
 var mongoCollection = 'happn-cluster-test';
 
+module.exports.delay = require('await-delay');
+const why = require('why-is-node-running');
+
 module.exports.clearMongoCollection = function (callback, mongoCollectionArg, mongoUrlArg) {
   Mongo.clearCollection(mongoUrlArg || mongoUrl, mongoCollectionArg || mongoCollection, callback);
 };
 
-module.exports.createMemberConfigs = Promise.promisify(function (testSequence, clusterSize, happnSecure, proxySecure, services, callback) {
+module.exports.createMemberConfigs = Promise.promisify(function (testSequence, clusterSize, happnSecure, proxySecure, services, proxyRateLimit, callback) {
 
   var ipAddress = getAddress();
-  var fs = require('fs');
   var transport = null;
-  var certPath, keyPath;
 
   var happnPortBase = (testSequence * 200) + 1025;
   var swimPortBase = happnPortBase + (clusterSize * 2);
   var proxyPortBase = swimPortBase + (clusterSize * 2);
+
+
+  if (typeof proxyRateLimit == 'function') {
+    callback = proxyRateLimit;
+    proxyRateLimit = null;
+  }
+
 
   if (happnSecure) {
     transport = {
@@ -55,13 +63,6 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
       port: happnPortBase + i,
       transport: transport,
       services: {
-        // data: {
-        //   path: 'happn-service-mongo-2',
-        //   config: {
-        //     collection: mongoCollection,
-        //     url: mongoUrl
-        //   }
-        // }
         data: {
           config: {
             datastores: [
@@ -106,7 +107,8 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
           config: {
             host: '0.0.0.0',
             port: proxyPortBase + i,
-            allowSelfSignedCerts: true
+            allowSelfSignedCerts: true,
+            rateLimit:proxyRateLimit
           }
         }
       }
@@ -130,9 +132,6 @@ module.exports.createMemberConfigs = Promise.promisify(function (testSequence, c
     }
 
     ammendConfig(config);
-
-    // console.log(JSON.stringify(config, null, 2));
-
     configs.push(config);
   }
 
@@ -197,6 +196,11 @@ module.exports.awaitExactPeerCount = Promise.promisify(function (servers, count,
   }, 100);
 
 });
+
+module.exports.whyIsNodeRunning = async (delayBeforePrint) => {
+  await this.delay(delayBeforePrint);
+  why();
+};
 
 module.exports.createClientInstance = function (host, port, callback) {
 

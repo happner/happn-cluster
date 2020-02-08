@@ -45,3 +45,5 @@ test/reports
 *.csv
 sample*
 test/tmp
+
+.jshintrc

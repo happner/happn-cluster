@@ -2,7 +2,6 @@ var path = require('path');
 var filename = path.basename(__filename);
 var expect = require('expect.js');
 var Promise = require('bluebird');
-var HappnCluster = require('../../');
 var testUtils = require('../lib/test-utils');
 
 describe(filename, function () {
@@ -42,12 +41,7 @@ describe(filename, function () {
         startedProcess.stdout.on('data', function(data){
           console.log(memberName + ' out: ', data.toString());
         });
-
-        //console.log('forked: ' + forkPath + ' ' + processParams);
-
         startedProcess.on('message', function(message){
-
-          //console.log('MESSAGE:::', JSON.stringify(message, null, 2), memberName);
           if (this.memberName == 'seedNode') return messages[this.memberName].push(message);
           if (message.operation == 'update') messages[this.memberName].push(message);
         }.bind({memberName:memberName}));
@@ -75,7 +69,7 @@ describe(filename, function () {
       done();
     })
     .catch(function(e){
-      done();
+      done(e);
     });
   });
 
