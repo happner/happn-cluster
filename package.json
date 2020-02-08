@@ -32,6 +32,7 @@
   "homepage": "https://github.com/happner/happn-cluster#readme",
   "devDependencies": {
     "async": "^2.1.4",
+    "await-delay": "^1.0.0",
     "coveralls": "^2.11.13",
     "expect.js": "^0.3.1",
     "gulp": "^4.0.0",
@@ -43,10 +44,10 @@
     "jshint": "^2.9.5",
     "mocha": "^3.5.0",
     "mongodb": "^2.2.10",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "why-is-node-running": "^2.1.0"
   },
   "dependencies": {
-    "await-delay": "^1.0.0",
     "bluebird": "3.4.6",
     "clone": "1.0.2",
     "dface": "1.0.1",
@@ -54,7 +55,6 @@
     "happn-stats": "^1.0.6",
     "happn-swim": "^1.0.3",
     "http-proxy": "1.15.2",
-    "sillyname": "0.1.0",
-    "why-is-node-running": "^2.1.0"
+    "sillyname": "0.1.0"
   }
 }

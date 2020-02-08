@@ -6,6 +6,7 @@ services:
 branches:
   only:
     - master
+    - master-8
 
 node_js:
   - "10"
