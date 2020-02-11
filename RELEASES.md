@@ -126,3 +126,8 @@ non-release 2017-12-14
 8.1.3 2019-08-21
 ----------------
   - issue with stable timeout not being cleared on stop
+
+8.1.4 2020-02-11
+----------------
+  - fix: update to proxy to handle socket error (so server doesnt fall over)
+  - test: added stress tests
