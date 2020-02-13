@@ -1,5 +1,10 @@
 
-# open four terminal windows
+# open five terminal windows
+
+# start nginx if you haven started it, here is [how to install it](https://medium.com/@ThomasTan/installing-nginx-in-mac-os-x-maverick-with-homebrew-d8867b7e8a5a);
+```
+sudo nginx
+```
 
 # run seed in one, allow 300 connections per 20 seconds
 ```
