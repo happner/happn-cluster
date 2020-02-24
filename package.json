@@ -1,6 +1,6 @@
 {
   "name": "happn-cluster",
-  "version": "9.0.1",
+  "version": "9.0.2",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
@@ -50,7 +50,7 @@
     "bluebird": "3.4.6",
     "clone": "1.0.2",
     "dface": "1.0.1",
-    "happn-3": "^11.0.0",
+    "happn-3": "^11.2.0",
     "happn-stats": "^1.0.6",
     "happn-swim": "^1.0.3",
     "http-proxy": "1.15.2",

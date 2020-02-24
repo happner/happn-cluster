@@ -134,3 +134,11 @@ non-release 2017-12-14
 9.0.0 2019-11-28
 ----------------
   - happn-3 version 11.0.0, breaking: client disconnection on token revocation
+
+9.0.1 2019-01-25
+----------------
+  - linting
+
+9.0.2 2020-02-24
+----------------
+  - happn-3 version 11.2.0, zombie socket cleanup
