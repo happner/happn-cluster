@@ -142,3 +142,8 @@ non-release 2017-12-14
 9.0.2 2020-02-24
 ----------------
   - happn-3 version 11.2.0, zombie socket cleanup
+
+9.0.3 2020-02-24
+----------------
+  - fix: member client will not double disconnect if server is stopped more than once
+  - cleanup - removed dead code and comment from orchestrator
