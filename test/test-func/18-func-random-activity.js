@@ -6,7 +6,7 @@ var hooks = require("../lib/hooks");
 var MultiRandomActivity = require("../lib/multi-random-activity");
 
 var testSequence = parseInt(filename.split("-")[0]);
-var clusterSize = 10;
+var clusterSize = 3;
 var happnSecure = false;
 var proxySecure = false;
 var duration = 2000;
