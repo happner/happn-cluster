@@ -147,3 +147,10 @@ non-release 2017-12-14
 ----------------
   - fix: member client will not double disconnect if server is stopped more than once
   - cleanup - removed dead code and comment from orchestrator
+
+9.0.4 2020-06-24
+----------------
+  - dep: bumped happn-3 version 11.5.2
+  - dep: changed sillyname dependency to happn-sillyname
+
+
