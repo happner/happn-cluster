@@ -51,7 +51,7 @@
     "bluebird": "^3.5.0",
     "clone": "^1.0.2",
     "dface": "1.0.1",
-    "happn-3": "^11.5.2",
+    "happn-3": "^11.5.3",
     "happn-stats": "^1.0.6",
     "happn-swim": "^1.0.3",
     "http-proxy": "1.15.2",
