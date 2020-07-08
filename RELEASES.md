@@ -153,4 +153,6 @@ non-release 2017-12-14
   - dep: bumped happn-3 version 11.5.2
   - dep: changed sillyname dependency to happn-sillyname
 
-
+9.0.5 2020-07-07
+----------------
+  - Added ability to set NETWORK_INTERFACE for utils/get-address

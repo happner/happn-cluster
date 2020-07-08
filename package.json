@@ -1,6 +1,6 @@
 {
   "name": "happn-cluster",
-  "version": "9.0.4",
+  "version": "9.0.5",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
@@ -39,6 +39,7 @@
     "happn-random-activity-generator": "0.2.1",
     "happn-service-mongo-2": "^2.0.0",
     "happner-serial-mocha": "1.3.0",
+    "ip": "^1.1.5",
     "jshint": "^2.9.5",
     "mocha": "^3.5.0",
     "mongodb": "^2.2.10",
@@ -50,7 +51,7 @@
     "bluebird": "^3.5.0",
     "clone": "^1.0.2",
     "dface": "1.0.1",
-    "happn-3": "^11.5.2",
+    "happn-3": "^11.5.3",
     "happn-stats": "^1.0.6",
     "happn-swim": "^1.0.3",
     "http-proxy": "1.15.2",
