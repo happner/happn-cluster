@@ -861,6 +861,33 @@ describe(filename, function() {
           })
           .catch(done);
       });
+
+      it("Removes a member from Peers and Members on Disconnect.", done => {
+        MockMembership.instance.emit("add", {
+          memberId: "10.0.0.1:56001",
+          url: "http://10.0.0.1:55001"
+        });
+
+        MockSession.instance.emit("authentic", {
+          info: {
+            name: "10-0-0-1_55001",
+            clusterName: "cluster-name",
+            memberId: "10.0.0.1:56001",
+            url: "http://10.0.0.1:55001"
+          }
+        });
+        MockSession.instance.emit("disconnect", {
+          info: {
+            name: "10-0-0-1_55001",
+            clusterName: "cluster-name",
+            memberId: "10.0.0.1:56001",
+            url: "http://10.0.0.1:55001"
+          }
+        });
+        expect(o.peers["10-0-0-1_55001"]).to.be.undefined
+        expect(o.members["10-0-0-1_55001"]).to.be.undefined
+        done()
+      });
     });
   });
 
