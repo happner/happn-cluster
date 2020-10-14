@@ -884,9 +884,9 @@ describe(filename, function() {
             url: "http://10.0.0.1:55001"
           }
         });
-        expect(o.peers["10-0-0-1_55001"]).to.be.undefined
-        expect(o.members["10-0-0-1_55001"]).to.be.undefined
-        done()
+        expect(o.peers["10-0-0-1_55001"]).to.be.undefined;
+        expect(o.members["10-0-0-1_55001"]).to.be.undefined;
+        done();
       });
     });
   });
