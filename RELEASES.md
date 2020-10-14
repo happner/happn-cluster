@@ -156,3 +156,7 @@ non-release 2017-12-14
 9.0.5 2020-07-07
 ----------------
   - Added ability to set NETWORK_INTERFACE for utils/get-address
+
+9.0.6 2020-10-04
+----------------
+  - happn-3 patch: selective security cache clearing and concurrency 1 queue on dataChanged event - SMC-1189
