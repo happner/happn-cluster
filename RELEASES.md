@@ -160,3 +160,4 @@ non-release 2017-12-14
 9.0.6 2020-10-04
 ----------------
   - happn-3 patch: selective security cache clearing and concurrency 1 queue on dataChanged event - SMC-1189
+  - patch: SMC-1252 - cluster member restarts cause leak of peer admin
