@@ -45,3 +45,4 @@ test/reports
 *.csv
 sample*
 test/tmp
+.vscode
