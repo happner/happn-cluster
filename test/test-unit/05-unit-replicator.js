@@ -69,7 +69,7 @@ describe(filename, function() {
         expect(replicator.unbatchSecurityUpdate(batch)).to.eql([
           {
             additionalInfo: undefined,
-            whatHappened: "link-group",
+            whatHappnd: "link-group",
             changedData: {
               _meta: {
                 path: "/test/group1"
@@ -78,7 +78,7 @@ describe(filename, function() {
           },
           {
             additionalInfo: undefined,
-            whatHappened: "unlink-group",
+            whatHappnd: "unlink-group",
             changedData: {
               path: "/test/group1"
             }
@@ -90,13 +90,13 @@ describe(filename, function() {
       replicator.send(
         "/security/dataChanged",
         {
-          whatHappened: SD_EVENTS.UNLINK_GROUP,
+          whatHappnd: SD_EVENTS.UNLINK_GROUP,
           changedData: { path: "/test/group1" }
         },
         () => {
           expect(replicator.securityChangeset).to.eql([
             {
-              whatHappened: "unlink-group",
+              whatHappnd: "unlink-group",
               changedData: { path: "/test/group1" }
             }
           ]);
@@ -104,17 +104,17 @@ describe(filename, function() {
           replicator.send(
             "/security/dataChanged",
             {
-              whatHappened: SD_EVENTS.UNLINK_GROUP,
+              whatHappnd: SD_EVENTS.UNLINK_GROUP,
               changedData: { path: "/test/group1" }
             },
             () => {
               expect(replicator.securityChangeset).to.eql([
                 {
-                  whatHappened: "unlink-group",
+                  whatHappnd: "unlink-group",
                   changedData: { path: "/test/group1" }
                 },
                 {
-                  whatHappened: "unlink-group",
+                  whatHappnd: "unlink-group",
                   changedData: { path: "/test/group1" }
                 }
               ]);
@@ -122,21 +122,21 @@ describe(filename, function() {
               replicator.send(
                 "/security/dataChanged",
                 {
-                  whatHappened: SD_EVENTS.LINK_GROUP,
+                  whatHappnd: SD_EVENTS.LINK_GROUP,
                   changedData: { _meta: { path: "/test/group1" } }
                 },
                 () => {
                   expect(replicator.securityChangeset).to.eql([
                     {
-                      whatHappened: "unlink-group",
+                      whatHappnd: "unlink-group",
                       changedData: { path: "/test/group1" }
                     },
                     {
-                      whatHappened: "unlink-group",
+                      whatHappnd: "unlink-group",
                       changedData: { path: "/test/group1" }
                     },
                     {
-                      whatHappened: "link-group",
+                      whatHappnd: "link-group",
                       changedData: { _meta: { path: "/test/group1" } }
                     }
                   ]);
@@ -194,7 +194,7 @@ describe(filename, function() {
           expect(replicator.unbatchSecurityUpdate(batch)).to.eql([
             {
               additionalInfo: undefined,
-              whatHappened: "link-group",
+              whatHappnd: "link-group",
               changedData: {
                 _meta: {
                   path: "/test/group1"
@@ -203,7 +203,7 @@ describe(filename, function() {
             },
             {
               additionalInfo: undefined,
-              whatHappened: "unlink-group",
+              whatHappnd: "unlink-group",
               changedData: {
                 path: "/test/group1"
               }
@@ -215,13 +215,13 @@ describe(filename, function() {
         replicator.send(
           "/security/dataChanged",
           {
-            whatHappened: SD_EVENTS.UNLINK_GROUP,
+            whatHappnd: SD_EVENTS.UNLINK_GROUP,
             changedData: { path: "/test/group1" }
           },
           () => {
             expect(replicator.securityChangeset).to.eql([
               {
-                whatHappened: "unlink-group",
+                whatHappnd: "unlink-group",
                 changedData: { path: "/test/group1" }
               }
             ]);
@@ -229,17 +229,17 @@ describe(filename, function() {
             replicator.send(
               "/security/dataChanged",
               {
-                whatHappened: SD_EVENTS.UNLINK_GROUP,
+                whatHappnd: SD_EVENTS.UNLINK_GROUP,
                 changedData: { path: "/test/group1" }
               },
               () => {
                 expect(replicator.securityChangeset).to.eql([
                   {
-                    whatHappened: "unlink-group",
+                    whatHappnd: "unlink-group",
                     changedData: { path: "/test/group1" }
                   },
                   {
-                    whatHappened: "unlink-group",
+                    whatHappnd: "unlink-group",
                     changedData: { path: "/test/group1" }
                   }
                 ]);
@@ -247,21 +247,21 @@ describe(filename, function() {
                 replicator.send(
                   "/security/dataChanged",
                   {
-                    whatHappened: SD_EVENTS.LINK_GROUP,
+                    whatHappnd: SD_EVENTS.LINK_GROUP,
                     changedData: { _meta: { path: "/test/group1" } }
                   },
                   () => {
                     expect(replicator.securityChangeset).to.eql([
                       {
-                        whatHappened: "unlink-group",
+                        whatHappnd: "unlink-group",
                         changedData: { path: "/test/group1" }
                       },
                       {
-                        whatHappened: "unlink-group",
+                        whatHappnd: "unlink-group",
                         changedData: { path: "/test/group1" }
                       },
                       {
-                        whatHappened: "link-group",
+                        whatHappnd: "link-group",
                         changedData: { _meta: { path: "/test/group1" } }
                       }
                     ]);
@@ -304,7 +304,7 @@ describe(filename, function() {
           topic: "/security/dataChanged",
           payload: {
             additionalInfo: undefined,
-            whatHappened: "link-group",
+            whatHappnd: "link-group",
             changedData: {
               _meta: {
                 path: "/test/group1"
@@ -318,7 +318,7 @@ describe(filename, function() {
           topic: "/security/dataChanged",
           payload: {
             additionalInfo: undefined,
-            whatHappened: "unlink-group",
+            whatHappnd: "unlink-group",
             changedData: {
               path: "/test/group1"
             }
