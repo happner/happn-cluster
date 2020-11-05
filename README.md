@@ -111,7 +111,7 @@ var defaultConfig = {
         //batched and pushed out to the cluster, every 3000ms - you can change this to make
         //the pushes happen less or more often, the batches are also de-duplicated by 
         //whatHappend (link-group, unlink-group etc) and the user or group name in question.
-        securityChangesetReplicateInterval: 3000 // 10 per second
+        securityChangesetReplicateInterval: 3000 //once every 3 seconds
       }
     }
   }
