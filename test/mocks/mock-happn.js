@@ -6,6 +6,8 @@ var MockPubsub = require("./mock-pubsub");
 var MockTransport = require("./mock-transport");
 var MockSession = require("./mock-session");
 var MockMembership = require("./mock-membership");
+const mockOpts = require("../mocks/mock-opts");
+var MockOrchestrator = require("./mock-orchestrator");
 
 var MockHappn = function(mode, targetPort, mockDataService) {
   this.__mode = mode;
@@ -17,6 +19,7 @@ var MockHappn = function(mode, targetPort, mockDataService) {
     pubsub: new MockPubsub(),
     transport: new MockTransport(),
     session: new MockSession(),
+    orchestrator: new MockOrchestrator(mockOpts),
     data: mockDataService,
     proxy: {
       config: {
