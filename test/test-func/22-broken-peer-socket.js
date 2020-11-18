@@ -1,6 +1,6 @@
 var path = require("path");
 var filename = path.basename(__filename);
-var HappnCluster = require("../../");
+// var HappnCluster = require("../../");
 
 var hooks = require("../lib/hooks");
 var testSequence = parseInt(filename.split("-")[0]);

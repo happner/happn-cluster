@@ -1065,7 +1065,6 @@ describe(filename, function() {
           memberId: "id",
           url: "http://10.0.0.1:55001"
         }
-        
       };
       o.checkMembersAndLogClusterHealth();
     });
