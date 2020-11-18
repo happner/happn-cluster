@@ -12,7 +12,7 @@ var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 3;
 
 describe(filename, function() {
-  this.timeout(30000);
+  this.timeout(35000);
 
   before(function() {
     this.logLevel = process.env.LOG_LEVEL;
