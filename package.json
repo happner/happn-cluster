@@ -1,6 +1,6 @@
 {
   "name": "happn-cluster",
-  "version": "10.0.0",
+  "version": "10.1.0",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
@@ -32,6 +32,7 @@
   "homepage": "https://github.com/happner/happn-cluster#readme",
   "devDependencies": {
     "async": "^2.1.4",
+    "capture-stdout": "^1.0.0",
     "coveralls": "^2.11.13",
     "eslint": "^6.5.1",
     "eslint-plugin-prettier": "^3.1.2",
@@ -51,7 +52,7 @@
     "bluebird": "^3.5.0",
     "clone": "^1.0.2",
     "dface": "1.0.1",
-    "happn-3": "^11.7.3",
+    "happn-3": "^11.8.1",
     "happn-stats": "^1.0.6",
     "happn-swim": "^1.0.3",
     "http-proxy": "1.15.2",

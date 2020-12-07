@@ -165,3 +165,10 @@ non-release 2017-12-14
 10.0.0 2020-11-04
 -----------------
   - happn-cluster upgrade - SMC-1356 - batching of security updates
+
+10.1.0 2020-11-04
+-----------------
+  - SMC-1285 - periodic health state logging
+  - SMC-1284 - re-establishment of cluster member on socket failure
+
+  
