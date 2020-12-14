@@ -8,10 +8,10 @@ branches:
     - master
 
 node_js:
-  - "10"
   - "11"
   - "12"
-
+  - "14"
+  - "15"
 script:
   - npm run-script lint
   - npm run-script test-cover
