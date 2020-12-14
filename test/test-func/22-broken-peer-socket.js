@@ -30,6 +30,7 @@ describe(filename, function() {
     let orchestrator = this.servers[0].services.orchestrator;
     let memberClient = getMemberClientNotSelf(orchestrator);
     memberClient.set("test/big/message", getBigMessage(), e => {
+      // eslint-disable-next-line no-console
       console.log(e);
     });
     setTimeout(() => {

@@ -1,16 +1,8 @@
-var path = require("path");
-var filename = path.basename(__filename);
-var expect = require("expect.js");
-var Promise = require("bluebird");
-
-var Health = require("../../lib/services/health");
-var MockOrchestrator = require("../mocks/mock-orchestrator");
-var MockHappn = require("../mocks/mock-happn");
-var MockHappnClient = require("../mocks/mock-happn-client");
-var MockSession = require("../mocks/mock-session");
-var MockMembership = require("../mocks/mock-membership");
-var mockOpts = require("../mocks/mock-opts");
-var address = require("../../lib/utils/get-address")();
+const path = require("path");
+const filename = path.basename(__filename);
+const expect = require("expect.js");
+const Health = require("../../lib/services/health");
+const mockOpts = require("../mocks/mock-opts");
 
 describe(filename, function() {
   before(function() {
@@ -19,12 +11,12 @@ describe(filename, function() {
   });
 
   context("initialise", function() {
-    it("initializes, starts and stops the health service", function(done) {
+    it("initializes and stops the health service", function(done) {
       const health = new Health(mockOpts);
+      health.reportClusterHealth = () => {};
       health.initialize({}, e => {
         if (e) return done(e);
-        health.start(e => {
-          if (e) return done(e);
+        health.start({}).then(() => {
           health.stop(null, done);
         });
       });
@@ -56,7 +48,7 @@ describe(filename, function() {
           },
           members: {}
         })
-      ).to.eql([testPeer]);
+      ).to.eql(["testMember"]);
 
       expect(
         health.findMissingClusterMembers({
@@ -83,7 +75,7 @@ describe(filename, function() {
           testMember
         }
       })
-    ).to.eql([testMember]);
+    ).to.eql(["testPeer"]);
 
     expect(
       health.findMissingSwimMembers({

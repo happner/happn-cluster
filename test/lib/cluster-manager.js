@@ -22,6 +22,9 @@ module.exports = class ClusterManager {
       });
     });
   }
+  async setLogLevelOnSeed(level) {
+    this.servers[0].services.health.log.setLevel(level || "off");
+  }
   async addSeed() {
     return await this.addMember(true);
   }
@@ -32,14 +35,25 @@ module.exports = class ClusterManager {
     });
     await delay(3000);
     this.memberCount++;
+    return this.memberCount - 1;
   }
   async stopCluster() {
     for (let i = this.memberCount; i >= 0; i--) {
       if (this.servers[i]) await this.servers[i].stop({ reconnect: false });
     }
   }
-  disconnectSWIM() {}
-  disconnectMember() {}
+  disconnectPeer(memberId) {
+    delete this.servers[0].services.orchestrator.peers[
+      `${getAddress().replace(/\./g, "-")}_${55000 + memberId}`
+    ];
+    this.servers[0].services.health.reportClusterHealth();
+  }
+  disconnectMember(memberId) {
+    delete this.servers[0].services.orchestrator.members[
+      `${getAddress()}:${56000 + memberId}`
+    ];
+    this.servers[0].services.health.reportClusterHealth();
+  }
 
   createConfig(seed) {
     const host = getAddress();
@@ -81,7 +95,7 @@ module.exports = class ClusterManager {
             host,
             port: 56000 + this.memberCount,
             hosts: seed
-              ? [`${host}:56001`]
+              ? [`${host}:56001`, `${host}:56003`]
               : [...Array(this.memberCount).keys()].map(arrIndex => {
                   return `${host}:5600${arrIndex}`;
                 }),
