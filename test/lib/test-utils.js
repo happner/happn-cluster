@@ -52,6 +52,10 @@ module.exports.createMemberConfigs = Promise.promisify(function(
     Object.keys(services).forEach(function(serviceName) {
       var ammendDefaultService = services[serviceName];
       Object.keys(ammendDefaultService).forEach(function(keyName) {
+        if (!config.services[serviceName])
+          config.services[serviceName] = {
+            config: {}
+          };
         config.services[serviceName].config[keyName] =
           ammendDefaultService[keyName];
       });

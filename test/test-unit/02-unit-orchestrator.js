@@ -890,7 +890,6 @@ describe(filename, function() {
       });
     });
   });
-
   after(function() {
     process.env.LOG_LEVEL = this.logLevel;
   });
