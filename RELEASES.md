@@ -171,4 +171,6 @@ non-release 2017-12-14
   - SMC-1285 - periodic health state logging
   - SMC-1284 - re-establishment of cluster member on socket failure
 
-  
+10.1.1 2021-03-31
+-----------------
+  - SMC-1808 - user permissions dependencies updated
