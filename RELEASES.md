@@ -174,3 +174,7 @@ non-release 2017-12-14
 10.1.1 2021-03-31
 -----------------
   - SMC-1808 - user permissions dependencies updated
+
+10.2.0 2020-07-20
+-----------------
+  - SMC-1810 - nested permissions for set and on
