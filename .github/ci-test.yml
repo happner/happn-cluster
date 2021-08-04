@@ -25,5 +25,7 @@ jobs:
         mongodb-version: ${{ matrix.mongodb-version }}
 
     - run: npm install
+
     - run: npm run-script test-cover
+    
     - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
