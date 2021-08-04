@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [16.x]
         mongodb-version: ['4.4']
 
     steps:
@@ -28,4 +28,7 @@ jobs:
 
     - run: npm run-script test-cover
     
-    - run: npm run-script report-coverage
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
