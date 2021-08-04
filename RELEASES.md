@@ -182,3 +182,4 @@ non-release 2017-12-14
 10.3.0 2021-08-04
 -----------------
   - SMC-3611 - getAddress now a closure with logger passed in, also allows nic id and address index to be defined - will resolve to an address with a warning if nic or address index does not match an existing item
+  - SMC-3646 - set up coveralls and github actions
