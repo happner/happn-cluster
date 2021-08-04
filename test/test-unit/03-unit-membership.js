@@ -6,7 +6,7 @@ var Membership = require("../../lib/services/membership");
 var MockSwim = require("../mocks/mock-swim");
 var MockHappn = require("../mocks/mock-happn");
 var mockOpts = require("../mocks/mock-opts");
-var address = require("../../lib/utils/get-address")();
+var address = require("../../lib/utils/get-address")()();
 
 describe(filename, function() {
   before(function() {

@@ -44,19 +44,19 @@ module.exports = class ClusterManager {
   }
   disconnectPeer(memberId) {
     delete this.servers[0].services.orchestrator.peers[
-      `${getAddress().replace(/\./g, "-")}_${55000 + memberId}`
+      `${getAddress()().replace(/\./g, "-")}_${55000 + memberId}`
     ];
     this.servers[0].services.health.reportClusterHealth();
   }
   disconnectMember(memberId) {
     delete this.servers[0].services.orchestrator.members[
-      `${getAddress()}:${56000 + memberId}`
+      `${getAddress()()}:${56000 + memberId}`
     ];
     this.servers[0].services.health.reportClusterHealth();
   }
 
   createConfig(seed) {
-    const host = getAddress();
+    const host = getAddress()();
     const config = {
       port: 55000 + this.memberCount,
       transport: {

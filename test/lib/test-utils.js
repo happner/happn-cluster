@@ -30,7 +30,7 @@ module.exports.createMemberConfigs = Promise.promisify(function(
   services,
   callback
 ) {
-  var ipAddress = getAddress();
+  var ipAddress = getAddress()();
   var transport = null;
 
   var happnPortBase = testSequence * 200 + 1025;
