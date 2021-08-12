@@ -1,12 +1,12 @@
 {
   "name": "happn-cluster",
-  "version": "10.2.0",
+  "version": "10.3.0",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && LOG_LEVEL=warn mocha test/test-func test/test-unit",
     "unit": "mocha test/test-unit",
-    "test-cover": "LOG_LEVEL=warn nyc _mocha -- test/test-func test/test-unit",
+    "test-cover": "LOG_LEVEL=warn nyc --reporter=lcov --reporter=text-summary _mocha -- test/test-func test/test-unit",
     "release": "rm -rf node_modules && rm -f package-lock.json && npm install && npm run test-cover",
     "lint": "eslint '**/*.js'",
     "lint-fix": "eslint '**/*.js' --fix"

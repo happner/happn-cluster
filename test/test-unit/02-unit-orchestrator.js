@@ -9,7 +9,7 @@ var MockHappnClient = require("../mocks/mock-happn-client");
 var MockSession = require("../mocks/mock-session");
 var MockMembership = require("../mocks/mock-membership");
 var mockOpts = require("../mocks/mock-opts");
-var address = require("../../lib/utils/get-address")();
+var address = require("../../lib/utils/get-address")()();
 
 describe(filename, function() {
   before(function() {
