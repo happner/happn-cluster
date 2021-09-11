@@ -187,3 +187,7 @@ non-release 2017-12-14
 10.3.1 2021-08-27
 ------------------
 - SMC-3242: happn-3 update fixed onBehalfOf and nested permissions issue
+
+10.3.2 2021-09-11
+------------------
+- SMC-4044 - cookie events not dependent on client login
