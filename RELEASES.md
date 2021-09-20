@@ -191,3 +191,7 @@ non-release 2017-12-14
 10.3.2 2021-09-11
 ------------------
 - SMC-4044 - cookie events not dependent on client login
+
+10.3.3 2021-09-20
+------------------
+- SMC-4146 - happn-3 upgrade 11.13.4
