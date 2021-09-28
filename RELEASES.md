@@ -195,3 +195,9 @@ non-release 2017-12-14
 10.3.3 2021-09-20
 ------------------
 - SMC-4146 - happn-3 upgrade 11.13.4
+
+10.3.4 2021-09-28
+-----------------
+  - happn-3 upgrades:
+  - fix: SMC-4209 - concurrency issue, user created logged on deleted, causes security directory update to fatal
+  - fix: SMC-4208 - merge insert now uses upsert, moved constants out of data service
