@@ -201,3 +201,8 @@ non-release 2017-12-14
   - happn-3 upgrades:
   - fix: SMC-4209 - concurrency issue, user created logged on deleted, causes security directory update to fatal
   - fix: SMC-4208 - merge insert now uses upsert, moved constants out of data service
+
+11.0.0 2021-10-07
+-----------------
+  - SMC-3823: mongo version 4 driver,
+  - SMC-4309: removed persistMembers functionality

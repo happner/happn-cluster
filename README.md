@@ -100,9 +100,7 @@ var defaultConfig = {
         udp: {
           maxDgramSize: 512
         }
-        disseminationFactor: 15,
-        persistMembers:false //if you want to remember members updated by swim and
-                             //concatenate them to the hosts on startup
+        disseminationFactor: 15
       }
     },
     replicator: {
@@ -284,11 +282,6 @@ the hosts in the list is online at all times. They can be upgraded one at a time
 
 In the event of all nodes in the **config.hosts** going down simultaneously the remaining nodes in the
 cluster will be orphaned and require a restart.
-
-#### config.persistMembers
-
-if you want to remember members updated by swim and concatenate them to the hosts on startup.
-This is useful if your seed node(s) don't know about your additional cluster nodes via the hosts config setting (above). This will use happn to persist all members that are updated via SWIM, and will concatenate them to the hosts config on startup so the cluster does not split.
 
 #### config.joinTimeout
 
