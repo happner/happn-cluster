@@ -206,3 +206,7 @@ non-release 2017-12-14
 -----------------
   - SMC-3823: mongo version 4 driver,
   - SMC-4309: removed persistMembers functionality
+
+11.0.1 2021-11-11
+-----------------
+  - fix: SMC-4512 - happn-3 upgrade, db error causes fatal
