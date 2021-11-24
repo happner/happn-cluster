@@ -210,3 +210,9 @@ non-release 2017-12-14
 11.0.1 2021-11-11
 -----------------
   - fix: SMC-4512 - happn-3 upgrade, db error causes fatal
+
+11.1.0 2021-11-24
+-----------------
+  - happn-3 upgrade:
+  - feature: SMC-2954 - Allows for configuration and use of multiple authentication providers.
+  - fix: SMC-4386 -  upsertMultiplePermissions will now allow for removing permissions/prohibitions as well as upserting permissions or prohibitions
