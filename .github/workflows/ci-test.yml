@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x,14.x,16.x]
+        node-version: [14.x,16.x]
         mongodb-version: ['4.4']
 
     steps:
@@ -26,6 +26,7 @@ jobs:
 
     - run: npm install
 
+    - run: npm run-script lint
     - run: npm run-script test-cover
     
     - name: Coveralls

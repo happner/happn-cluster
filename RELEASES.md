@@ -216,3 +216,7 @@ non-release 2017-12-14
   - happn-3 upgrade:
   - feature: SMC-2954 - Allows for configuration and use of multiple authentication providers.
   - fix: SMC-4386 -  upsertMultiplePermissions will now allow for removing permissions/prohibitions as well as upserting permissions or prohibitions
+
+11.2.0 2021-12-02
+-----------------
+  - SMC-734: removed bitcore-lib and encrypted payloads
