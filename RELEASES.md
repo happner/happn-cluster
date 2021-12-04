@@ -223,5 +223,5 @@ non-release 2017-12-14
 
 11.2.1 2021-12-04
 -----------------
-  - SMC-734: removed bitcore-lib and encrypted payloads, update of happn-3
+  - SMC-4466: removed bitcore-lib and encrypted payloads, update of happn-3
   
