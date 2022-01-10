@@ -1,15 +1,11 @@
-/**
- * Created by grant on 2016/09/26.
- */
-const filename = require("path").basename(__filename);
 const EventEmitter = require("events").EventEmitter;
 const Replicator = require("../../lib/services/replicator");
 const MockHappn = require("../mocks/mock-happn");
 const mockOpts = require("../mocks/mock-opts");
 const SD_EVENTS = require("happn-3").constants.SECURITY_DIRECTORY_EVENTS;
-var expect = require("expect.js");
+const test = require("../lib/test-helper").create();
 
-describe(filename, function() {
+describe(test.testName(), function() {
   this.timeout(15000);
 
   it("can initialize the replicator", function(done) {
@@ -42,9 +38,9 @@ describe(filename, function() {
     replicator.initialize({}, () => {
       replicator.start();
       replicator.__replicate = (topic, batch) => {
-        expect(Date.now() - started > 3000).to.be(true);
-        expect(topic).to.be("/security/dataChanged");
-        expect(batch).to.eql({
+        test.expect(Date.now() - started > 3000).to.be(true);
+        test.expect(topic).to.be("/security/dataChanged");
+        test.expect(batch).to.eql({
           "unlink-group": {
             group1: {
               additionalInfo: undefined,
@@ -65,8 +61,8 @@ describe(filename, function() {
           }
         });
         //this should be emptied out
-        expect(replicator.securityChangeset).to.eql([]);
-        expect(replicator.unbatchSecurityUpdate(batch)).to.eql([
+        test.expect(replicator.securityChangeset).to.eql([]);
+        test.expect(replicator.unbatchSecurityUpdate(batch)).to.eql([
           {
             additionalInfo: undefined,
             whatHappnd: "link-group",
@@ -94,7 +90,7 @@ describe(filename, function() {
           changedData: { path: "/test/group1" }
         },
         () => {
-          expect(replicator.securityChangeset).to.eql([
+          test.expect(replicator.securityChangeset).to.eql([
             {
               whatHappnd: "unlink-group",
               changedData: { path: "/test/group1" }
@@ -108,7 +104,7 @@ describe(filename, function() {
               changedData: { path: "/test/group1" }
             },
             () => {
-              expect(replicator.securityChangeset).to.eql([
+              test.expect(replicator.securityChangeset).to.eql([
                 {
                   whatHappnd: "unlink-group",
                   changedData: { path: "/test/group1" }
@@ -126,7 +122,7 @@ describe(filename, function() {
                   changedData: { _meta: { path: "/test/group1" } }
                 },
                 () => {
-                  expect(replicator.securityChangeset).to.eql([
+                  test.expect(replicator.securityChangeset).to.eql([
                     {
                       whatHappnd: "unlink-group",
                       changedData: { path: "/test/group1" }
@@ -167,9 +163,9 @@ describe(filename, function() {
       () => {
         replicator.start();
         replicator.__replicate = (topic, batch) => {
-          expect(Date.now() - started <= 3000).to.be(true);
-          expect(topic).to.be("/security/dataChanged");
-          expect(batch).to.eql({
+          test.expect(Date.now() - started <= 3000).to.be(true);
+          test.expect(topic).to.be("/security/dataChanged");
+          test.expect(batch).to.eql({
             "unlink-group": {
               group1: {
                 additionalInfo: undefined,
@@ -190,8 +186,8 @@ describe(filename, function() {
             }
           });
           //this should be emptied out
-          expect(replicator.securityChangeset).to.eql([]);
-          expect(replicator.unbatchSecurityUpdate(batch)).to.eql([
+          test.expect(replicator.securityChangeset).to.eql([]);
+          test.expect(replicator.unbatchSecurityUpdate(batch)).to.eql([
             {
               additionalInfo: undefined,
               whatHappnd: "link-group",
@@ -219,7 +215,7 @@ describe(filename, function() {
             changedData: { path: "/test/group1" }
           },
           () => {
-            expect(replicator.securityChangeset).to.eql([
+            test.expect(replicator.securityChangeset).to.eql([
               {
                 whatHappnd: "unlink-group",
                 changedData: { path: "/test/group1" }
@@ -233,7 +229,7 @@ describe(filename, function() {
                 changedData: { path: "/test/group1" }
               },
               () => {
-                expect(replicator.securityChangeset).to.eql([
+                test.expect(replicator.securityChangeset).to.eql([
                   {
                     whatHappnd: "unlink-group",
                     changedData: { path: "/test/group1" }
@@ -251,7 +247,7 @@ describe(filename, function() {
                     changedData: { _meta: { path: "/test/group1" } }
                   },
                   () => {
-                    expect(replicator.securityChangeset).to.eql([
+                    test.expect(replicator.securityChangeset).to.eql([
                       {
                         whatHappnd: "unlink-group",
                         changedData: { path: "/test/group1" }
@@ -273,6 +269,134 @@ describe(filename, function() {
         );
       }
     );
+  });
+
+  it("can getChangedKey", function() {
+    const SD_EVENTS = require("happn-3").constants.SECURITY_DIRECTORY_EVENTS;
+    const replicator = new Replicator(mockOpts);
+    test
+      .expect(
+        replicator.getChangedKey(SD_EVENTS.LINK_GROUP, {
+          _meta: {
+            path: "test/path"
+          }
+        })
+      )
+      .to.be("path");
+
+    test
+      .expect(
+        replicator.getChangedKey(SD_EVENTS.UNLINK_GROUP, {
+          path: "test/path"
+        })
+      )
+      .to.be("path");
+
+    test
+      .expect(
+        replicator.getChangedKey(SD_EVENTS.LOOKUP_TABLE_CHANGED, {
+          table: "table"
+        })
+      )
+      .to.be("table");
+
+    test
+      .expect(
+        replicator.getChangedKey(SD_EVENTS.LOOKUP_PERMISSION_CHANGED, {
+          table: "table"
+        })
+      )
+      .to.be("table");
+
+    test
+      .expect(
+        test.tryNonAsyncMethod(
+          replicator,
+          "getChangedKey",
+          SD_EVENTS.DELETE_USER,
+          {
+            obj: {
+              _meta: {
+                path: "/_SYSTEM/_SECURITY/_USER/path"
+              }
+            }
+          }
+        )
+      )
+      .to.be("path");
+
+    test
+      .expect(
+        test.tryNonAsyncMethod(
+          replicator,
+          "getChangedKey",
+          SD_EVENTS.DELETE_GROUP,
+          {
+            obj: {
+              name: "group-name"
+            }
+          }
+        )
+      )
+      .to.be("group-name");
+
+    test
+      .expect(
+        test.tryNonAsyncMethod(
+          replicator,
+          "getChangedKey",
+          SD_EVENTS.UPSERT_GROUP,
+          {
+            name: "group-name"
+          }
+        )
+      )
+      .to.be("group-name");
+
+    test
+      .expect(
+        test.tryNonAsyncMethod(
+          replicator,
+          "getChangedKey",
+          SD_EVENTS.PERMISSION_REMOVED,
+          {
+            groupName: "group-name"
+          }
+        )
+      )
+      .to.be("group-name");
+
+    test
+      .expect(
+        test.tryNonAsyncMethod(
+          replicator,
+          "getChangedKey",
+          SD_EVENTS.PERMISSION_UPSERTED,
+          {
+            groupName: "group-name"
+          }
+        )
+      )
+      .to.be("group-name");
+
+    test
+      .expect(
+        test.tryNonAsyncMethod(
+          replicator,
+          "getChangedKey",
+          SD_EVENTS.UPSERT_USER,
+          {
+            username: "user-name"
+          }
+        )
+      )
+      .to.be("user-name");
+
+    test
+      .expect(
+        test.tryNonAsyncMethod(replicator, "getChangedKey", "unknown", {})
+      )
+      .to.be("unknown security data changed event: unknown");
   });
 
   it("can call the send function, security update - emit", function(done) {
@@ -299,7 +423,7 @@ describe(filename, function() {
     };
 
     setTimeout(() => {
-      expect(emitted).to.eql([
+      test.expect(emitted).to.eql([
         {
           topic: "/security/dataChanged",
           payload: {
