@@ -228,4 +228,10 @@ non-release 2017-12-14
 11.3.0 2022-01-04
 -----------------
   - SMC-4550: updated happn-3 dependency
+
+11.3.1 2022-01-10
+-----------------
+  - SMC-4938: lookup tables fail for rest request
+
+
   
