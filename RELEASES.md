@@ -232,6 +232,7 @@ non-release 2017-12-14
 11.3.1 2022-01-10
 -----------------
   - SMC-4938: lookup tables fail for rest request
+  - SMC-4550: lookup tables security sync items
 
 
   
