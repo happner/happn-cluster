@@ -1,14 +1,5 @@
 let extension;
 class TestHelper {
-  getTestFile = () =>
-		this.callsites()
-			.find(
-				(call) => (
-					!call.getFileName().endsWith("test-helper.js") && 
-					!call.getFileName().endsWith("test_helper.js")
-				)
-			)
-			.getFileName();
 	constructor() {
 		this.why = require("why-is-node-running");
 		this.delay = require("await-delay");
@@ -39,6 +30,16 @@ class TestHelper {
 		  this.timeout(options.timeout);
 		  handler(test);
 		}).timeout(options.timeout);
+	}
+	getTestFile () {
+		return this.callsites()
+			.find(
+				(call) => (
+					!call.getFileName().endsWith("test-helper.js") && 
+					!call.getFileName().endsWith("test_helper.js")
+				)
+			)
+			.getFileName();
 	}
     unlinkFiles (files) {
         files.forEach(file => {
