@@ -237,3 +237,7 @@ non-release 2017-12-14
 11.3.2 2022-01-19
 -----------------
   - SMC-4550: Added lookup table SD events to unbatchSecurityUpdate in replicator
+
+11.3.3 2022-01-19
+-----------------
+  - SMC-4550: Added lookup table SD events to unbatchSecurityUpdate in replicator
