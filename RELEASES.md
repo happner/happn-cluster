@@ -234,5 +234,6 @@ non-release 2017-12-14
   - SMC-4938: lookup tables fail for rest request
   - SMC-4550: lookup tables security sync items
 
-
-  
+11.3.2 2022-01-19
+-----------------
+  - SMC-4550: Added lookup table SD events to unbatchSecurityUpdate in replicator
