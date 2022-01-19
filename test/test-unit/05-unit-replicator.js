@@ -526,55 +526,55 @@ describe(test.testName(), function() {
     test.expect(replicator.unbatchSecurityUpdate(payload)).to.eql([
       {
         whatHappnd: SD_EVENTS.LINK_GROUP,
-        changedData: 'changed1',
-        additionalInfo: 'additional1'
+        changedData: "changed1",
+        additionalInfo: "additional1"
       },
       {
-        whatHappnd:SD_EVENTS.UNLINK_GROUP,
-        changedData: 'changed2',
-        additionalInfo: 'additional2'
+        whatHappnd: SD_EVENTS.UNLINK_GROUP,
+        changedData: "changed2",
+        additionalInfo: "additional2"
       },
       {
         whatHappnd: SD_EVENTS.UPSERT_GROUP,
-        changedData: 'changed3',
-        additionalInfo: 'additional3'
+        changedData: "changed3",
+        additionalInfo: "additional3"
       },
       {
         whatHappnd: SD_EVENTS.UPSERT_USER,
-        changedData: 'changed4',
-        additionalInfo: 'additional4'
+        changedData: "changed4",
+        additionalInfo: "additional4"
       },
       {
         whatHappnd: SD_EVENTS.PERMISSION_REMOVED,
-        changedData: 'changed5',
-        additionalInfo: 'additional5'
+        changedData: "changed5",
+        additionalInfo: "additional5"
       },
       {
         whatHappnd: SD_EVENTS.PERMISSION_UPSERTED,
-        changedData: 'changed6',
-        additionalInfo: 'additional6'
+        changedData: "changed6",
+        additionalInfo: "additional6"
       },
       {
         whatHappnd: SD_EVENTS.DELETE_USER,
-        changedData: 'changed7',
-        additionalInfo: 'additional7'
+        changedData: "changed7",
+        additionalInfo: "additional7"
       },
       {
         whatHappnd: SD_EVENTS.DELETE_GROUP,
-        changedData: 'changed8',
-        additionalInfo: 'additional8'
+        changedData: "changed8",
+        additionalInfo: "additional8"
       },
       {
         whatHappnd: SD_EVENTS.LOOKUP_TABLE_CHANGED,
-        changedData: 'changed9',
-        additionalInfo: 'additional9'
+        changedData: "changed9",
+        additionalInfo: "additional9"
       },
       {
         whatHappnd: SD_EVENTS.LOOKUP_PERMISSION_CHANGED,
-        changedData: 'changed10',
-        additionalInfo: 'additional10'
+        changedData: "changed10",
+        additionalInfo: "additional10"
       }
-    ])
+    ]);
     done();
   });
 });
