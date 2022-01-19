@@ -240,4 +240,4 @@ non-release 2017-12-14
 
 11.3.3 2022-01-19
 -----------------
-  - SMC-4550: Added lookup table SD events to unbatchSecurityUpdate in replicator
+  - SMC-4550: bumped happn-3 versions
