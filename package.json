@@ -1,6 +1,6 @@
 {
   "name": "happn-cluster",
-  "version": "11.3.1",
+  "version": "11.3.2",
   "description": "extends happn with cluster ability",
   "main": "index.js",
   "scripts": {
