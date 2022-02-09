@@ -103,22 +103,7 @@ module.exports.createMemberConfigs = Promise.promisify(function(
           config: {
             clusterName: "cluster1"
           }
-        },
-        // seed: i === 1,
-        // seedWait: 1000,
-        // joinType: "static",
-        // host: ipAddress,
-        // port: swimPortBase + i,
-        // hosts: [
-        //   ipAddress + ":" + (swimPortBase + 1),
-        //   ipAddress + ":" + (swimPortBase + 2),
-        //   ipAddress + ":" + (swimPortBase + 3)
-        // ],
-        // joinTimeout: 2000,
-        // pingInterval: 1000,
-        // pingTimeout: 200,
-        // pingReqTimeout: 600
-        // }
+        }, // Leaving this in to test backward compatibility, not necessary
 
         proxy: {
           config: {
