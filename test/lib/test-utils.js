@@ -94,28 +94,32 @@ module.exports.createMemberConfigs = Promise.promisify(function(
         },
         orchestrator: {
           config: {
+            replicate: [`/_events/*/*`],
+            clusterName: "cluster1",
             minimumPeers: clusterSize
           }
         },
         membership: {
           config: {
-            clusterName: "cluster1",
-            seed: i === 1,
-            seedWait: 1000,
-            joinType: "static",
-            host: ipAddress,
-            port: swimPortBase + i,
-            hosts: [
-              ipAddress + ":" + (swimPortBase + 1),
-              ipAddress + ":" + (swimPortBase + 2),
-              ipAddress + ":" + (swimPortBase + 3)
-            ],
-            joinTimeout: 2000,
-            pingInterval: 1000,
-            pingTimeout: 200,
-            pingReqTimeout: 600
+            clusterName: "cluster1"
           }
         },
+        // seed: i === 1,
+        // seedWait: 1000,
+        // joinType: "static",
+        // host: ipAddress,
+        // port: swimPortBase + i,
+        // hosts: [
+        //   ipAddress + ":" + (swimPortBase + 1),
+        //   ipAddress + ":" + (swimPortBase + 2),
+        //   ipAddress + ":" + (swimPortBase + 3)
+        // ],
+        // joinTimeout: 2000,
+        // pingInterval: 1000,
+        // pingTimeout: 200,
+        // pingReqTimeout: 600
+        // }
+
         proxy: {
           config: {
             host: "0.0.0.0",
@@ -125,6 +129,7 @@ module.exports.createMemberConfigs = Promise.promisify(function(
         }
       }
     };
+    // };
 
     if (happnSecure) {
       config.secure = true;
@@ -144,8 +149,6 @@ module.exports.createMemberConfigs = Promise.promisify(function(
     }
 
     ammendConfig(config);
-
-    // console.log(JSON.stringify(config, null, 2));
 
     configs.push(config);
   }

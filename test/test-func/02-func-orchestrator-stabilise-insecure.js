@@ -6,7 +6,8 @@ var hooks = require("../lib/hooks");
 var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 10;
 var happnSecure = false;
-
+const wait = require("await-delay");
+const cloneMember = require("../../lib/utils/cloneMember");
 describe(filename, function() {
   this.timeout(30000);
 
@@ -21,17 +22,21 @@ describe(filename, function() {
     happnSecure: happnSecure
   });
 
-  it("each server stabilised with all 10 peers", function(done) {
+  it("each server stabilised with all 10 peers", async function() {
+    this.timeout(56000);
     var self = this;
+    await wait(10000);
+    let peerCounts = self.servers.map(
+      server => Object.keys(server.services.orchestrator.peers).length
+    );
 
-    var peerCounts = [];
-    self.servers.forEach(function(server) {
-      var count = Object.keys(server.services.orchestrator.peers).length;
-      peerCounts.push(count);
-    });
-
+    expect(
+      self.servers.every(
+        server => server.services.orchestrator.state === "stable"
+      )
+    ).to.be(true);
     expect(peerCounts).to.eql([10, 10, 10, 10, 10, 10, 10, 10, 10, 10]);
-    done();
+    // done();
   });
 
   hooks.stopCluster();
