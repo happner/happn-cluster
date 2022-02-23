@@ -1,6 +1,6 @@
 var path = require("path");
 var filename = path.basename(__filename);
-var Promise = require("bluebird");
+// var Promise = require("bluebird");
 var expect = require("expect.js");
 
 var HappnCluster = require("../..");
@@ -11,6 +11,7 @@ var testUtils = require("../lib/test-utils");
 var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 3;
 var happnSecure = false;
+// const wait = require('await-delay')
 
 describe(filename, function() {
   this.timeout(30000);
@@ -50,7 +51,8 @@ describe(filename, function() {
     Member.prototype.__subscribe = this.originalSubscribe;
   });
 
-  it("stops the server on failure to stabilise", function(done) {
+  it("stops the server on failure to stabilise", async function() {
+    await testUtils.awaitExactPeerCount(this.servers, clusterSize);
     Member.prototype.__subscribe = function() {
       return new Promise(function(resolve, reject) {
         reject(new Error("Fake failure to subscribe"));
@@ -66,13 +68,9 @@ describe(filename, function() {
       .then(function() {
         throw new Error("should not have started");
       })
-
       .catch(function(error) {
         expect(error.message).to.equal("Fake failure to subscribe");
-        done();
-      })
-
-      .catch(done);
+      });
   });
 
   hooks.stopCluster();

@@ -1,7 +1,7 @@
 var path = require("path");
 var filename = path.basename(__filename);
 var expect = require("expect.js");
-
+const wait = require('await-delay')
 var HappnCluster = require("../..");
 var hooks = require("../lib/hooks");
 var testUtils = require("../lib/test-utils");
@@ -70,7 +70,9 @@ describe(filename, function() {
         var server = _this.servers.pop(); // remove and stop new server
         return server.stop({ reconnect: false });
       })
-
+      .then(function() { 
+        return wait(6000) //Need time for peer to become stale in DB
+      })
       .then(function() {
         return testUtils.awaitExactPeerCount(_this.servers);
       })

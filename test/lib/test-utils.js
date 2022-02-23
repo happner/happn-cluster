@@ -2,11 +2,11 @@
  * Created by grant on 2016/10/05.
  */
 
-var Promise = require("bluebird");
+// var Promise = require("bluebird");
 
 var getAddress = require("../../lib/utils/get-address");
 var Mongo = require("./mongo");
-
+const Util = require("util");
 var mongoUrl = "mongodb://127.0.0.1:27017";
 var mongoCollection = "happn-cluster-test";
 
@@ -22,7 +22,7 @@ module.exports.clearMongoCollection = function(
   );
 };
 
-module.exports.createMemberConfigs = Promise.promisify(function(
+module.exports.createMemberConfigs = Util.promisify(function(
   testSequence,
   clusterSize,
   happnSecure,
@@ -94,9 +94,10 @@ module.exports.createMemberConfigs = Promise.promisify(function(
         },
         orchestrator: {
           config: {
-            replicate: [`/_events/*/*`],
+            // replicate: [`/_events/*`],
             clusterName: "cluster1",
-            minimumPeers: clusterSize
+            minimumPeers: clusterSize,
+            deployment: "myDeploy"
           }
         },
         membership: {
@@ -141,11 +142,12 @@ module.exports.createMemberConfigs = Promise.promisify(function(
   callback(null, configs);
 });
 
-module.exports.awaitExactMembershipCount = Promise.promisify(function(
+module.exports.awaitExactMembershipCount = Util.promisify(function(
   servers,
   count,
   callback
 ) {
+  // Changed to await > or equal member count, as members are updated faster
   var interval,
     gotExactCount = false;
 
@@ -155,13 +157,14 @@ module.exports.awaitExactMembershipCount = Promise.promisify(function(
   }
 
   interval = setInterval(function() {
+
     if (servers.length !== count) return;
 
     gotExactCount = true;
 
     servers.forEach(function(server) {
       if (
-        Object.keys(server.services.membership.members).length !==
+        Object.keys(server.services.orchestrator.members).length <
         count - 1
       ) {
         gotExactCount = false;
@@ -175,7 +178,7 @@ module.exports.awaitExactMembershipCount = Promise.promisify(function(
   }, 100);
 });
 
-module.exports.awaitExactPeerCount = Promise.promisify(function(
+module.exports.awaitExactPeerCount = Util.promisify(function(
   servers,
   count,
   callback

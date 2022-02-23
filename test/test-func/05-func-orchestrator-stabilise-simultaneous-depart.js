@@ -21,12 +21,12 @@ describe(filename, function() {
   hooks.startCluster({
     testSequence: testSequence,
     size: clusterSize,
-    happnSecure: happnSecure,
-    services: {
-      membership: {
-        pingInterval: 2000
-      }
-    }
+    happnSecure: happnSecure
+    // services: {
+    //   membership: {
+    //     pingInterval: 2000
+    //   }
+    // }
   });
 
   it("starting a new member survives when stopping an existing member simultaneously", function(done) {

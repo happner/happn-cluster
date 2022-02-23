@@ -1,11 +1,11 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 var path = require("path");
-var Promise = require("bluebird");
 var ChildProcess = require("child_process");
 var clone = require("clone");
 var HappnCluster = require("../../");
 var testUtils = require("./test-utils");
+const wait = require("await-delay");
 
 module.exports.startCluster = function(clusterOpts) {
   var testSequence = clusterOpts.testSequence || 1;
@@ -24,65 +24,44 @@ module.exports.startCluster = function(clusterOpts) {
     testUtils.clearMongoCollection(done);
   });
 
-  before("start cluster", function(done) {
+  before("start cluster", async function() {
     var self = this;
 
-    testUtils.createMemberConfigs(
+    self.__configs = await testUtils.createMemberConfigs(
       testSequence,
       clusterSize,
       happnSecure,
       proxySecure,
-      services,
-      function(err, result) {
-        if (err) return done(err);
-
-        self.__configs = result;
-
-        Promise.resolve(self.__configs)
-          .map(function(config, sequence) {
-            // start first peer immediately and other a moment
-            // later so they don't all fight over creating the
-            // admin user in the shared database
-
-            if (sequence === 0) {
-              return HappnCluster.create(clone(config));
-            }
-
-            return Promise.delay(2000).then(function() {
-              return HappnCluster.create(clone(config));
-            });
-          })
-          .then(function(servers) {
-            self.servers = servers;
-          })
-          .then(function() {
-            done();
-          })
-          .catch(done);
-      }
+      services
     );
+
+    let servers = [];
+    servers.push(HappnCluster.create(clone(self.__configs[0])));
+    await wait(2000);
+    // start first peer immediately and other a momentf
+    // later so they don't all fight over creating the
+    // admin user in the shared database
+    for (let [sequence, config] of self.__configs.entries()) {
+      if (sequence === 0) {
+        continue;
+      }
+      servers.push(HappnCluster.create(clone(config)));
+    }
+    self.servers = await Promise.all(servers);
+    return self.servers
   });
 };
 
 module.exports.stopCluster = function() {
-  after("stop cluster", function(done) {
-    if (!this.servers) return done();
-    Promise.resolve(this.servers)
-      .map(
-        function(server) {
-          return server.stop({ reconnect: false }).then(function() {
-            // stopping all at once causes replicator client happn logouts to timeout
-            // because happn logout attempts unsubscribe on server, and all servers
-            // are gone
-            return Promise.delay(1000); // ...so pause between stops (long for travis)
-          });
-        },
-        { concurrency: 1 }
-      ) // ...and do them one at a time
-      .then(function() {
-        done();
-      })
-      .catch(done);
+  after("stop cluster", async function() {
+    if (!this.servers) return;
+    for (let server of this.servers) {
+      await server.stop({ reconnect: false });
+      // stopping all at once causes replicator client happn logouts to timeout
+      // because happn logout attempts unsubscribe on server, and all servers
+      // are gone
+      await wait(1000); // ...so pause between stops (long for travis)
+    }
   });
 
   after("clear collection (after)", function(done) {
@@ -109,7 +88,7 @@ module.exports.startMultiProcessCluster = function(clusterOpts) {
 
   var peerPath = __dirname + path.sep + "peer.js";
 
-  before("start cluster", function(done) {
+  before("start cluster", async function() {
     var self = this;
 
     testUtils.createMemberConfigs(
@@ -123,8 +102,8 @@ module.exports.startMultiProcessCluster = function(clusterOpts) {
 
         self.__configs = result;
 
-        Promise.resolve(self.__configs)
-          .map(function(config) {
+        Promise.all(
+          self.__configs.map(function(config) {
             var configJson = [JSON.stringify(config)];
 
             return new Promise(function(resolve) {
@@ -134,6 +113,7 @@ module.exports.startMultiProcessCluster = function(clusterOpts) {
               });
             });
           })
+        )
 
           .then(function(processes) {
             self.peerProcesses = processes;

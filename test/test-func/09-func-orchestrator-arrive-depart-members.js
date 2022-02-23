@@ -52,15 +52,15 @@ describe(filename, function() {
     var emittedAdd = {};
     var emittedRemove = {};
 
-    this.servers.forEach(function(server, i) {
-      server.services.membership.on("add", function(info) {
-        emittedAdd[i] = info;
-      });
+    // this.servers.forEach(function(server, i) {
+    //   // server.services.membership.on("add", function(info) {
+    //   //   emittedAdd[i] = info;
+    //   // });
 
-      server.services.membership.on("remove", function(info) {
-        emittedRemove[i] = info;
-      });
-    });
+    //   server.services.membership.on("remove", function(info) {
+    //     emittedRemove[i] = info;
+    //   });
+    // });
 
     HappnCluster.create(this.extraConfig)
 

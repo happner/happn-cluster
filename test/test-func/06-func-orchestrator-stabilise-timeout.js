@@ -1,7 +1,7 @@
 var path = require("path");
 var filename = path.basename(__filename);
 var expect = require("expect.js");
-var Promise = require("bluebird");
+// var Promise = require("bluebird");
 
 var HappnCluster = require("../..");
 var hooks = require("../lib/hooks");
@@ -25,45 +25,33 @@ describe(filename, function() {
     happnSecure: happnSecure
   });
 
-  it("stops the server after timeout on failure to stabilise", function(done) {
-    var _this = this;
-
-    this.timeout(8000);
-
-    Promise.resolve()
-
-      .then(function() {
-        return testUtils.createMemberConfigs(
-          testSequence,
-          clusterSize + 1,
-          happnSecure,
-          false,
-          {
-            orchestrator: {
-              minimumPeers: clusterSize + 2,
-              stabiliseTimeout: 2000
-            }
+  it("stops the server after timeout on failure to stabilise", async function() {
+    this.timeout(25000);
+    try {
+      await testUtils.awaitExactPeerCount(this.servers, clusterSize);
+      let configs = await testUtils.createMemberConfigs(
+        testSequence,
+        clusterSize + 1,
+        happnSecure,
+        false,
+        {
+          orchestrator: {
+            minimumPeers: clusterSize + 2,
+            stabiliseTimeout: 2000
           }
-        );
-      })
+        }
+      );
 
-      .then(function(configs) {
-        return configs.pop();
-      })
+      let config = configs.pop();
 
-      .then(function(config) {
-        return HappnCluster.create(config);
-      })
-
-      .then(function(server) {
-        _this.servers.push(server); // for hooks.stopCluster()
-        done(new Error("should not have started"));
-      })
-
-      .catch(function(error) {
-        expect(error.name).to.match(/StabiliseTimeout/);
-        done();
+      let server = await HappnCluster.create(config);
+      setImmediate(() => {
+        this.servers.push(server); // for hooks.stopCluster()
+        throw new Error("should not have started");
       });
+    } catch (error) {
+      expect(error.name).to.match(/StabiliseTimeout/);
+    }
   });
 
   hooks.stopCluster();

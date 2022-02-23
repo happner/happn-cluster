@@ -1,18 +1,18 @@
 var path = require("path");
 var filename = path.basename(__filename);
 var expect = require("expect.js");
-var Promise = require("bluebird");
+// var Promise = require("bluebird");
 var Happn = require("happn-3");
-
+var testUtils = require("../lib/test-utils");
 var hooks = require("../lib/hooks");
-
+const nodeUtils = require("util");
 var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 3;
 var happnSecure = false;
 
 describe(filename, function() {
   this.timeout(30000);
-
+  const self = this;
   before(function() {
     this.logLevel = process.env.LOG_LEVEL;
     process.env.LOG_LEVEL = "off";
@@ -24,10 +24,11 @@ describe(filename, function() {
     happnSecure: happnSecure
   });
 
-  before("connect a client to each server", function(done) {
-    var _this = this;
-    Promise.resolve(this.__configs)
-      .map(function(config) {
+  before("connect a client to each server", async function() {
+    await testUtils.awaitExactMembershipCount(this.servers, clusterSize);
+    console.log("CREATING CLIENTS");
+    let clients = await Promise.all(
+      this.__configs.map(function(config) {
         var loginConfig = {
           config: {
             // secure: happnSecure,
@@ -41,30 +42,25 @@ describe(filename, function() {
 
         return Happn.client.create(loginConfig);
       })
-      .then(function(clients) {
-        clients.forEach(function(client) {
-          client.onAsync = Promise.promisify(client.on);
-        });
-        _this.clients = clients;
-        done();
-      })
-      .catch(done);
+    );
+    clients.forEach(function(client) {
+      client.onAsync = nodeUtils.promisify(client.on);
+    });
+    this.clients = clients;
   });
 
-  after("disconnect all clients", function(done) {
-    if (!this.clients) return done();
-    Promise.resolve(this.clients)
-      .map(function(client) {
+  after("disconnect all clients", async function() {
+    if (!this.clients) return;
+    await Promise.all(
+      this.clients.map(function(client) {
         return client.disconnect();
       })
-      .then(function() {
-        done();
-      })
-      .catch(done);
+    );
   });
 
   context("on set events", function() {
-    it("replicates with wildcards", function(done) {
+    it("replicates with wildcards", async function() {
+      this.timeout(30000);
       // first client is the "control", it does the emits so its events appear the
       // way all other client's events should appear: If properly replicated!
 
@@ -73,190 +69,138 @@ describe(filename, function() {
       var controlEvent,
         replicatedEvents = [];
 
-      Promise.resolve()
-
-        .then(function() {
-          return Promise.resolve(_this.clients).map(function(client, i) {
-            return client.onAsync("/some/*/*/set", function(data, meta) {
-              delete meta.sessionId; // not the same across events
-              if (i === 0) {
-                controlEvent = {
-                  data: data,
-                  meta: meta
-                };
-              } else {
-                replicatedEvents.push({
-                  data: data,
-                  meta: meta
-                });
-              }
-              if (controlEvent && replicatedEvents.length === clusterSize - 1) {
-                setTimeout(function() {
-                  unpause();
-                }, 100);
-              }
+      for (let [i, client] of Object.entries(this.clients)) {
+        await client.onAsync("/some/*/*/set", (data, meta) => {
+          delete meta.sessionId; // not the same across events
+          if (parseInt(i) === 0) {
+            controlEvent = {
+              data: data,
+              meta: meta
+            };
+          } else {
+            replicatedEvents.push({
+              data: data,
+              meta: meta
             });
-          });
-        })
-
-        .then(function() {
-          return _this.clients[0].set("/some/path/to/set", { some: "data" });
-        })
-
-        .then(function() {
-          return new Promise(function(resolve) {
-            unpause = resolve;
-          });
-        })
-
-        .then(function() {
-          for (var i = 0; i < replicatedEvents.length; i++) {
-            expect(replicatedEvents[i]).to.eql(controlEvent);
           }
-        })
+          if (controlEvent && replicatedEvents.length === clusterSize - 1) {
+            setTimeout(function() {
+              unpause();
+            }, 100);
+          }
+        });
+      }
 
-        .then(done)
-        .catch(done);
+      await _this.clients[0].set("/some/path/to/set", { some: "data" });
+      await new Promise(function(resolve) {
+        unpause = resolve;
+      });
+
+      for (let event of replicatedEvents) {
+        expect(event).to.eql(controlEvent);
+      }
     });
 
-    it("replicates without wildcards", function(done) {
-      var _this = this;
+    it("replicates without wildcards", async function() {
       var unpause;
       var controlEvent,
         replicatedEvents = [];
 
-      Promise.resolve()
-
-        .then(function() {
-          return Promise.resolve(_this.clients).map(function(client, i) {
-            return client.onAsync("/some/path/to/set/on", function(data, meta) {
-              delete meta.sessionId;
-              if (i === 0) {
-                controlEvent = {
-                  data: data,
-                  meta: meta
-                };
-              } else {
-                replicatedEvents.push({
-                  data: data,
-                  meta: meta
-                });
-              }
-              if (controlEvent && replicatedEvents.length === clusterSize - 1) {
-                setTimeout(function() {
-                  unpause();
-                }, 400);
-              }
+      for (let [i, client] of Object.entries(this.clients)) {
+        await client.onAsync("/some/path/to/set/on", function(data, meta) {
+          delete meta.sessionId;
+          if (parseInt(i) === 0) {
+            controlEvent = {
+              data: data,
+              meta: meta
+            };
+          } else {
+            replicatedEvents.push({
+              data: data,
+              meta: meta
             });
-          });
-        })
-
-        .then(function() {
-          return _this.clients[0].set("/some/path/to/set/on", { some: "data" });
-        })
-
-        .then(function() {
-          return new Promise(function(resolve) {
-            unpause = resolve;
-          });
-        })
-
-        .then(function() {
-          expect(replicatedEvents.length).to.be(2);
-
-          for (var i = 0; i < replicatedEvents.length; i++) {
-            expect(replicatedEvents[i]).to.eql(controlEvent);
           }
-        })
+          if (controlEvent && replicatedEvents.length === clusterSize - 1) {
+            setTimeout(function() {
+              unpause();
+            }, 400);
+          }
+        });
+      }
 
-        .then(done)
-        .catch(done);
+      await this.clients[0].set("/some/path/to/set/on", { some: "data" });
+
+      await new Promise(function(resolve) {
+        unpause = resolve;
+      });
+
+      expect(replicatedEvents.length).to.be(2);
+
+      for (let event of replicatedEvents) {
+        expect(event).to.eql(controlEvent);
+      }
     });
   });
 
   context("on remove events", function() {
-    it("replicates", function(done) {
-      var _this = this;
+    it("replicates", async function() {
       var unpause;
       var controlEvent,
         replicatedEvents = [];
+      await this.clients[0].set("/some/path/to/remove/on", {
+        some: "data"
+      });
 
-      Promise.resolve()
-
-        .then(function() {
-          return _this.clients[0].set("/some/path/to/remove/on", {
-            some: "data"
+      await Promise.all(
+        this.clients.map(function(client, i) {
+          return client.onAsync("/some/path/to/remove/*", function(data, meta) {
+            delete meta.sessionId;
+            if (i === 0) {
+              controlEvent = {
+                data: data,
+                meta: meta
+              };
+            } else {
+              replicatedEvents.push({
+                data: data,
+                meta: meta
+              });
+            }
+            if (controlEvent && replicatedEvents.length === clusterSize - 1) {
+              setTimeout(function() {
+                unpause();
+              }, 100);
+            }
           });
         })
+      );
 
-        .then(function() {
-          return Promise.resolve(_this.clients).map(function(client, i) {
-            return client.onAsync("/some/path/to/remove/*", function(
-              data,
-              meta
-            ) {
-              delete meta.sessionId;
-              if (i === 0) {
-                controlEvent = {
-                  data: data,
-                  meta: meta
-                };
-              } else {
-                replicatedEvents.push({
-                  data: data,
-                  meta: meta
-                });
-              }
-              if (controlEvent && replicatedEvents.length === clusterSize - 1) {
-                setTimeout(function() {
-                  unpause();
-                }, 100);
-              }
-            });
-          });
-        })
+      await this.clients[0].remove("/some/path/to/remove/on");
 
-        .then(function() {
-          return _this.clients[0].remove("/some/path/to/remove/on");
-        })
-
-        .then(function() {
-          return new Promise(function(resolve) {
-            unpause = resolve;
-          });
-        })
-
-        .then(function() {
-          for (var i = 0; i < replicatedEvents.length; i++) {
-            expect(replicatedEvents[i]).to.eql(controlEvent);
-          }
-        })
-
-        .then(done)
-        .catch(done);
+      await new Promise(function(resolve) {
+        unpause = resolve;
+      });
+      for (let event of replicatedEvents) {
+        expect(event).to.eql(controlEvent);
+      }
     });
   });
 
   context("on tag events", function() {
-    it("replicates", function(done) {
-      var _this = this;
+    it("replicates", async function() {
       var unpause;
       var controlEvent,
         replicatedEvents = [];
 
-      Promise.resolve()
+      await this.clients[0].set("/some/path/to/tag/on", { some: "data" });
 
-        .then(function() {
-          return _this.clients[0].set("/some/path/to/tag/on", { some: "data" });
-        })
+      await Promise.all(
+        this.clients.map(function(client, i) {
+          return client.onAsync("*", function(data, meta) {
+            delete meta.sessionId;
+            delete meta.action; // <---------------------------------- can't replicate .action in tag operations
 
-        .then(function() {
-          return Promise.resolve(_this.clients).map(function(client, i) {
-            return client.onAsync("*", function(data, meta) {
-              delete meta.sessionId;
-              delete meta.action; // <---------------------------------- can't replicate .action in tag operations
-
-              /*
+            /*
 
                should look like this
                ---------------------
@@ -301,116 +245,86 @@ describe(filename, function() {
 
                */
 
-              if (i === 0) {
-                controlEvent = {
-                  data: data,
-                  meta: meta
-                };
-              } else {
-                replicatedEvents.push({
-                  data: data,
-                  meta: meta
-                });
-              }
-              if (controlEvent && replicatedEvents.length === clusterSize - 1) {
-                setTimeout(function() {
-                  unpause();
-                }, 100);
-              }
-            });
+            if (i === 0) {
+              controlEvent = {
+                data: data,
+                meta: meta
+              };
+            } else {
+              replicatedEvents.push({
+                data: data,
+                meta: meta
+              });
+            }
+            if (controlEvent && replicatedEvents.length === clusterSize - 1) {
+              setTimeout(function() {
+                unpause();
+              }, 100);
+            }
           });
         })
+      );
 
-        .then(function() {
-          return _this.clients[0].set("/some/path/to/tag/on", null, {
-            tag: "TAGNAME"
-          });
-        })
+      await this.clients[0].set("/some/path/to/tag/on", null, {
+        tag: "TAGNAME"
+      });
 
-        .then(function() {
-          return new Promise(function(resolve) {
-            unpause = resolve;
-          });
-        })
+      await new Promise(function(resolve) {
+        unpause = resolve;
+      });
 
-        .then(function() {
-          // console.log(controlEvent);
-          // console.log(replicatedEvents[0]);
-
-          for (var i = 0; i < replicatedEvents.length; i++) {
-            expect(replicatedEvents[i]).to.eql(controlEvent);
-          }
-        })
-
-        .then(done)
-        .catch(done);
+      for (let event of replicatedEvents) {
+        expect(event).to.eql(controlEvent);
+      }
     });
   });
 
   context("on merge events", function() {
-    it("replicates", function(done) {
-      var _this = this;
+    it("replicates", async function() {
       var unpause;
       var controlEvent,
         replicatedEvents = [];
 
-      Promise.resolve()
-
-        .then(function() {
-          return _this.clients[0].set("/some/path/to/merge/on", {
-            some: "data"
+      await this.clients[0].set("/some/path/to/merge/on", {
+        some: "data"
+      });
+      await Promise.all(
+        this.clients.map(function(client, i) {
+          return client.onAsync("/some/path/to/merge/on", function(data, meta) {
+            delete meta.sessionId;
+            if (i === 0) {
+              controlEvent = {
+                data: data,
+                meta: meta
+              };
+            } else {
+              replicatedEvents.push({
+                data: data,
+                meta: meta
+              });
+            }
+            if (controlEvent && replicatedEvents.length === clusterSize - 1) {
+              setTimeout(function() {
+                unpause();
+              }, 100);
+            }
           });
         })
+      );
 
-        .then(function() {
-          return Promise.resolve(_this.clients).map(function(client, i) {
-            return client.onAsync("/some/path/to/merge/on", function(
-              data,
-              meta
-            ) {
-              delete meta.sessionId;
-              if (i === 0) {
-                controlEvent = {
-                  data: data,
-                  meta: meta
-                };
-              } else {
-                replicatedEvents.push({
-                  data: data,
-                  meta: meta
-                });
-              }
-              if (controlEvent && replicatedEvents.length === clusterSize - 1) {
-                setTimeout(function() {
-                  unpause();
-                }, 100);
-              }
-            });
-          });
-        })
+      await this.clients[0].set(
+        "/some/path/to/merge/on",
+        { more: "data" },
+        { merge: true }
+      );
 
-        .then(function() {
-          return _this.clients[0].set(
-            "/some/path/to/merge/on",
-            { more: "data" },
-            { merge: true }
-          );
-        })
+      await new Promise(function(resolve) {
+        unpause = resolve;
+      });
 
-        .then(function() {
-          return new Promise(function(resolve) {
-            unpause = resolve;
-          });
-        })
-
-        .then(function() {
-          for (var i = 0; i < replicatedEvents.length; i++) {
-            expect(replicatedEvents[i]).to.eql(controlEvent);
-          }
-        })
-
-        .then(done)
-        .catch(done);
+      for (let event of replicatedEvents) {
+        expect(event).to.eql(controlEvent);
+      }
     });
   });
 
