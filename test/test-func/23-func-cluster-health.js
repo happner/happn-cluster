@@ -5,7 +5,8 @@ const { delay } = require("bluebird");
 const CaptureStdout = require("capture-stdout");
 const getAddress = require("../../lib/utils/get-address");
 
-describe(filename, function() {
+xdescribe(filename, function() {
+  //NEEDS TO BE REWRITTEN
   this.timeout(80000);
 
   it("checks cluster health logging is working", async () => {

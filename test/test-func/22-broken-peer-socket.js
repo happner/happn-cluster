@@ -5,7 +5,7 @@ var filename = path.basename(__filename);
 var hooks = require("../lib/hooks");
 var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 2;
-var happnSecure = true;
+var happnSecure = false;
 const expect = require("expect.js");
 
 describe(filename, function() {

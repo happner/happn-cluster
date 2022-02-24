@@ -4,7 +4,7 @@ var expect = require("expect.js");
 var hooks = require("../lib/hooks");
 
 var testSequence = parseInt(filename.split("-")[0]);
-var clusterSize = 10;
+var clusterSize = 5;
 var happnSecure = false;
 const wait = require("await-delay");
 const cloneMember = require("../../lib/utils/cloneMember");
@@ -19,10 +19,14 @@ describe(filename, function() {
   hooks.startCluster({
     testSequence: testSequence,
     size: clusterSize,
-    happnSecure: happnSecure
+    happnSecure: happnSecure,
+    clusterConfig: {
+      "cluster-service-1": 2,
+      "cluster-service-2": 3
+    }
   });
 
-  it("each server stabilised with all 10 peers", async function() {
+  it("each server stabilised with all 5 peers", async function() {
     this.timeout(60000);
     var self = this;
     await wait(15000);

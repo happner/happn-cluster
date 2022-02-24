@@ -19,7 +19,7 @@ module.exports.startCluster = function(clusterOpts) {
       ? clusterOpts.proxySecure
       : false;
   var services = clusterOpts.services || {};
-
+  var clusterConfig = clusterOpts.clusterConfig;
   before("clear collection (before)", function(done) {
     testUtils.clearMongoCollection(done);
   });
@@ -27,14 +27,23 @@ module.exports.startCluster = function(clusterOpts) {
   before("start cluster", async function() {
     var self = this;
 
-    self.__configs = await testUtils.createMemberConfigs(
-      testSequence,
-      clusterSize,
-      happnSecure,
-      proxySecure,
-      services
-    );
-
+    if (!clusterConfig)
+      self.__configs = await testUtils.createMemberConfigs(
+        testSequence,
+        clusterSize,
+        happnSecure,
+        proxySecure,
+        services
+      );
+    else
+      self.__configs = await testUtils.createMultiServiceMemberConfigs(
+        testSequence,
+        clusterSize,
+        happnSecure,
+        proxySecure,
+        services,
+        clusterConfig
+      );
     let servers = [];
     servers.push(HappnCluster.create(clone(self.__configs[0])));
     await wait(2000);
@@ -48,7 +57,7 @@ module.exports.startCluster = function(clusterOpts) {
       servers.push(HappnCluster.create(clone(config)));
     }
     self.servers = await Promise.all(servers);
-    return self.servers
+    return self.servers;
   });
 };
 

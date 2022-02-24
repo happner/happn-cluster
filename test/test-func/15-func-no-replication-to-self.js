@@ -8,7 +8,7 @@ var hooks = require("../lib/hooks");
 
 var testSequence = parseInt(filename.split("-")[0]);
 var clusterSize = 1;
-var happnSecure = true;
+var happnSecure = false;
 var proxySecure = true;
 
 describe(filename, function() {
