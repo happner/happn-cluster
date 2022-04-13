@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/happner/happn-cluster#readme",
   "devDependencies": {
-    "async": "^2.1.4",
+    "async": "^3.2.2",
     "await-delay": "^1.0.0",
     "callsites": "^3.1.0",
     "capture-stdout": "^1.0.0",
